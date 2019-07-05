@@ -7,6 +7,31 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        
+        <Grid HorizontalAlignment="Left" Margin="108,260,0,0" Width="608" Height="129" VerticalAlignment="Top">
+            <Grid HorizontalAlignment="Left" Height="47" Margin="10,14,0,0" VerticalAlignment="Top" Width="186">
+                <Button x:Name="RequestForCurrentVoltage" Content="Текущее напряжение" HorizontalAlignment="Left" Margin="10,0,0,-1" VerticalAlignment="Top" Width="164" Height="48"/>
+            </Grid>
+            <Grid HorizontalAlignment="Left" Height="47" Margin="10,72,0,0" VerticalAlignment="Top" Width="186">
+                <Button x:Name="StartTiristorModule" Content="Запустить модуль тиристора" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Width="165" Height="47"/>
+            </Grid>
+            <Grid HorizontalAlignment="Left" Height="47" Margin="201,72,0,0" VerticalAlignment="Top" Width="192" RenderTransformOrigin="0.533,0.57">
+                <Button x:Name="StopTiristorModule" Content="Остановить модуль тиристора
+                        " HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Width="173" Height="47"/>
+            </Grid>
+            <Grid HorizontalAlignment="Left" Height="47" Margin="201,14,0,0" VerticalAlignment="Top" Width="192">
+                <Button x:Name="AlarmStop" Content="Аварийный стоп" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Width="172" Height="47"/>
+            </Grid>
+            <Grid HorizontalAlignment="Left" Height="47" Margin="398,14,0,0" VerticalAlignment="Top" Width="203">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="6*"/>
+                    <RowDefinition Height="41*"/>
+                </Grid.RowDefinitions>
+                <Button x:Name="TestTerristorModule" Content="Тест модуля тиристора" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Width="183" Height="47" Grid.RowSpan="2"/>
+            </Grid>
+            <Grid HorizontalAlignment="Left" Height="47" Margin="398,72,0,0" VerticalAlignment="Top" Width="203">
+                <Button x:Name="ResetAvariaTiristorModule" Content="Button" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Width="183" Height="47"/>
+            </Grid>
+        </Grid>
+
     </Grid>
 </Window>
