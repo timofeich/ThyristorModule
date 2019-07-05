@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.438
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TiristorModule", "TiristorModule\TiristorModule.csproj", "{A831D6AD-6157-4985-B5BD-C0B1B5477284}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A831D6AD-6157-4985-B5BD-C0B1B5477284}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A831D6AD-6157-4985-B5BD-C0B1B5477284}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A831D6AD-6157-4985-B5BD-C0B1B5477284}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A831D6AD-6157-4985-B5BD-C0B1B5477284}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {ABC23D91-492F-493E-92BD-ADEB49738701}
+	EndGlobalSection
+EndGlobal
