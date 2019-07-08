@@ -9,7 +9,7 @@
         WindowStartupLocation="CenterScreen">
     
     <Window.DataContext>
-        <local:Indicator/>
+        <local:Register/>
     </Window.DataContext>
     
     <Grid Margin="0,0,2,0">
@@ -87,7 +87,7 @@
                I<Run BaselineAlignment="Subscript" FontSize="8pt">A1</Run>:
             </TextBlock>
 
-            <TextBlock Text="{Binding AmperageA1, UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4,10,2,10" Height="20"/>
+            <TextBlock Text="" Grid.Row="0" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4,10,2,10" Height="20"/>
 
             <TextBlock Grid.Row="1" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center">
                 I<Run BaselineAlignment="Subscript" FontSize="8pt">B1</Run>:
