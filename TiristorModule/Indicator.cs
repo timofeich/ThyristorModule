@@ -10,17 +10,19 @@ namespace TiristorModule
 {
     public class Indicator: INotifyPropertyChanged
     {
+        #region Indicator items
         private double amperageA1;
         private double amperageB1;
         private double amperageC1;
         private double amperageA2;
         private double amperageB2;
         private double amperageC2;
-        private double voltageA1;
-        private double voltageA2;
-        private double voltageA3;
+        private double voltageA;
+        private double voltageB;
+        private double voltageC;
         private int tiristorTemperature;
         private string tiristorStatus;
+        #endregion
 
         public double AmperageA1
         {
@@ -37,7 +39,7 @@ namespace TiristorModule
             get { return amperageB1; }
             set
             {
-                amperageA1 = value;
+                amperageB1 = value;
                 OnPropertyChanged("AmperageB1");
             }
         }
@@ -47,14 +49,93 @@ namespace TiristorModule
             get { return amperageC1; }
             set
             {
-                amperageA1 = value;
+                amperageC1 = value;
                 OnPropertyChanged("AmperageC1");
             }
         }
 
+        public double AmperageA2
+        {
+            get { return amperageA2; }
+            set
+            {
+                amperageA2 = value;
+                OnPropertyChanged("AmperageA2");
+            }
+        }
 
+        public double AmperageB2
+        {
+            get { return amperageB2; }
+            set
+            {
+                amperageB2 = value;
+                OnPropertyChanged("AmperageB2");
+            }
+        }
+
+        public double AmperageC2
+        {
+            get { return amperageC2; }
+            set
+            {
+                amperageC2 = value;
+                OnPropertyChanged("AmperageC2");
+            }
+        }
+
+        public double VoltageA
+        {
+            get { return voltageA; }
+            set
+            {
+                voltageA = value;
+                OnPropertyChanged("VoltageA");
+            }
+        }
+
+        public double VoltageB
+        {
+            get { return voltageB; }
+            set
+            {
+                voltageB = value;
+                OnPropertyChanged("VoltageB");
+            }
+        }
+
+        public double VoltageC
+        {
+            get { return voltageC; }
+            set
+            {
+                voltageC = value;
+                OnPropertyChanged("VoltageC");
+            }
+        }
+
+        public int TiristorTemperature
+        {
+            get { return tiristorTemperature; }
+            set
+            {
+                tiristorTemperature = value;
+                OnPropertyChanged("TiristorTemperature");
+            }
+        }
+
+        public string TiristorStatus
+        {
+            get { return tiristorStatus; }
+            set
+            {
+                tiristorStatus = value;
+                OnPropertyChanged("TiristorStatus");
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
         public void OnPropertyChanged([CallerMemberName]string prop = "")
         {
             if (PropertyChanged != null)

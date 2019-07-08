@@ -9,7 +9,7 @@
         WindowStartupLocation="CenterScreen">
     
     <Window.DataContext>
-        <local:TiristorModuleViewModel/>
+        <local:Indicator/>
     </Window.DataContext>
     
     <Grid Margin="0,0,2,0">
@@ -50,24 +50,24 @@
             <TextBlock Grid.Row="0" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center">
                 U<Run BaselineAlignment="Subscript" FontSize="8pt">A</Run>:
             </TextBlock>
-           
-            <TextBlock Text="" Grid.Row="0" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,10,29,11"></TextBlock>
+
+            <TextBlock Text="{Binding VoltageA, UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,10,29,11"></TextBlock>
             <TextBlock Grid.Row="1" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center">
                 U<Run BaselineAlignment="Subscript" FontSize="8pt">B</Run>:
             </TextBlock>
-            <TextBlock Text="" Grid.Row="1" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,10,29,10"></TextBlock>
+            <TextBlock Text="{Binding VoltageB, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,10,29,10"></TextBlock>
             <TextBlock  Grid.Row="2" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center">
                 U<Run BaselineAlignment="Subscript" FontSize="8pt">C</Run>:
             </TextBlock>
-            <TextBlock Text="" Grid.Row="2" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,10,29,11"></TextBlock>
+            <TextBlock Text="{Binding VoltageC, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,10,29,11"></TextBlock>
             <TextBlock Grid.Row="3" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center">
                t<Run BaselineAlignment="Subscript" FontSize="7pt">тир-в</Run> С&#186;:
             </TextBlock>
-                
-            
-            <TextBlock Text="" Grid.Row="3" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="1,10,28,11"></TextBlock>
+
+
+            <TextBlock Text="{Binding TiristorTemperature, UpdateSourceTrigger=PropertyChanged}" Grid.Row="3" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="1,10,28,11"></TextBlock>
             <TextBlock Text="Статус:" Grid.Row="4" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-            <TextBlock Text="" Grid.Row="4" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="7,10,24,10"></TextBlock>
+            <TextBlock Text="{Binding TiristorStatus, UpdateSourceTrigger=PropertyChanged}" Grid.Row="4" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="7,10,24,10"></TextBlock>
         </Grid>
         <Grid HorizontalAlignment="Left" Height="240" Margin="196,20,0,0" VerticalAlignment="Top" Width="75">
             <Grid.ColumnDefinitions>
@@ -87,35 +87,35 @@
                I<Run BaselineAlignment="Subscript" FontSize="8pt">A1</Run>:
             </TextBlock>
 
-            <TextBlock Text="{Binding AmperageA, UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4,10,2,10" Height="20"/>
+            <TextBlock Text="{Binding AmperageA1, UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4,10,2,10" Height="20"/>
 
             <TextBlock Grid.Row="1" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center">
                 I<Run BaselineAlignment="Subscript" FontSize="8pt">B1</Run>:
             </TextBlock>
 
-            <TextBlock Text="" Grid.Row="1" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4,10,2,11"/>
+            <TextBlock Text="{Binding AmperageB1, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4,10,2,11"/>
 
             <TextBlock  Grid.Row="2" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center">
                 I<Run BaselineAlignment="Subscript" FontSize="8pt">C1</Run>:
             </TextBlock>
 
-            <TextBlock Text="" Grid.Row="2" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4,10,2,10" Height="20"></TextBlock>
+            <TextBlock Text="{Binding AmperageC1, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4,10,2,10" Height="20"></TextBlock>
 
             <TextBlock  Grid.Row="3" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center">
             I<Run BaselineAlignment="Subscript" FontSize="8pt">A2</Run>:
             </TextBlock>
 
-            <TextBlock Text="" Grid.Row="3" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4,10,-1,12"></TextBlock>
+            <TextBlock Text="{Binding AmperageA2, UpdateSourceTrigger=PropertyChanged}" Grid.Row="3" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4,10,-1,12"></TextBlock>
 
             <TextBlock Grid.Row="4" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center">
                 I<Run BaselineAlignment="Subscript" FontSize="8pt">B2</Run>:
             </TextBlock>
-            <TextBlock Text="" Grid.Row="4" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4,10,-1,12"></TextBlock>
+            <TextBlock Text="{Binding AmperageB2, UpdateSourceTrigger=PropertyChanged}" Grid.Row="4" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4,10,-1,12"></TextBlock>
 
             <TextBlock Grid.Row="5" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center">
                 I<Run BaselineAlignment="Subscript" FontSize="8pt">C2</Run>:
             </TextBlock>
-            <TextBlock Text="" Grid.Row="5" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4,10,-1,12"></TextBlock>
+            <TextBlock Text="{Binding AmperageC2, UpdateSourceTrigger=PropertyChanged}" Grid.Row="5" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4,10,-1,12"></TextBlock>
 
 
         </Grid>
