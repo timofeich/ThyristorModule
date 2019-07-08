@@ -27,7 +27,7 @@ namespace TiristorModule
             try
             {
                 Protocol.Start();
-              // VoltageATextBlock.Text = Protocol.Registers[0]; //new Register() { Address = 40001 };
+              //VoltageATextBlock.Text = Protocol.Registers[0]; //new Register() { Address = 40001 };
             }
             catch (Exception ex)
             {
