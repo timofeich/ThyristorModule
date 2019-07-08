@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -17,12 +18,10 @@ namespace TiristorModule
         // This method is called by the Set accessor of each property.
         // The CallerMemberName attribute that is applied to the optional propertyName
         // parameter causes the property name of the caller to be substituted as an argument.
-        private void NotifyPropertyChanged(String propertyName = "")
+        public void OnPropertyChanged([CallerMemberName]string prop = "")
         {
             if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
+                PropertyChanged(this, new PropertyChangedEventArgs(prop));
         }
 
         public ushort Address
@@ -37,7 +36,7 @@ namespace TiristorModule
                 if (_Address != value)
                 {
                     _Address = value;
-                    NotifyPropertyChanged("Address");
+                    OnPropertyChanged("Address");
                 }
             }
         }
@@ -54,7 +53,7 @@ namespace TiristorModule
                 if (_Value != value)
                 {
                     _Value = value;
-                    NotifyPropertyChanged("Value");
+                    OnPropertyChanged("Value");
                 }
             }
         }

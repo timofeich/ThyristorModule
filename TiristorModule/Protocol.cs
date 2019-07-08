@@ -17,6 +17,18 @@ namespace TiristorModule
         public static List<Register> Registers = new List<Register>();
         private static SerialPort serialPort1 = new SerialPort("COM4", 9600, Parity.None, 8, StopBits.One);
 
+        private static byte[] Time = new byte[9] { 0, 5, 7, 9, 11, 13, 15, 17, 19 };
+        private static byte[] Capacity = new byte[9] { 40, 30, 40, 50, 60, 70, 80, 90, 100 };
+        private static byte AlarmTemperatureTiristor = 85;
+        private static byte VremiaKzMs1 = 10;
+        private static byte VremiaKzMs2 = 10;
+        private static ushort CurrentKz1_1 = 300;
+        private static ushort CurrentKz2_1 = 300;
+        private static byte PersentTestPower = 15;
+
+
+
+
         /// <summary>
         /// Starts Modbus RTU Service.
         /// </summary>
@@ -93,19 +105,78 @@ namespace TiristorModule
             return frame;
         }
 
-        #endregion
+        private static byte[] StandartRequest(byte slaveAddress, byte commandNumber, byte quantityOfBytes)
+        {
+            byte[] frame = new byte[8];                    
+            frame[0] = slaveAddress;                      
+            frame[1] = commandNumber;                                
+            frame[2] = quantityOfBytes;            
+            byte crc = CalculateCRC8(frame);       
+            frame[3] = crc;               
+            return frame;
+        }
 
-        #region Reads
+        private static byte[] StartTiristorModule(byte slaveAddress, bool plavniiPuskStart)
+        {
+            byte[] frame = new byte[31];
+            frame[0] = slaveAddress;
+            frame[1] = 0x87;//adressCommand
+            frame[2] = 28;//quantityofbyte
 
-        /// <summary>
-        /// Function 03 (03hex) Read Holding Registers
-        /// </summary>
-        /// <param name="slaveAddress">Slave Address</param>
-        /// <param name="startAddress">Starting Address</param>
-        /// <param name="function">Function</param>
-        /// <param name="numberOfPoints">Quantity of inputs</param>
-        /// <returns>Byte Array</returns>
-        private static byte[] ReadHoldingRegistersMsg(byte slaveAddress, ushort startAddress, byte function, uint numberOfPoints)
+            for( int i = 3; i < 11; i++ )
+            {  
+                frame[i] = Time[i]; 
+            }
+
+            for (int i = 11; i < 21; i++)
+            {
+                frame[i] = Capacity[i];
+            }
+            //frame[21] = CurrentKz1_1;
+            //frame[22] = CurrentKz2_1;
+            frame[23] = VremiaKzMs1;
+            frame[24] = 0;//kz_on_off_1
+            //frame[25] = CurrentKz2_1;
+            //frame[26] = CurrentKz2_1;
+            frame[27] = VremiaKzMs2;
+            frame[28] = 0;//kz_on_off_2
+            frame[29] = AlarmTemperatureTiristor;
+            frame[30] = Convert.ToByte(plavniiPuskStart);//flag
+            byte crc = CalculateCRC8(frame);
+            frame[31] = crc;
+            return frame;
+        }
+
+        private static byte[] TestTiristor(byte slaveAddress, bool plavniiPuskStart)
+        {
+            byte[] frame = new byte[10];
+            frame[0] = slaveAddress;
+            frame[1] = 0x88;//adressCommand
+            frame[2] = 7;//quantityofbyte
+            frame[3] = PersentTestPower;
+            frame[4] = 54/10;
+            frame[5] = 10;//number of test
+            frame[6] = CurrentKz1_1;//kz_on_off_1
+            frame[7] = CurrentKz1_1;
+            frame[8] = CurrentKz2_1;
+            frame[9] = CurrentKz2_1;
+            byte crc = CalculateCRC8(frame);
+            frame[10] = crc;
+            return frame;
+        }
+            #endregion
+
+            #region Reads
+
+            /// <summary>
+            /// Function 03 (03hex) Read Holding Registers
+            /// </summary>
+            /// <param name="slaveAddress">Slave Address</param>
+            /// <param name="startAddress">Starting Address</param>
+            /// <param name="function">Function</param>
+            /// <param name="numberOfPoints">Quantity of inputs</param>
+            /// <returns>Byte Array</returns>
+            private static byte[] ReadHoldingRegistersMsg(byte slaveAddress, ushort startAddress, byte function, uint numberOfPoints)
         {
             byte[] frame = new byte[8];
             frame[0] = slaveAddress;			    // Slave Address
@@ -183,6 +254,23 @@ namespace TiristorModule
             CRC[1] = (byte)((CRCFull >> 8) & 0xFF);
             CRC[0] = (byte)(CRCFull & 0xFF);
             return CRC;
+        }
+
+        private static byte CalculateCRC8(byte[] array)
+        {
+            byte crc = 0xFF;
+
+            foreach (byte b in array)
+            {
+                crc ^= b;
+
+                for (int i = 0; i < 8; i++)
+                {
+                    crc = (crc & 0x80) != 0 ? (byte)((crc << 1) ^ 0x9B) : (byte)(crc << 1);
+                }
+            }
+
+            return crc;
         }
     }
 }
