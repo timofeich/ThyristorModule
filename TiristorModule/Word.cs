@@ -1,7 +1,4 @@
-﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Collections.ObjectModel;
-using System;
+﻿using System;
 
 namespace TiristorModule
 {
@@ -14,9 +11,9 @@ namespace TiristorModule
             return FromBytes(bytes[1], bytes[0]);
         }
 
-        public static UInt16 FromBytes(byte LoVal, byte HiVal)
+        public static ushort FromBytes(byte LoVal, byte HiVal)
         {
-            return (UInt16)(HiVal * 256 + LoVal);
+            return (ushort)(HiVal * 256 + LoVal);
         }
 
         public static UInt16[] ByteToUInt16(byte[] bytes)
@@ -28,11 +25,6 @@ namespace TiristorModule
             return values;
         }
 
-        /// <summary>
-        /// Convert UInt16 to byte array
-        /// </summary>
-        /// <param name="value">UInt16</param>
-        /// <returns>byte[]</returns>
         public static byte[] ToByteArray(UInt16 value)
         {
             byte[] array = BitConverter.GetBytes(value);

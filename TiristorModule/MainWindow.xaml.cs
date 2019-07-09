@@ -3,11 +3,8 @@ using System.Windows;
 
 namespace TiristorModule
 {
-    /// <summary>
-    /// Логика взаимодействия для MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
-    {
+{
         public MainWindow()
         {
             InitializeComponent();
@@ -23,12 +20,10 @@ namespace TiristorModule
             }
         }
 
-
         private void InitializeRegisters()
         {
             Protocol.Registers.Clear();
             Protocol.Registers.Add(new Register() { Address = 40001 });
-
         }
 
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)

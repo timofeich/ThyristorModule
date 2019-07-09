@@ -7,11 +7,11 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="582.5"
         WindowStartupLocation="CenterScreen">
-    
+
     <Window.DataContext>
         <local:Register/>
     </Window.DataContext>
-    
+
     <Grid Margin="0,0,2,0">
         <Grid HorizontalAlignment="Left" Margin="5,265,0,0" Width="567" Height="129" VerticalAlignment="Top">
             <Grid HorizontalAlignment="Left" Height="47" Margin="10,14,0,0" VerticalAlignment="Top" Width="186">
@@ -51,11 +51,11 @@
                 U<Run BaselineAlignment="Subscript" FontSize="8pt">A</Run>:
             </TextBlock>
 
-            <TextBlock x:Name="VoltageATextBlock" Text="{Binding Address, UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,10,29,11"></TextBlock>
+            <TextBlock x:Name="VoltageATextBlock" Text="{Binding Address, UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.Column="1" FontSize="14" VerticalAlignment="Center" Margin="0,10,29,11" HorizontalAlignment="Right" Width="9"/>
             <TextBlock Grid.Row="1" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center">
                 U<Run BaselineAlignment="Subscript" FontSize="8pt">B</Run>:
             </TextBlock>
-            <TextBlock x:Name="VoltageBTextBlock" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,10,29,10"></TextBlock>
+            <TextBlock x:Name="VoltageBTextBlock" Text="{Binding Path=Value}" Grid.Row="1" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,10,29,10"></TextBlock>
             <TextBlock  Grid.Row="2" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center">
                 U<Run BaselineAlignment="Subscript" FontSize="8pt">C</Run>:
             </TextBlock>

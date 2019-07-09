@@ -1,44 +1,41 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.IO.Ports;
 using System.Threading;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Windows;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace TiristorModule
 {
-    public class Protocol
+    public class Protocol :INotifyPropertyChanged
     {
         // Declares variables
         private const byte slaveAddress = 1;
         public static List<Register> Registers = new List<Register>();
         private static SerialPort serialPort1 = new SerialPort("COM4", 9600, Parity.None, 8, StopBits.One);
-
+        
+        #region Tiristor parameters
         private static byte[] Time = new byte[9] { 0, 5, 7, 9, 11, 13, 15, 17, 19 };
         private static byte[] Capacity = new byte[9] { 40, 30, 40, 50, 60, 70, 80, 90, 100 };
+
         private static byte AlarmTemperatureTiristor = 85;
+
         private static byte VremiaKzMs1 = 10;
         private static byte VremiaKzMs2 = 10;
+
         private static ushort CurrentKz1_1 = 300;
         private static ushort CurrentKz2_1 = 300;
+
         private static byte PersentTestPower = 15;
         private static byte NominalTok1sk = 54 / 10;
         private static byte NumberOfTest = 10;
-        private static byte MasterAdress = 0xFF;
+        private static byte MasterAddress = 0xFF;
         private static byte[] BuffTir = new byte[18];
         private static byte FinishCheak;
+        #endregion
 
-
-
-        /// <summary>
-        /// Starts Modbus RTU Service.
-        /// </summary>
         public static void Start()
         {
             try
@@ -54,21 +51,20 @@ namespace TiristorModule
                     }
                 }));
             }
+
             catch (Exception ex)
             {
                 throw ex;
             }
         }
-
-        /// <summary>
-        /// Stops Modbus RTU Service.
-        /// </summary>
+        
         public static void Stop()
         {
             try
             {
                 if (serialPort1.IsOpen) serialPort1.Close();
             }
+
             catch (Exception ex)
             {
                 throw ex;
@@ -77,11 +73,6 @@ namespace TiristorModule
 
         #region Writes
 
-        /// <summary>
-        /// Writes a value into a single holding register.
-        /// </summary>
-        /// <param name="startAddress">Address of the register</param>
-        /// <param name="value">Value of the register</param>
         public static void WriteSingleRegister(ushort startAddress, ushort value)
         {
             const byte function = 6;
@@ -90,14 +81,6 @@ namespace TiristorModule
             serialPort1.Write(frame, 0, frame.Length);
         }
 
-        /// <summary>
-        /// Function 06 (06hex)  Write Single Register
-        /// </summary>
-        /// <param name="slaveAddress">Slave Address</param>
-        /// <param name="startAddress">Starting Address</param>
-        /// <param name="function">Function</param>
-        /// <param name="values">Data</param>
-        /// <returns>Byte Array</returns>
         private static byte[] WriteSingleRegisterMsg(byte slaveAddress, ushort startAddress, byte function, byte[] values)
         {
             byte[] frame = new byte[8];                     // Message size
@@ -128,6 +111,7 @@ namespace TiristorModule
         private static byte[] StartTiristorModuleRequest(byte slaveAddress, bool plavniiPuskStart)
         {
             byte[] frame = new byte[31];
+
             frame[0] = slaveAddress;
             frame[1] = 0x87;//adressCommand
             frame[2] = 28;//quantityofbyte
@@ -152,14 +136,17 @@ namespace TiristorModule
             frame[28] = 0;//kz_on_off_2
             frame[29] = AlarmTemperatureTiristor;
             frame[30] = Convert.ToByte(plavniiPuskStart);//flag
+
             byte crc = CalculateCRC8(frame);
             frame[frame.Length - 1] = crc;
+
             return frame;
         }
 
         private static byte[] TestTiristorModuleRequest(byte slaveAddress, bool plavniiPuskStart)
         {
             byte[] frame = new byte[10];
+
             frame[0] = slaveAddress;
             frame[1] = 0x88;//adressCommand
             frame[2] = 7;//quantityofbyte
@@ -170,8 +157,10 @@ namespace TiristorModule
             frame[7] = Convert.ToByte(CurrentKz1_1);
             frame[8] = Convert.ToByte(CurrentKz2_1 >> 8);
             frame[9] = Convert.ToByte(CurrentKz2_1);
+
             byte crc = CalculateCRC8(frame);
             frame[frame.Length - 1] = crc;
+
             return frame;
         }
         #endregion
@@ -185,8 +174,9 @@ namespace TiristorModule
 
             for(int i = 0; i < 17; i++)
             {
-                frame[i] = data[i+4];
+                frame[i] = data[i + 4];
             }
+
             frame[17] = data[22];
             frame[18] = data[23];
 
@@ -209,6 +199,7 @@ namespace TiristorModule
             frame[9] = data[22];
             frame[10] = data[23];
             frame[11] = data[24];
+
             return frame;
         }
 
@@ -218,15 +209,18 @@ namespace TiristorModule
         private static byte[] ReadHoldingRegistersMsg(byte slaveAddress,  ushort startAddress, byte function, uint numberOfPoints)
         {
             byte[] frame = new byte[8];
+
             frame[0] = slaveAddress;			    // Slave Address
             frame[1] = function;				    // Function             
             frame[2] = (byte)(startAddress >> 8);	// Starting Address High
             frame[3] = (byte)startAddress;		    // Starting Address Low            
             frame[4] = (byte)(numberOfPoints >> 8);	// Quantity of Registers High
-            frame[5] = (byte)numberOfPoints;		// Quantity of Registers Low
+            frame[5] = (byte)numberOfPoints;        // Quantity of Registers Low
+
             byte[] crc = CalculateCRC(frame);  // Calculate CRC.
             frame[frame.Length - 2] = crc[0];       // Error Check Low
             frame[frame.Length - 1] = crc[1];       // Error Check High
+
             return frame;
         }
 
@@ -236,6 +230,7 @@ namespace TiristorModule
             {
                 byte[] frame;
                 ushort[] result;
+
                 switch (commandNumber)
                 {
                     case 0x88:
@@ -245,10 +240,12 @@ namespace TiristorModule
                         frame = StandartRequest(slaveAddress, commandNumber);
                         serialPort1.Write(frame, 0, frame.Length);
                         break;
+
                     case 0x87:
                         frame = StartTiristorModuleRequest(slaveAddress, plavniiPuskStart);
                         serialPort1.Write(frame, 0, frame.Length);
                         break;
+
                     case 0x91:
                         frame = TestTiristorModuleRequest(slaveAddress, plavniiPuskStart);
                         serialPort1.Write(frame, 0, frame.Length);
@@ -259,6 +256,7 @@ namespace TiristorModule
                 if (serialPort1.BytesToRead >= 20)
                 {
                     byte[] bufferReceiver = new byte[serialPort1.BytesToRead];
+
                     serialPort1.Read(bufferReceiver, 0, serialPort1.BytesToRead);
                     serialPort1.DiscardInBuffer();
 
@@ -313,18 +311,8 @@ namespace TiristorModule
                     }
                 }
             }
+            
             return Registers;
-        }
-
-        private static void Registers_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add: // если добавление
-                    Register newUser = e.NewItems[0] as Register;
-                    MessageBox.Show("Добавлен новый объект: {0}", Convert.ToString(newUser.Value));
-                    break;
-            }
         }
 
         #endregion
@@ -367,6 +355,13 @@ namespace TiristorModule
             }
 
             return crc;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;//нужен ли он тут?
+        public void OnPropertyChanged([CallerMemberName]string prop = "")
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(prop));
         }
     }
 }
