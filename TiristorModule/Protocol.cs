@@ -30,6 +30,9 @@ namespace TiristorModule
         private static byte PersentTestPower = 15;
         private static byte NominalTok1sk = 54 / 10;
         private static byte NumberOfTest = 10;
+        private static byte MasterAdress = 0xFF;
+        private static byte[] BuffTir = new byte[18];
+        private static byte FinishCheak;
 
 
 
@@ -111,12 +114,12 @@ namespace TiristorModule
         #endregion
 
         #region Protocol Request
-        private static byte[] StandartRequest(byte slaveAddress, byte commandNumber, byte quantityOfBytes)
+        private static byte[] StandartRequest(byte slaveAddress, byte commandNumber)
         {
             byte[] frame = new byte[8];                    
             frame[0] = slaveAddress;                      
             frame[1] = commandNumber;                                
-            frame[2] = quantityOfBytes;            
+            frame[2] = 0x00;            
             byte crc = CalculateCRC8(frame);       
             frame[3] = crc;               
             return frame;
@@ -176,19 +179,43 @@ namespace TiristorModule
 
         #region Protocol Response
 
-        private static byte[] ObrabotkaTestTirResponse(byte slaveAddress, ushort startAddress, byte function, uint numberOfPoints)
-        {
-            byte[] frame = new byte[24];
-            frame[0] = slaveAddress;			   
-            frame[1] = function;				               
-            frame[2] = (byte)(startAddress >> 8);	
-            frame[3] = (byte)startAddress;		                
-            frame[4] = (byte)(numberOfPoints >> 8);	
-            frame[5] = (byte)numberOfPoints;		
-            byte crc = CalculateCRC8(frame);  
-            frame[frame.Length - 1] = crc;
-            return frame;
-        }
+        //private static byte[] ObrabotkaTestTirResponse(byte slaveAddress, byte commandNumber)
+        //{
+        //    byte[] frame = new byte[24];
+        //    frame[0] = MasterAdress;			   
+        //    frame[1] = slaveAddress;				               
+        //    frame[2] = 21;	
+        //    frame[3] = commandNumber;
+
+        //    for ( int i = 0; i < 18; i++ )
+        //    {
+        //        frame[i + 4] = BuffTir[i];
+        //    }
+
+        //    frame[23] = FinishCheak;
+        //    byte crc = CalculateCRC8(frame);  
+        //    frame[frame.Length - 1] = crc;
+        //    return frame;
+        //}
+
+        //private static byte[] CurrentVoltageResponse(byte slaveAddress, byte commandNumber)
+        //{
+        //    byte[] frame = new byte[24];
+        //    frame[0] = MasterAdress;
+        //    frame[1] = slaveAddress;
+        //    frame[2] = 21;
+        //    frame[3] = commandNumber;
+
+        //    for (int i = 0; i < 18; i++)
+        //    {
+        //        frame[i + 4] = BuffTir[i];
+        //    }
+
+        //    frame[23] = FinishCheak;
+        //    byte crc = CalculateCRC8(frame);
+        //    frame[frame.Length - 1] = crc;
+        //    return frame;
+        //}
 
         #endregion
         #region Reads
@@ -201,7 +228,7 @@ namespace TiristorModule
         /// <param name="function">Function</param>
         /// <param name="numberOfPoints">Quantity of inputs</param>
         /// <returns>Byte Array</returns>
-        private static byte[] ReadHoldingRegistersMsg(byte slaveAddress, ushort startAddress, byte function, uint numberOfPoints)
+        private static byte[] ReadHoldingRegistersMsg(byte slaveAddress,  ushort startAddress, byte function, uint numberOfPoints)
         {
             byte[] frame = new byte[8];
             frame[0] = slaveAddress;			    // Slave Address
@@ -214,6 +241,59 @@ namespace TiristorModule
             frame[frame.Length - 2] = crc[0];       // Error Check Low
             frame[frame.Length - 1] = crc[1];       // Error Check High
             return frame;
+        }
+
+        public static List<Register> ReadHoldingRegistersFromProtocol(byte slaveAddress, bool plavniiPuskStart, byte commandNumber)
+        {
+            if (serialPort1.IsOpen)
+            {
+                byte[] frame;
+                switch (commandNumber)
+                {
+                    case 0x88:
+                    case 0x90:
+                    case 0x92:
+                    case 0x99:
+                        frame = StandartRequest(slaveAddress, commandNumber);
+                        serialPort1.Write(frame, 0, frame.Length);
+                        break;
+                    case 0x87:
+                        frame = StartTiristorModuleRequest(slaveAddress, plavniiPuskStart);
+                        serialPort1.Write(frame, 0, frame.Length);
+                        break;
+                    case 0x91:
+                        frame = TestTiristorModuleRequest(slaveAddress, plavniiPuskStart);
+                        serialPort1.Write(frame, 0, frame.Length);
+                        break;
+                }
+
+                Thread.Sleep(100); // Delay 100ms
+                if (serialPort1.BytesToRead >= 20)
+                {
+                    byte[] bufferReceiver = new byte[serialPort1.BytesToRead];
+                    serialPort1.Read(bufferReceiver, 0, serialPort1.BytesToRead);
+                    serialPort1.DiscardInBuffer();
+
+                    // Process data.
+                    byte[] data = new byte[bufferReceiver.Length];
+                    Array.Copy(bufferReceiver, 0, data, 0, data.Length);
+                    if( data[3] == 0x90 )
+                    {
+                        //обработка запроса на тест
+                    }
+                    else if( data[3] == 0x91 )
+                    {
+                        //обработка запроса на CurrentVoltage()
+                    }
+                    UInt16[] result = Word.ByteToUInt16(data);
+                    
+                    for (int i = 0; i < result.Length; i++)
+                    {
+                        Registers[i].Value = result[i];//несколько value в модель
+                    }
+                }
+            }
+            return Registers;
         }
 
         /// <summary>
