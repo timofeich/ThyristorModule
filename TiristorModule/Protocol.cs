@@ -7,6 +7,9 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.IO.Ports;
 using System.Threading;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.Windows;
 
 namespace TiristorModule
 {
@@ -25,7 +28,8 @@ namespace TiristorModule
         private static ushort CurrentKz1_1 = 300;
         private static ushort CurrentKz2_1 = 300;
         private static byte PersentTestPower = 15;
-
+        private static byte NominalTok1sk = 54 / 10;
+        private static byte NumberOfTest = 10;
 
 
 
@@ -42,7 +46,7 @@ namespace TiristorModule
                 {
                     while (true)
                     {
-                        ReadHoldingRegisters(40001, 1);
+                        ReadHoldingRegisters(40001, 1);//поменять на адрес слейва
                         Thread.Sleep(20); // Delay 20ms
                     }
                 }));
@@ -104,7 +108,9 @@ namespace TiristorModule
             frame[frame.Length - 1] = crc[1];               //Error Check Hi
             return frame;
         }
+        #endregion
 
+        #region Protocol Request
         private static byte[] StandartRequest(byte slaveAddress, byte commandNumber, byte quantityOfBytes)
         {
             byte[] frame = new byte[8];                    
@@ -116,7 +122,7 @@ namespace TiristorModule
             return frame;
         }
 
-        private static byte[] StartTiristorModule(byte slaveAddress, bool plavniiPuskStart)
+        private static byte[] StartTiristorModuleRequest(byte slaveAddress, bool plavniiPuskStart)
         {
             byte[] frame = new byte[31];
             frame[0] = slaveAddress;
@@ -132,51 +138,70 @@ namespace TiristorModule
             {
                 frame[i] = Capacity[i];
             }
-            //frame[21] = CurrentKz1_1;
-            //frame[22] = CurrentKz2_1;
+
+            frame[21] = Convert.ToByte(CurrentKz1_1 >> 8);
+            frame[22] = Convert.ToByte(CurrentKz1_1);
             frame[23] = VremiaKzMs1;
             frame[24] = 0;//kz_on_off_1
-            //frame[25] = CurrentKz2_1;
-            //frame[26] = CurrentKz2_1;
+            frame[25] = Convert.ToByte(CurrentKz2_1 >> 8);
+            frame[26] = Convert.ToByte(CurrentKz2_1);
             frame[27] = VremiaKzMs2;
             frame[28] = 0;//kz_on_off_2
             frame[29] = AlarmTemperatureTiristor;
             frame[30] = Convert.ToByte(plavniiPuskStart);//flag
             byte crc = CalculateCRC8(frame);
-            frame[31] = crc;
+            frame[frame.Length - 1] = crc;
             return frame;
         }
 
-        private static byte[] TestTiristor(byte slaveAddress, bool plavniiPuskStart)
+        private static byte[] TestTiristorModuleRequest(byte slaveAddress, bool plavniiPuskStart)
         {
             byte[] frame = new byte[10];
             frame[0] = slaveAddress;
             frame[1] = 0x88;//adressCommand
             frame[2] = 7;//quantityofbyte
             frame[3] = PersentTestPower;
-            frame[4] = 54/10;
-            frame[5] = 10;//number of test
-            frame[6] = CurrentKz1_1;//kz_on_off_1
-            frame[7] = CurrentKz1_1;
-            frame[8] = CurrentKz2_1;
-            frame[9] = CurrentKz2_1;
+            frame[4] = NominalTok1sk;
+            frame[5] = NumberOfTest;
+            frame[6] = Convert.ToByte(CurrentKz1_1 >> 8);
+            frame[7] = Convert.ToByte(CurrentKz1_1);
+            frame[8] = Convert.ToByte(CurrentKz2_1 >> 8);
+            frame[9] = Convert.ToByte(CurrentKz2_1);
             byte crc = CalculateCRC8(frame);
-            frame[10] = crc;
+            frame[frame.Length - 1] = crc;
             return frame;
         }
-            #endregion
+        #endregion
 
-            #region Reads
 
-            /// <summary>
-            /// Function 03 (03hex) Read Holding Registers
-            /// </summary>
-            /// <param name="slaveAddress">Slave Address</param>
-            /// <param name="startAddress">Starting Address</param>
-            /// <param name="function">Function</param>
-            /// <param name="numberOfPoints">Quantity of inputs</param>
-            /// <returns>Byte Array</returns>
-            private static byte[] ReadHoldingRegistersMsg(byte slaveAddress, ushort startAddress, byte function, uint numberOfPoints)
+        #region Protocol Response
+
+        private static byte[] ObrabotkaTestTirResponse(byte slaveAddress, ushort startAddress, byte function, uint numberOfPoints)
+        {
+            byte[] frame = new byte[24];
+            frame[0] = slaveAddress;			   
+            frame[1] = function;				               
+            frame[2] = (byte)(startAddress >> 8);	
+            frame[3] = (byte)startAddress;		                
+            frame[4] = (byte)(numberOfPoints >> 8);	
+            frame[5] = (byte)numberOfPoints;		
+            byte crc = CalculateCRC8(frame);  
+            frame[frame.Length - 1] = crc;
+            return frame;
+        }
+
+        #endregion
+        #region Reads
+
+        /// <summary>
+        /// Function 03 (03hex) Read Holding Registers
+        /// </summary>
+        /// <param name="slaveAddress">Slave Address</param>
+        /// <param name="startAddress">Starting Address</param>
+        /// <param name="function">Function</param>
+        /// <param name="numberOfPoints">Quantity of inputs</param>
+        /// <returns>Byte Array</returns>
+        private static byte[] ReadHoldingRegistersMsg(byte slaveAddress, ushort startAddress, byte function, uint numberOfPoints)
         {
             byte[] frame = new byte[8];
             frame[0] = slaveAddress;			    // Slave Address
@@ -224,16 +249,27 @@ namespace TiristorModule
             return Registers;
         }
 
-        #endregion
+        private static void Registers_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add: // если добавление
+                    Register newUser = e.NewItems[0] as Register;
+                    MessageBox.Show("Добавлен новый объект: {0}", Convert.ToString(newUser.Value));
+                    break;
+            }
+        }
+
+                    #endregion
 
 
 
-        /// <summary>
-        /// CRC Calculation 
-        /// </summary>
-        /// <param name="data"></param>
-        /// <returns></returns>
-        private static byte[] CalculateCRC(byte[] data)
+                    /// <summary>
+                    /// CRC Calculation 
+                    /// </summary>
+                    /// <param name="data"></param>
+                    /// <returns></returns>
+                    private static byte[] CalculateCRC(byte[] data)
         {
             ushort CRCFull = 0xFFFF; // Set the 16-bit register (CRC register) = FFFFH.
             char CRCLSB;
