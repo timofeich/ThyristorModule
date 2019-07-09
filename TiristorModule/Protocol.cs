@@ -179,55 +179,42 @@ namespace TiristorModule
 
         #region Protocol Response
 
-        //private static byte[] ObrabotkaTestTirResponse(byte slaveAddress, byte commandNumber)
-        //{
-        //    byte[] frame = new byte[24];
-        //    frame[0] = MasterAdress;			   
-        //    frame[1] = slaveAddress;				               
-        //    frame[2] = 21;	
-        //    frame[3] = commandNumber;
+        private static ushort[] ObrabotkaTestTirResponse(byte[] data)//вопрос по данным
+        {
+            ushort[] frame = new ushort[24];
 
-        //    for ( int i = 0; i < 18; i++ )
-        //    {
-        //        frame[i + 4] = BuffTir[i];
-        //    }
+            for(int i = 0; i < 17; i++)
+            {
+                frame[i] = data[i+4];
+            }
+            frame[17] = data[22];
+            frame[18] = data[23];
 
-        //    frame[23] = FinishCheak;
-        //    byte crc = CalculateCRC8(frame);  
-        //    frame[frame.Length - 1] = crc;
-        //    return frame;
-        //}
+            return frame;
+        }
 
-        //private static byte[] CurrentVoltageResponse(byte slaveAddress, byte commandNumber)
-        //{
-        //    byte[] frame = new byte[24];
-        //    frame[0] = MasterAdress;
-        //    frame[1] = slaveAddress;
-        //    frame[2] = 21;
-        //    frame[3] = commandNumber;
+        private static ushort[] CurrentVoltageResponse(byte[] data)//перечисление вместо массивов?
+        {
+            ushort[] frame = new ushort[12];
 
-        //    for (int i = 0; i < 18; i++)
-        //    {
-        //        frame[i + 4] = BuffTir[i];
-        //    }
-
-        //    frame[23] = FinishCheak;
-        //    byte crc = CalculateCRC8(frame);
-        //    frame[frame.Length - 1] = crc;
-        //    return frame;
-        //}
+            frame[0] = Word.FromBytes(data[5], data[4]);
+            frame[1] = Word.FromBytes(data[7], data[6]);
+            frame[2] = Word.FromBytes(data[9], data[8]);
+            frame[3] = Word.FromBytes(data[11], data[10]);
+            frame[4] = Word.FromBytes(data[13], data[12]);
+            frame[5] = Word.FromBytes(data[15], data[14]);
+            frame[6] = Word.FromBytes(data[17], data[16]);
+            frame[7] = Word.FromBytes(data[19],data[18]);
+            frame[8] = Word.FromBytes(data[21], data[20]);
+            frame[9] = data[22];
+            frame[10] = data[23];
+            frame[11] = data[24];
+            return frame;
+        }
 
         #endregion
         #region Reads
 
-        /// <summary>
-        /// Function 03 (03hex) Read Holding Registers
-        /// </summary>
-        /// <param name="slaveAddress">Slave Address</param>
-        /// <param name="startAddress">Starting Address</param>
-        /// <param name="function">Function</param>
-        /// <param name="numberOfPoints">Quantity of inputs</param>
-        /// <returns>Byte Array</returns>
         private static byte[] ReadHoldingRegistersMsg(byte slaveAddress,  ushort startAddress, byte function, uint numberOfPoints)
         {
             byte[] frame = new byte[8];
@@ -248,6 +235,7 @@ namespace TiristorModule
             if (serialPort1.IsOpen)
             {
                 byte[] frame;
+                ushort[] result;
                 switch (commandNumber)
                 {
                     case 0x88:
@@ -274,34 +262,33 @@ namespace TiristorModule
                     serialPort1.Read(bufferReceiver, 0, serialPort1.BytesToRead);
                     serialPort1.DiscardInBuffer();
 
-                    // Process data.
                     byte[] data = new byte[bufferReceiver.Length];
                     Array.Copy(bufferReceiver, 0, data, 0, data.Length);
-                    if( data[3] == 0x90 )
+
+                    if (data[3] == 0x90)
                     {
-                        //обработка запроса на тест
+                        result = ObrabotkaTestTirResponse(data);//добавлить проверку CRC8
                     }
-                    else if( data[3] == 0x91 )
+                    else if (data[3] == 0x91)
                     {
-                        //обработка запроса на CurrentVoltage()
+                        result = CurrentVoltageResponse(data);
                     }
-                    UInt16[] result = Word.ByteToUInt16(data);
-                    
+                    else
+                    {
+                        result = null;
+                    }
+
                     for (int i = 0; i < result.Length; i++)
                     {
-                        Registers[i].Value = result[i];//несколько value в модель
+                        Registers[i].Value = result[i];//несколько value в модель(токи напруги)
+                        //11 полей
                     }
                 }
             }
             return Registers;
         }
 
-        /// <summary>
-        /// Read the binary contents of holding registers in the slave.
-        /// </summary>
-        /// <param name="startAddress">Starting Address</param>
-        /// <param name="numberOfPoints">Quantity of inputs</param>
-        /// <returns>Registers /returns>
+
         public static List<Register> ReadHoldingRegisters(ushort startAddress, uint numberOfPoints)
         {
             const byte function = 3;
@@ -340,16 +327,9 @@ namespace TiristorModule
             }
         }
 
-                    #endregion
+        #endregion
 
-
-
-                    /// <summary>
-                    /// CRC Calculation 
-                    /// </summary>
-                    /// <param name="data"></param>
-                    /// <returns></returns>
-                    private static byte[] CalculateCRC(byte[] data)
+        private static byte[] CalculateCRC(byte[] data)
         {
             ushort CRCFull = 0xFFFF; // Set the 16-bit register (CRC register) = FFFFH.
             char CRCLSB;
