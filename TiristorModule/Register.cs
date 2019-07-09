@@ -11,31 +11,36 @@ namespace TiristorModule
 {
     public class Register : INotifyPropertyChanged
     {
-        private ushort _Address;
-        private ushort _Value;
+        private ushort address;
+        private ushort value;
+        private ushort voltageA;
+        private ushort voltageB;
+        private ushort voltageC;
+        private ushort amperageA1;
+        private ushort amperageB1;
+        private ushort amperageC1;
+        private ushort amperageA2;
+        private ushort amperageB2;
+        private ushort amperageC2;
+        private ushort temperatureOfTiristor;
+        private ushort workingStatus;
+        private ushort opredelenieFazRevers;
+
 
         public event PropertyChangedEventHandler PropertyChanged;
-        // This method is called by the Set accessor of each property.
-        // The CallerMemberName attribute that is applied to the optional propertyName
-        // parameter causes the property name of the caller to be substituted as an argument.
-        public void OnPropertyChanged([CallerMemberName]string prop = "")
-        {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
-        }
 
         public ushort Address
         {
             get
             {
-                return _Address;
+                return address;
             }
 
             set
             {
-                if (_Address != value)
+                if (address != value)
                 {
-                    _Address = value;
+                    address = value;
                     OnPropertyChanged("Address");
                 }
             }
@@ -45,17 +50,74 @@ namespace TiristorModule
         {
             get
             {
-                return _Value;
+                return value;
             }
 
             set
             {
-                if (_Value != value)
+                if (this.value != value)
                 {
-                    _Value = value;
+                    this.value = value;
                     OnPropertyChanged("Value");
                 }
             }
+        }
+
+        public ushort VoltageA
+        {
+            get
+            {
+                return voltageA;
+            }
+
+            set
+            {
+                if (this.voltageA != value)
+                {
+                    this.voltageA = value;
+                    OnPropertyChanged("VoltageA");
+                }
+            }
+        }
+
+        public ushort VoltageB
+        {
+            get
+            {
+                return voltageB;
+            }
+
+            set
+            {
+                if (this.voltageB != value)
+                {
+                    this.voltageB = value;
+                    OnPropertyChanged("Voltage");
+                }
+            }
+        }
+
+        public ushort VoltageC
+        {
+            get
+            {
+                return voltageC;
+            }
+
+            set
+            {
+                if (this.voltageC != value)
+                {
+                    this.voltageC = value;
+                    OnPropertyChanged("VoltageC");
+                }
+            }
+        }
+
+        public void OnPropertyChanged([CallerMemberName]string prop = "")
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(prop));
         }
     }
 }
