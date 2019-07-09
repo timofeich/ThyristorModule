@@ -181,7 +181,7 @@ namespace TiristorModule
 
         private static ushort[] ObrabotkaTestTirResponse(byte[] data)//вопрос по данным
         {
-            ushort[] frame = new ushort[24];
+            ushort[] frame = new ushort[18];
 
             for(int i = 0; i < 17; i++)
             {
@@ -352,7 +352,7 @@ namespace TiristorModule
             return CRC;
         }
 
-        private static byte CalculateCRC8(byte[] array)
+        private static byte CalculateCRC8(byte[] array)//crc-8/cdma2000
         {
             byte crc = 0xFF;
 
