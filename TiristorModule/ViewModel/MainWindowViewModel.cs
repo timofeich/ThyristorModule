@@ -13,11 +13,11 @@ namespace TiristorModule
     class MainViewModel
     {
         #region Fields
-        private const byte slaveAddress = 1;
+        private const byte slaveAddress = 0x67;
         private static SerialPort serialPort1 = new SerialPort("COM4", 9600, Parity.None, 8, StopBits.One);
 
-        private static byte[] Time = new byte[9] { 0, 5, 7, 9, 11, 13, 15, 17, 19 };
-        private static byte[] Capacity = new byte[9] { 40, 30, 40, 50, 60, 70, 80, 90, 100 };
+        private static byte[] Times = new byte[9] { 0, 5, 7, 9, 11, 13, 15, 17, 19 };
+        private static byte[] Capacities = new byte[9] { 40, 30, 40, 50, 60, 70, 80, 90, 100 };
 
         private static byte AlarmTemperatureTiristor = 85;
 
@@ -52,8 +52,6 @@ namespace TiristorModule
         public ICommand ResetAvatiaTirristorCommand { get; set; }
 
         #endregion
-
-
 
         public MainViewModel()
         {
@@ -116,7 +114,7 @@ namespace TiristorModule
                 {
                     while (true)
                     {
-                        Data.VoltageA = ReadHoldingRegisters(40001, 1)[0];//поменять на адрес слейва
+                        Data.VoltageA = ReadHoldingRegistersProtocol(40001, 1)[0];//поменять на адрес слейва
                         Thread.Sleep(20); // Delay 20ms
                     }
                 }));
@@ -174,30 +172,31 @@ namespace TiristorModule
             return frame;
         }
 
-        private static byte[] StartTiristorModuleRequest(byte slaveAddress, bool plavniiPuskStart)
+        private static byte[] StartTiristorModuleRequest(byte slaveAddress)
         {
-            byte[] frame = new byte[31];
+            byte[] frame = new byte[32];
+            bool plavniiPuskStart = true;
 
             frame[0] = slaveAddress;
             frame[1] = 0x87;//adressCommand
             frame[2] = 28;//quantityofbyte
 
-            for (int i = 3; i < 11; i++)
+            for (int i = 0; i < Times.Length; i++)
             {
-                frame[i] = Time[i];
+                frame[i + 3] = Times[i];
             }
 
-            for (int i = 11; i < 21; i++)
+            for (int i = 0; i < Times.Length; i++)
             {
-                frame[i] = Capacity[i];
+                frame[i + 12] = Capacities[i];
             }
 
             frame[21] = Convert.ToByte(CurrentKz1_1 >> 8);
-            frame[22] = Convert.ToByte(CurrentKz1_1);
+            frame[22] = Convert.ToByte(CurrentKz1_1 ^ 0x100);
             frame[23] = VremiaKzMs1;
             frame[24] = 0;//kz_on_off_1
             frame[25] = Convert.ToByte(CurrentKz2_1 >> 8);
-            frame[26] = Convert.ToByte(CurrentKz2_1);
+            frame[26] = Convert.ToByte(CurrentKz2_1 ^ 0x100);
             frame[27] = VremiaKzMs2;
             frame[28] = 0;//kz_on_off_2
             frame[29] = AlarmTemperatureTiristor;
@@ -358,10 +357,33 @@ namespace TiristorModule
             const byte function = 3;
             if (serialPort1.IsOpen)
             {
-                byte[] frame = ReadHoldingRegistersMsg(slaveAddress, startAddress, function, numberOfPoints);
+                byte[] frame = ReadHoldingRegistersMsg(slaveAddress, startAddress, function, numberOfPoints);               
                 serialPort1.Write(frame, 0, frame.Length);
                 Thread.Sleep(300); // Delay 100ms
                 if (serialPort1.BytesToRead >= 5)
+                {
+                    byte[] bufferReceiver = new byte[serialPort1.BytesToRead];
+                    serialPort1.Read(bufferReceiver, 0, serialPort1.BytesToRead);
+                    serialPort1.DiscardInBuffer();
+
+                    // Process data.
+                    byte[] data = new byte[bufferReceiver.Length - 5];
+                    Array.Copy(bufferReceiver, 3, data, 0, data.Length);
+                    ushort[] result = Word.ByteToUInt16(data);
+                    BuffResponce = result;
+                }
+            }
+            return BuffResponce;
+        }
+
+        public static ushort[] ReadHoldingRegistersProtocol(ushort startAddress, uint numberOfPoints)
+        {
+            if (serialPort1.IsOpen)
+            {
+                byte[] frame = StartTiristorModuleRequest(slaveAddress);
+                serialPort1.Write(frame, 0, frame.Length);
+                Thread.Sleep(300); // Delay 100ms
+                if (serialPort1.BytesToRead >= 20)
                 {
                     byte[] bufferReceiver = new byte[serialPort1.BytesToRead];
                     serialPort1.Read(bufferReceiver, 0, serialPort1.BytesToRead);
