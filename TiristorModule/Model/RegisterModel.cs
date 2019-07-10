@@ -19,7 +19,7 @@ namespace TiristorModule
         private ushort amperageB2;
         private ushort amperageC2;
 
-        public enum Status { Crach_ostanov, Tormoz, Baipass, Razgon }//16, 32, 64, 128
+
         
         private ushort temperatureOfTiristor;
         private ushort workingStatus;//enum перечисление
@@ -239,5 +239,6 @@ namespace TiristorModule
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(prop));
         }
+        #endregion
     }
 }

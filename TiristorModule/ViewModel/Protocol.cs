@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.IO.Ports;
 using System.Threading;
-using System.Collections.Specialized;
-using System.Windows;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -34,6 +32,7 @@ namespace TiristorModule
         private static byte MasterAddress = 0xFF;
         private static byte[] BuffTir = new byte[18];
         private static byte FinishCheak;
+        //public enum Status { Crach_ostanov = 16, Tormoz = 32, Baipass = 64, Razgon = 128 }//16, 32, 64, 128
         #endregion
 
         public static void Start()
@@ -252,7 +251,7 @@ namespace TiristorModule
                         break;
                 }
 
-                Thread.Sleep(100); // Delay 100ms
+                Thread.Sleep(300); // Delay 300ms
                 if (serialPort1.BytesToRead >= 20)
                 {
                     byte[] bufferReceiver = new byte[serialPort1.BytesToRead];
@@ -279,7 +278,15 @@ namespace TiristorModule
                     for (int i = 0; i < result.Length; i++)
                     {
                         Registers[i].Value = result[i];//несколько value в модель(токи напруги)
+                        //Registers[i].VoltageA = result[i + 1];
+                        //Registers[i].VoltageB = result[i + 2];
+                        //Registers[i].VoltageC = result[i + 3];
+                        //Registers[i].AmperageA1 = result[i + 4];
+                        //Registers[i].AmperageA2 = result[i + 5];
+                        //Registers[i].AmperageB1 = result[i + 6];
+                        //Registers[i].AmperageB2 = result[i + 7];
                         //11 полей
+
                     }
                 }
             }
