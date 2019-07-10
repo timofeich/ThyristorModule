@@ -1,10 +1,24 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace TiristorModule
 {
-    public class Register : INotifyPropertyChanged
+    class DataModel : INotifyPropertyChanged
     {
+        #region Implement INotyfyPropertyChanged members
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+        #endregion
+
+        #region Fields
         private ushort address;
         private ushort value;
 
@@ -19,22 +33,17 @@ namespace TiristorModule
         private ushort amperageB2;
         private ushort amperageC2;
 
+        public ObservableCollection<DataModel> DataModels { get; set; }
 
-        
         private ushort temperatureOfTiristor;
         private ushort workingStatus;//enum перечисление
         private ushort opredelenieFazRevers;//
+        #endregion
 
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
+        #region Properties
         public ushort Address
         {
-            get
-            {
-                return address;
-            }
-
+            get { return address; }
             set
             {
                 if (address != value)
@@ -47,11 +56,7 @@ namespace TiristorModule
 
         public ushort Value
         {
-            get
-            {
-                return value;
-            }
-
+            get { return value; }
             set
             {
                 if (this.value != value)
@@ -113,7 +118,6 @@ namespace TiristorModule
             }
         }
 
-        #region Poka ne nyzhno 
         public ushort AmperageA1
         {
             get
@@ -234,10 +238,21 @@ namespace TiristorModule
             }
         }
 
-        public void OnPropertyChanged([CallerMemberName]string prop = "")
+        public ushort WorkingStatus
         {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
+            get
+            {
+                return workingStatus;
+            }
+
+            set
+            {
+                if (workingStatus != value)
+                {
+                    workingStatus = value;
+                    OnPropertyChanged("WorkingStatus");
+                }
+            }
         }
         #endregion
     }

@@ -1,4 +1,4 @@
-﻿<Window x:Class="TiristorModule.MainWindow"
+﻿<Window x:Class="TiristorModule.Veiw.MainWindowView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,30 +8,33 @@
         Title="MainWindow" Height="450" Width="582.5"
         WindowStartupLocation="CenterScreen">
 
-    <Window.DataContext>
-        <local:Register/>
-    </Window.DataContext>
+
 
     <Grid Margin="0,0,2,0">
         <Grid HorizontalAlignment="Left" Margin="5,265,0,0" Width="567" Height="129" VerticalAlignment="Top">
             <Grid HorizontalAlignment="Left" Height="47" Margin="10,14,0,0" VerticalAlignment="Top" Width="186">
-                <Button x:Name="CurrentVoltageButton" Content="Текущее напряжение" HorizontalAlignment="Left" Margin="10,0,0,-1" VerticalAlignment="Top" Width="164" Height="48"/>
+                <Button x:Name="CurrentVoltageButton" Content="Текущее напряжение" HorizontalAlignment="Left" 
+                        Margin="10,0,0,-1" VerticalAlignment="Top" Width="164" Height="48" Command="{Binding CurrentVoltageCommand}"/>
             </Grid>
             <Grid HorizontalAlignment="Left" Height="47" Margin="10,72,0,0" VerticalAlignment="Top" Width="186">
-                <Button x:Name="StartTiristorModuleButton" Content="Запустить модуль тиристора" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Width="165" Height="47"/>
+                <Button x:Name="StartTiristorModuleButton" Content="Запустить модуль тиристора" HorizontalAlignment="Left" 
+                        Margin="10,0,0,0" VerticalAlignment="Top" Width="165" Height="47" Command="{Binding StartTerristorModuleCommand}"/>
             </Grid>
             <Grid HorizontalAlignment="Left" Height="47" Margin="201,72,0,0" VerticalAlignment="Top" Width="192" RenderTransformOrigin="0.533,0.57">
                 <Button x:Name="StopTiristorModuleButton" Content="Остановить модуль тиристора
-                        " HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Width="173" Height="47"/>
+                        " HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Width="173" Height="47" Command="{Binding StopTerristorModuleCommand}"/>
             </Grid>
             <Grid HorizontalAlignment="Left" Height="47" Margin="201,14,0,0" VerticalAlignment="Top" Width="192">
-                <Button x:Name="AlarmStopButton" Content="Аварийный стоп" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Width="172" Height="47"/>
+                <Button x:Name="AlarmStopButton" Content="Аварийный стоп" HorizontalAlignment="Left" Margin="10,0,0,0" 
+                        VerticalAlignment="Top" Width="172" Height="47" Command="{Binding AlarmStopCommand}"/>
             </Grid>
             <Grid HorizontalAlignment="Left" Height="47" Margin="398,14,0,0" VerticalAlignment="Top" Width="160">
-                <Button x:Name="TestTerristorModuleButton" Content="Тест модуля тиристора" Margin="10,0" VerticalAlignment="Top" Height="47" Grid.RowSpan="2"/>
+                <Button x:Name="TestTerristorModuleButton" Content="Тест модуля тиристора" Margin="10,0" VerticalAlignment="Top" 
+                        Height="47" Grid.RowSpan="2" Command="{Binding TestTerristorModuleCommand}"/>
             </Grid>
             <Grid Height="47" Margin="398,72,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="160">
-                <Button x:Name="ResetAvariaTiristorModuleButton" Content="Resetavariatir" Margin="10,0" VerticalAlignment="Top" Height="47"/>
+                <Button x:Name="ResetAvariaTiristorModuleButton" Content="Resetavariatir" Margin="10,0" VerticalAlignment="Top" Height="47"
+                        Command="{Binding ResetAvatiaTirristorCommand}"/>
             </Grid>
         </Grid>
         <Grid HorizontalAlignment="Left" Height="240" Margin="276,20,0,0" VerticalAlignment="Top" Width="162">
@@ -51,21 +54,21 @@
                 U<Run BaselineAlignment="Subscript" FontSize="8pt">A</Run>:
             </TextBlock>
 
-            <TextBlock x:Name="VoltageATextBlock" Text="{Binding Address, UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.Column="1" FontSize="14" VerticalAlignment="Center" Margin="0,10,29,11" HorizontalAlignment="Right" Width="9"/>
+            <TextBlock x:Name="VoltageATextBlock" Text="{Binding Path=Data.VoltageA, Mode=OneWay}" Grid.Row="0" Grid.Column="1" FontSize="14" VerticalAlignment="Center" Margin="0,10,29,11" HorizontalAlignment="Right" Width="auto"/>
             <TextBlock Grid.Row="1" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center">
                 U<Run BaselineAlignment="Subscript" FontSize="8pt">B</Run>:
             </TextBlock>
-            <TextBlock x:Name="VoltageBTextBlock" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,10,29,10"></TextBlock>
+            <TextBlock x:Name="VoltageBTextBlock" Text="{Binding Path=Data.VoltageB, Mode=OneWay}" Grid.Row="1" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,10,29,10"></TextBlock>
             <TextBlock  Grid.Row="2" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center">
                 U<Run BaselineAlignment="Subscript" FontSize="8pt">C</Run>:
             </TextBlock>
-            <TextBlock Text="{Binding VoltageB, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,10,29,11"></TextBlock>
+            <TextBlock Text="{Binding VoltageC, Mode=OneWay}" Grid.Row="2" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,10,29,11"></TextBlock>
             <TextBlock Grid.Row="3" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center">
                t<Run BaselineAlignment="Subscript" FontSize="7pt">тир-в</Run> С&#186;:
             </TextBlock>
 
 
-            <TextBlock Text="{Binding TemperatureOfTiristor, UpdateSourceTrigger=PropertyChanged}" Grid.Row="3" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="1,10,28,11"></TextBlock>
+            <TextBlock Text="{Binding TemperatureOfTiristor, Mode=OneWay}" Grid.Row="3" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="1,10,28,11"></TextBlock>
             <TextBlock Text="Статус:" Grid.Row="4" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
             <TextBlock Text="" Grid.Row="4" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="7,10,24,10"></TextBlock>
         </Grid>
@@ -87,35 +90,35 @@
                I<Run BaselineAlignment="Subscript" FontSize="8pt">A1</Run>:
             </TextBlock>
 
-            <TextBlock x:Name="AmperageA1" Text="{Binding AmperageA1, UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4,10,2,10" Height="20"/>
+            <TextBlock x:Name="AmperageA1" Text="{Binding AmperageA1, Mode=OneWay}" Grid.Row="0" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4,10,2,10" Height="20"/>
 
             <TextBlock Grid.Row="1" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center">
                 I<Run BaselineAlignment="Subscript" FontSize="8pt">B1</Run>:
             </TextBlock>
 
-            <TextBlock Text="{Binding AmperageB1, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4,10,2,11"/>
+            <TextBlock Text="{Binding AmperageB1, Mode=OneWay}" Grid.Row="1" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4,10,2,11"/>
 
             <TextBlock  Grid.Row="2" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center">
                 I<Run BaselineAlignment="Subscript" FontSize="8pt">C1</Run>:
             </TextBlock>
 
-            <TextBlock Text="{Binding AmperageC1, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4,10,2,10" Height="20"></TextBlock>
+            <TextBlock Text="{Binding AmperageC1, Mode=OneWay}" Grid.Row="2" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4,10,2,10" Height="20"></TextBlock>
 
             <TextBlock  Grid.Row="3" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center">
             I<Run BaselineAlignment="Subscript" FontSize="8pt">A2</Run>:
             </TextBlock>
 
-            <TextBlock Text="{Binding AmperageA2, UpdateSourceTrigger=PropertyChanged}" Grid.Row="3" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4,10,-1,12"></TextBlock>
+            <TextBlock Text="{Binding AmperageA2, Mode=OneWay}" Grid.Row="3" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4,10,-1,12"></TextBlock>
 
             <TextBlock Grid.Row="4" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center">
                 I<Run BaselineAlignment="Subscript" FontSize="8pt">B2</Run>:
             </TextBlock>
-            <TextBlock Text="{Binding AmperageB2, UpdateSourceTrigger=PropertyChanged}" Grid.Row="4" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4,10,-1,12"></TextBlock>
+            <TextBlock Text="{Binding AmperageB2, Mode=OneWay}" Grid.Row="4" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4,10,-1,12"></TextBlock>
 
             <TextBlock Grid.Row="5" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center">
                 I<Run BaselineAlignment="Subscript" FontSize="8pt">C2</Run>:
             </TextBlock>
-            <TextBlock Text="{Binding AmperageC2, UpdateSourceTrigger=PropertyChanged}" Grid.Row="5" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4,10,-1,12"></TextBlock>
+            <TextBlock Text="{Binding AmperageC2, Mode=OneWay}" Grid.Row="5" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4,10,-1,12"></TextBlock>
 
 
         </Grid>

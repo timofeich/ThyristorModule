@@ -4,17 +4,18 @@ using System.IO.Ports;
 using System.Threading;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using TiristorModule.ViewModel;
+using System.Windows.Input;
+using System.Windows;
 
 namespace TiristorModule
 {
-    public class Protocol :INotifyPropertyChanged
+    class MainViewModel
     {
-        // Declares variables
+        #region Fields
         private const byte slaveAddress = 1;
-        public static List<Register> Registers = new List<Register>();
         private static SerialPort serialPort1 = new SerialPort("COM4", 9600, Parity.None, 8, StopBits.One);
-        
-        #region Tiristor parameters
+
         private static byte[] Time = new byte[9] { 0, 5, 7, 9, 11, 13, 15, 17, 19 };
         private static byte[] Capacity = new byte[9] { 40, 30, 40, 50, 60, 70, 80, 90, 100 };
 
@@ -31,21 +32,91 @@ namespace TiristorModule
         private static byte NumberOfTest = 10;
         private static byte MasterAddress = 0xFF;
         private static byte[] BuffTir = new byte[18];
+        private static ushort[] BuffResponce;
         private static byte FinishCheak;
         //public enum Status { Crach_ostanov = 16, Tormoz = 32, Baipass = 64, Razgon = 128 }//16, 32, 64, 128
         #endregion
 
+        #region Properties
+
+        public static DataModel Data { get; set; }
+        #endregion
+
+        #region Commands
+
+        public ICommand CurrentVoltageCommand { get; set; }
+        public ICommand AlarmStopCommand { get; set; }
+        public ICommand TestTerristorModuleCommand { get; set; }
+        public ICommand StartTerristorModuleCommand { get; set; }
+        public ICommand StopTerristorModuleCommand { get; set; }
+        public ICommand ResetAvatiaTirristorCommand { get; set; }
+
+        #endregion
+
+
+
+        public MainViewModel()
+        {
+            CurrentVoltageCommand = new Command(arg => CurrentVoltageClick());
+            AlarmStopCommand = new Command(arg => AlarmStopClick());
+            TestTerristorModuleCommand = new Command(arg => TestTerristorModuleClick());
+            StartTerristorModuleCommand = new Command(arg => StartTerristorModuleClick());
+            StopTerristorModuleCommand = new Command(arg => StopTerristorModuleClick());
+            ResetAvatiaTirristorCommand = new Command(arg => ResetAvatiaTirristorClick());
+
+            Data = new DataModel
+            {
+                AmperageA1 = 0,
+                VoltageA = 0
+            };
+        }
+
+        #region ClickHandler
+
+        private void CurrentVoltageClick()
+        {
+            Start();
+        }
+
+        private void AlarmStopClick()
+        {
+            MessageBox.Show("AlarmStopClick");
+        }
+
+        private void TestTerristorModuleClick()
+        {
+            MessageBox.Show("TestTerritorModuleClick");
+        }
+
+        private void StartTerristorModuleClick()
+        {
+            MessageBox.Show("StartTerristorModuleClick");
+        }
+
+        private void StopTerristorModuleClick()
+        {
+            MessageBox.Show("StopTerristorModuleClick");
+        }
+
+        private void ResetAvatiaTirristorClick()
+        {
+            MessageBox.Show("ResetAvatiaTirristorClick");
+        }
+        #endregion
+
+        #region Methods
         public static void Start()
         {
             try
             {
                 if (serialPort1.IsOpen) serialPort1.Close();
                 serialPort1.Open();
+                //Data.Amperage = ReadHoldingRegisters(40001, 1)[0];
                 ThreadPool.QueueUserWorkItem(new WaitCallback((obj) =>
                 {
                     while (true)
                     {
-                        ReadHoldingRegisters(40001, 1);//поменять на адрес слейва
+                        Data.VoltageA = ReadHoldingRegisters(40001, 1)[0];//поменять на адрес слейва
                         Thread.Sleep(20); // Delay 20ms
                     }
                 }));
@@ -56,7 +127,7 @@ namespace TiristorModule
                 throw ex;
             }
         }
-        
+
         public static void Stop()
         {
             try
@@ -69,8 +140,6 @@ namespace TiristorModule
                 throw ex;
             }
         }
-
-        #region Writes
 
         public static void WriteSingleRegister(ushort startAddress, ushort value)
         {
@@ -93,17 +162,15 @@ namespace TiristorModule
             frame[frame.Length - 1] = crc[1];               //Error Check Hi
             return frame;
         }
-        #endregion
 
-        #region Protocol Request
         private static byte[] StandartRequest(byte slaveAddress, byte commandNumber)
         {
-            byte[] frame = new byte[8];                    
-            frame[0] = slaveAddress;                      
-            frame[1] = commandNumber;                                
-            frame[2] = 0x00;            
-            byte crc = CalculateCRC8(frame);       
-            frame[3] = crc;               
+            byte[] frame = new byte[8];
+            frame[0] = slaveAddress;
+            frame[1] = commandNumber;
+            frame[2] = 0x00;
+            byte crc = CalculateCRC8(frame);
+            frame[3] = crc;
             return frame;
         }
 
@@ -115,9 +182,9 @@ namespace TiristorModule
             frame[1] = 0x87;//adressCommand
             frame[2] = 28;//quantityofbyte
 
-            for( int i = 3; i < 11; i++ )
-            {  
-                frame[i] = Time[i]; 
+            for (int i = 3; i < 11; i++)
+            {
+                frame[i] = Time[i];
             }
 
             for (int i = 11; i < 21; i++)
@@ -162,16 +229,12 @@ namespace TiristorModule
 
             return frame;
         }
-        #endregion
-
-
-        #region Protocol Response
 
         private static ushort[] ObrabotkaTestTirResponse(byte[] data)//вопрос по данным
         {
             ushort[] frame = new ushort[18];
 
-            for(int i = 0; i < 17; i++)
+            for (int i = 0; i < 17; i++)
             {
                 frame[i] = data[i + 4];
             }
@@ -193,7 +256,7 @@ namespace TiristorModule
             frame[4] = Word.FromBytes(data[13], data[12]);
             frame[5] = Word.FromBytes(data[15], data[14]);
             frame[6] = Word.FromBytes(data[17], data[16]);
-            frame[7] = Word.FromBytes(data[19],data[18]);
+            frame[7] = Word.FromBytes(data[19], data[18]);
             frame[8] = Word.FromBytes(data[21], data[20]);
             frame[9] = data[22];
             frame[10] = data[23];
@@ -202,18 +265,15 @@ namespace TiristorModule
             return frame;
         }
 
-        #endregion
-        #region Reads
-
-        private static byte[] ReadHoldingRegistersMsg(byte slaveAddress,  ushort startAddress, byte function, uint numberOfPoints)
+        private static byte[] ReadHoldingRegistersMsg(byte slaveAddress, ushort startAddress, byte function, uint numberOfPoints)
         {
             byte[] frame = new byte[8];
 
-            frame[0] = slaveAddress;			    // Slave Address
-            frame[1] = function;				    // Function             
-            frame[2] = (byte)(startAddress >> 8);	// Starting Address High
-            frame[3] = (byte)startAddress;		    // Starting Address Low            
-            frame[4] = (byte)(numberOfPoints >> 8);	// Quantity of Registers High
+            frame[0] = slaveAddress;                // Slave Address
+            frame[1] = function;                    // Function             
+            frame[2] = (byte)(startAddress >> 8);   // Starting Address High
+            frame[3] = (byte)startAddress;          // Starting Address Low            
+            frame[4] = (byte)(numberOfPoints >> 8); // Quantity of Registers High
             frame[5] = (byte)numberOfPoints;        // Quantity of Registers Low
 
             byte[] crc = CalculateCRC(frame);  // Calculate CRC.
@@ -223,7 +283,7 @@ namespace TiristorModule
             return frame;
         }
 
-        public static List<Register> ReadHoldingRegistersFromProtocol(byte slaveAddress, bool plavniiPuskStart, byte commandNumber)
+        /*public static List<DataModel> ReadHoldingRegistersFromProtocol(byte slaveAddress, bool plavniiPuskStart, byte commandNumber)
         {
             if (serialPort1.IsOpen)
             {
@@ -277,7 +337,7 @@ namespace TiristorModule
 
                     for (int i = 0; i < result.Length; i++)
                     {
-                        Registers[i].Value = result[i];//несколько value в модель(токи напруги)
+                        Datas[i].Voltage = result[i];//несколько value в модель(токи напруги)
                         //Registers[i].VoltageA = result[i + 1];
                         //Registers[i].VoltageB = result[i + 2];
                         //Registers[i].VoltageC = result[i + 3];
@@ -290,18 +350,17 @@ namespace TiristorModule
                     }
                 }
             }
-            return Registers;
-        }
+            return Datas;
+        }*/
 
-
-        public static List<Register> ReadHoldingRegisters(ushort startAddress, uint numberOfPoints)
+        public static ushort[] ReadHoldingRegisters(ushort startAddress, uint numberOfPoints)
         {
             const byte function = 3;
             if (serialPort1.IsOpen)
             {
                 byte[] frame = ReadHoldingRegistersMsg(slaveAddress, startAddress, function, numberOfPoints);
                 serialPort1.Write(frame, 0, frame.Length);
-                Thread.Sleep(100); // Delay 100ms
+                Thread.Sleep(300); // Delay 100ms
                 if (serialPort1.BytesToRead >= 5)
                 {
                     byte[] bufferReceiver = new byte[serialPort1.BytesToRead];
@@ -311,18 +370,12 @@ namespace TiristorModule
                     // Process data.
                     byte[] data = new byte[bufferReceiver.Length - 5];
                     Array.Copy(bufferReceiver, 3, data, 0, data.Length);
-                    UInt16[] result = Word.ByteToUInt16(data);
-                    for (int i = 0; i < result.Length; i++)
-                    {
-                        Registers[i].Value = result[i];
-                    }
+                    ushort[] result = Word.ByteToUInt16(data);
+                    BuffResponce = result;
                 }
             }
-            
-            return Registers;
+            return BuffResponce;
         }
-
-        #endregion
 
         private static byte[] CalculateCRC(byte[] data)
         {
@@ -363,12 +416,6 @@ namespace TiristorModule
 
             return crc;
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;//нужен ли он тут?
-        public void OnPropertyChanged([CallerMemberName]string prop = "")
-        {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
-        }
+        #endregion
     }
 }
