@@ -93,7 +93,8 @@ namespace TiristorModule
 
         private void StopTerristorModuleClick()
         {
-            MessageBox.Show("StopTerristorModuleClick");
+            //MessageBox.Show("StopTerristorModuleClick");
+            Start();
         }
 
         private void ResetAvatiaTirristorClick()
@@ -161,9 +162,9 @@ namespace TiristorModule
             return frame;
         }
 
-        private static byte[] StandartRequest(byte slaveAddress, byte commandNumber)
+        private static byte[] StandartRequest(byte slaveAddress, byte commandNumber)//maybe correct
         {
-            byte[] frame = new byte[8];
+            byte[] frame = new byte[4];
             frame[0] = slaveAddress;
             frame[1] = commandNumber;
             frame[2] = 0x00;
@@ -172,7 +173,7 @@ namespace TiristorModule
             return frame;
         }
 
-        private static byte[] StartTiristorModuleRequest(byte slaveAddress)
+        private static byte[] StartTiristorModuleRequest(byte slaveAddress)//maybe correct
         {
             byte[] frame = new byte[32];
             bool plavniiPuskStart = true;
@@ -380,7 +381,7 @@ namespace TiristorModule
         {
             if (serialPort1.IsOpen)
             {
-                byte[] frame = StartTiristorModuleRequest(slaveAddress);
+                byte[] frame = StandartRequest(slaveAddress, 0x88);
                 serialPort1.Write(frame, 0, frame.Length);
                 Thread.Sleep(300); // Delay 100ms
                 if (serialPort1.BytesToRead >= 20)
