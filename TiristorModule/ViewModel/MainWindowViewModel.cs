@@ -18,8 +18,8 @@ namespace TiristorModule
 
         private static byte AddressStartTiristorModuleCommand = 0x87;
         private static byte AddressStopTiristorModuleCommand = 0x88;
-        private static byte AddressRequestFotCurrentVolumeCommand = 0x90;
-        private static byte AddressTestingOfTiristorModuleCommand = 0x91;
+        private static byte AddressRequestFotCurrentVoltageCommand = 0x90;
+        private static byte AddressTestTiristorModuleCommand = 0x91;
         private static byte AddressResetAvariaTiristorCommand = 0x92;
         private static byte AddressAlarmStopCommand = 0x87;
 
@@ -43,7 +43,7 @@ namespace TiristorModule
         private static byte[] BuffTir = new byte[18];
         private static ushort[] BuffResponce;
         private static byte FinishCheak;
-        //public enum Status { Crach_ostanov = 16, Tormoz = 32, Baipass = 64, Razgon = 128 }//16, 32, 64, 128
+        private static string[] Status = new string[4] { "Crach_ostanov", "Tormoz", "Baipass", "Razgon" };
         private static int standartRequest = 0;
         private static int startRequest = 1;
         private static int testRequest = 2;
@@ -79,7 +79,16 @@ namespace TiristorModule
             Data = new DataModel
             {
                 AmperageA1 = 0,
-                VoltageA = 0
+                AmperageB1 = 0,
+                AmperageC1 = 0,
+                AmperageA2 = 0,
+                AmperageB2 = 0,
+                AmperageC2 = 0,
+                VoltageA = 0,
+                VoltageB = 0,
+                VoltageC = 0,
+                TemperatureOfTiristor = 0,
+                WorkingStatus = null
             };
         }
 
@@ -87,56 +96,47 @@ namespace TiristorModule
 
         private void CurrentVoltageClick()
         {
-            Start();
+            StartRequest(AddressRequestFotCurrentVoltageCommand, standartRequest);
         }
 
         private void AlarmStopClick()
         {
-            MessageBox.Show("AlarmStopClick");
+            StartRequest(AddressAlarmStopCommand, standartRequest);
         }
 
         private void TestTerristorModuleClick()
         {
-            MessageBox.Show("TestTerritorModuleClick");
+            StartRequest(AddressTestTiristorModuleCommand, testRequest);
         }
 
         private void StartTerristorModuleClick()
         {
-            MessageBox.Show("StartTerristorModuleClick");
+            //StartRequest(AddressStartTiristorModuleCommand, standartRequest);
         }
 
         private void StopTerristorModuleClick()
         {
-            //MessageBox.Show("StopTerristorModuleClick");
-            Start();
+            StartRequest(AddressStopTiristorModuleCommand, standartRequest);
         }
 
         private void ResetAvatiaTirristorClick()
         {
-            MessageBox.Show("ResetAvatiaTirristorClick");
+            StartRequest(AddressResetAvariaTiristorCommand, standartRequest);
         }
         #endregion
 
         #region Methods
-        public static void Start()
+        public static void StartRequest(byte AdressCommand, int RequestType)
         {
             try
             {
                 if (serialPort1.IsOpen) serialPort1.Close();
                 serialPort1.Open();
-                Array.Copy(Buff, 0, ReadHoldingRegistersFromResponce(AddressStartTiristorModuleCommand, 0), 0, 
-                    ReadHoldingRegistersFromResponce(AddressStartTiristorModuleCommand, 0).Length);
-                Data.VoltageA = Buff[0];
-                Data.VoltageB = Buff[1];
-                Data.VoltageC = Buff[2];
-                Data.AmperageA1 = Buff[3];
-                Data.AmperageB1 = Buff[4];
-                Data.AmperageC1 = Buff[5];
-                Data.AmperageA2 = Buff[6];
-                Data.AmperageB2 = Buff[7];
-                Data.AmperageC2 = Buff[8];
-                Data.TemperatureOfTiristor = Buff[9];
-                Data.WorkingStatus = Buff[10];//чекнуть приходящий массив много байт приходит
+                Array.Copy(Buff, 0, ReadHoldingRegistersFromResponce(AdressCommand, RequestType), 0, 
+                    ReadHoldingRegistersFromResponce(AdressCommand, RequestType).Length);
+
+                OutputDataFromArrayToModel(Buff, AdressCommand);
+                Buff = null;
             }
 
             catch (Exception ex)
@@ -145,7 +145,7 @@ namespace TiristorModule
             }
         }
 
-        public static void Stop()
+        public static void StopRequest()
         {
             try
             {
@@ -155,6 +155,45 @@ namespace TiristorModule
             catch (Exception ex)
             {
                 throw ex;
+            }
+        }
+
+        private static void OutputDataFromArrayToModel(ushort[] buff, byte AdressCommand)//mb status output trables
+        {
+            Data.VoltageA = buff[0];
+            Data.VoltageB = buff[1];
+            Data.VoltageC = buff[2];
+            Data.AmperageA1 = buff[3];
+            Data.AmperageB1 = buff[4];
+            Data.AmperageC1 = buff[5];
+            Data.AmperageA2 = buff[6];
+            Data.AmperageB2 = buff[7];
+            Data.AmperageC2 = buff[8];
+            Data.TemperatureOfTiristor = buff[9];
+            if(AdressCommand == AddressStartTiristorModuleCommand) { Data.WorkingStatus = SetStatusWork(buff[10]); }
+        }
+
+        private static string SetStatusWork(ushort buff)
+        {
+            if(buff == 16)
+            {
+                return Status[0];
+            } 
+            else if(buff == 32)
+            {
+                return Status[1];
+            }
+            else if(buff == 64)
+            {
+                return Status[2];
+            }
+            else if(buff == 128)
+            {
+                return Status[3];
+            }
+            else
+            {
+                return "Error";
             }
         }
 
@@ -205,20 +244,20 @@ namespace TiristorModule
             return frame;
         }
 
-        private static byte[] TestTiristorModuleRequest(byte slaveAddress, bool plavniiPuskStart)
+        private static byte[] TestTiristorModuleRequest(byte slaveAddress, bool plavniiPuskStart)//номинальный ток = 5
         {
-            byte[] frame = new byte[10];
+            byte[] frame = new byte[11];
 
             frame[0] = slaveAddress;
             frame[1] = 0x88;//adressCommand
             frame[2] = 7;//quantityofbyte
             frame[3] = PersentTestPower;
-            frame[4] = NominalTok1sk;
+            frame[4] = NominalTok1sk;//5 вольт
             frame[5] = NumberOfTest;
             frame[6] = Convert.ToByte(CurrentKz1_1 >> 8);
-            frame[7] = Convert.ToByte(CurrentKz1_1);
+            frame[7] = Convert.ToByte(CurrentKz1_1 ^ 0x100);
             frame[8] = Convert.ToByte(CurrentKz2_1 >> 8);
-            frame[9] = Convert.ToByte(CurrentKz2_1);
+            frame[9] = Convert.ToByte(CurrentKz2_1 ^ 0x100);
 
             byte crc = CalculateCRC8(frame);
             frame[frame.Length - 1] = crc;

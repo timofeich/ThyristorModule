@@ -70,17 +70,17 @@
             <TextBlock  Grid.Row="2" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center">
                 U<Run BaselineAlignment="Subscript" FontSize="8pt">C</Run>:
             </TextBlock>
-            <TextBlock Text="{Binding VoltageC, Mode=OneWay}" Grid.Row="2" Grid.Column="1" FontSize="14" VerticalAlignment="Center"
+            <TextBlock Text="{Binding Path=Data.VoltageC, Mode=OneWay}" Grid.Row="2" Grid.Column="1" FontSize="14" VerticalAlignment="Center"
                        HorizontalAlignment="Center" Margin="0,10,29,11"></TextBlock>
             
             <TextBlock Grid.Row="3" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center">
                t<Run BaselineAlignment="Subscript" FontSize="7pt">тир-в</Run> С&#186;:
             </TextBlock>
-            <TextBlock Text="{Binding TemperatureOfTiristor, Mode=OneWay}" Grid.Row="3" Grid.Column="1" FontSize="14" 
-                       VerticalAlignment="Center" HorizontalAlignment="Center" Margin="1,10,28,11"></TextBlock>
+            <TextBlock Text="{Binding Path=Data.TemperatureOfTiristor, Mode=OneWay}" Grid.Row="3" Grid.Column="1" FontSize="14" 
+                       VerticalAlignment="Center" HorizontalAlignment="Center" Margin="7,10,26,10"></TextBlock>
             
             <TextBlock Text="Статус:" Grid.Row="4" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-            <TextBlock Text="" Grid.Row="4" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="7,10,24,10"></TextBlock>
+            <TextBlock Text="{Binding Path=Data.WorkingStatus, Mode=OneWay}" Grid.Row="4" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="7,10,24,10"></TextBlock>
         </Grid>
         
         <Grid HorizontalAlignment="Left" Height="240" Margin="196,20,0,0" VerticalAlignment="Top" Width="75">
@@ -100,37 +100,37 @@
             <TextBlock  Grid.Row="0" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center">
                I<Run BaselineAlignment="Subscript" FontSize="8pt">A1</Run>:
             </TextBlock>
-            <TextBlock x:Name="AmperageA1" Text="{Binding AmperageA1, Mode=OneWay}" Grid.Row="0" Grid.Column="1" FontSize="14" 
+            <TextBlock x:Name="AmperageA1" Text="{Binding Path=Data.AmperageA1, Mode=OneWay}" Grid.Row="0" Grid.Column="1" FontSize="14" 
                        VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4,10,2,10" Height="20"/>
 
             <TextBlock Grid.Row="1" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center">
                 I<Run BaselineAlignment="Subscript" FontSize="8pt">B1</Run>:
             </TextBlock>
-            <TextBlock Text="{Binding AmperageB1, Mode=OneWay}" Grid.Row="1" Grid.Column="1" FontSize="14" 
+            <TextBlock Text="{Binding Path=Data.AmperageB1, Mode=OneWay}" Grid.Row="1" Grid.Column="1" FontSize="14" 
                        VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4,10,2,11"/>
 
             <TextBlock  Grid.Row="2" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center">
                 I<Run BaselineAlignment="Subscript" FontSize="8pt">C1</Run>:
             </TextBlock>
-            <TextBlock Text="{Binding AmperageC1, Mode=OneWay}" Grid.Row="2" Grid.Column="1" FontSize="14" 
+            <TextBlock Text="{Binding Path=Data.AmperageC1, Mode=OneWay}" Grid.Row="2" Grid.Column="1" FontSize="14" 
                        VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4,10,2,10" Height="20"></TextBlock>
 
             <TextBlock  Grid.Row="3" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center">
             I<Run BaselineAlignment="Subscript" FontSize="8pt">A2</Run>:
             </TextBlock>
-            <TextBlock Text="{Binding AmperageA2, Mode=OneWay}" Grid.Row="3" Grid.Column="1" FontSize="14" 
+            <TextBlock Text="{Binding Path=Data.AmperageA2, Mode=OneWay}" Grid.Row="3" Grid.Column="1" FontSize="14" 
                        VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4,10,-1,12"></TextBlock>
 
             <TextBlock Grid.Row="4" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center">
                 I<Run BaselineAlignment="Subscript" FontSize="8pt">B2</Run>:
             </TextBlock>
-            <TextBlock Text="{Binding AmperageB2, Mode=OneWay}" Grid.Row="4" Grid.Column="1" FontSize="14" 
+            <TextBlock Text="{Binding Path=Data.AmperageB2, Mode=OneWay}" Grid.Row="4" Grid.Column="1" FontSize="14" 
                        VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4,10,-1,12"></TextBlock>
 
             <TextBlock Grid.Row="5" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center">
                 I<Run BaselineAlignment="Subscript" FontSize="8pt">C2</Run>:
             </TextBlock>
-            <TextBlock Text="{Binding AmperageC2, Mode=OneWay}" Grid.Row="5" Grid.Column="1" FontSize="14" 
+            <TextBlock Text="{Binding Path=Data.AmperageC2, Mode=OneWay}" Grid.Row="5" Grid.Column="1" FontSize="14" 
                        VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4,10,-1,12"></TextBlock>
 
         </Grid>

@@ -36,36 +36,11 @@ namespace TiristorModule
         public ObservableCollection<DataModel> DataModels { get; set; }
 
         private ushort temperatureOfTiristor;
-        private ushort workingStatus;//enum перечисление
+        private string workingStatus;//enum перечисление
         private ushort opredelenieFazRevers;//
         #endregion
 
         #region Properties
-        public ushort Address
-        {
-            get { return address; }
-            set
-            {
-                if (address != value)
-                {
-                    address = value;
-                    OnPropertyChanged("Address");
-                }
-            }
-        }
-
-        public ushort Value
-        {
-            get { return value; }
-            set
-            {
-                if (this.value != value)
-                {
-                    this.value = value;
-                    OnPropertyChanged("Value");
-                }
-            }
-        }
 
         public ushort VoltageA
         {
@@ -238,7 +213,7 @@ namespace TiristorModule
             }
         }
 
-        public ushort WorkingStatus
+        public string WorkingStatus
         {
             get
             {
