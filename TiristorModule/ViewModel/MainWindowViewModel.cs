@@ -14,10 +14,20 @@ namespace TiristorModule
     {
         #region Fields
         private const byte slaveAddress = 0x67;
+        private static byte MasterAddress = 0xFF;
+
+        private static byte AddressStartTiristorModuleCommand = 0x87;
+        private static byte AddressStopTiristorModuleCommand = 0x88;
+        private static byte AddressRequestFotCurrentVolumeCommand = 0x90;
+        private static byte AddressTestingOfTiristorModuleCommand = 0x91;
+        private static byte AddressResetAvariaTiristorCommand = 0x92;
+        private static byte AddressAlarmStopCommand = 0x87;
+
         private static SerialPort serialPort1 = new SerialPort("COM4", 9600, Parity.None, 8, StopBits.One);
 
         private static byte[] Times = new byte[9] { 0, 5, 7, 9, 11, 13, 15, 17, 19 };
         private static byte[] Capacities = new byte[9] { 40, 30, 40, 50, 60, 70, 80, 90, 100 };
+        private static ushort[] Buff;
 
         private static byte AlarmTemperatureTiristor = 85;
 
@@ -30,11 +40,15 @@ namespace TiristorModule
         private static byte PersentTestPower = 15;
         private static byte NominalTok1sk = 54 / 10;
         private static byte NumberOfTest = 10;
-        private static byte MasterAddress = 0xFF;
         private static byte[] BuffTir = new byte[18];
         private static ushort[] BuffResponce;
         private static byte FinishCheak;
         //public enum Status { Crach_ostanov = 16, Tormoz = 32, Baipass = 64, Razgon = 128 }//16, 32, 64, 128
+        private static int standartRequest = 0;
+        private static int startRequest = 1;
+        private static int testRequest = 2;
+
+
         #endregion
 
         #region Properties
@@ -110,15 +124,19 @@ namespace TiristorModule
             {
                 if (serialPort1.IsOpen) serialPort1.Close();
                 serialPort1.Open();
-                //Data.Amperage = ReadHoldingRegisters(40001, 1)[0];
-                ThreadPool.QueueUserWorkItem(new WaitCallback((obj) =>
-                {
-                    while (true)
-                    {
-                        Data.VoltageA = ReadHoldingRegistersProtocol(40001, 1)[0];//поменять на адрес слейва
-                        Thread.Sleep(20); // Delay 20ms
-                    }
-                }));
+                Array.Copy(Buff, 0, ReadHoldingRegistersFromResponce(AddressStartTiristorModuleCommand, 0), 0, 
+                    ReadHoldingRegistersFromResponce(AddressStartTiristorModuleCommand, 0).Length);
+                Data.VoltageA = Buff[0];
+                Data.VoltageB = Buff[1];
+                Data.VoltageC = Buff[2];
+                Data.AmperageA1 = Buff[3];
+                Data.AmperageB1 = Buff[4];
+                Data.AmperageC1 = Buff[5];
+                Data.AmperageA2 = Buff[6];
+                Data.AmperageB2 = Buff[7];
+                Data.AmperageC2 = Buff[8];
+                Data.TemperatureOfTiristor = Buff[9];
+                Data.WorkingStatus = Buff[10];//чекнуть приходящий массив много байт приходит
             }
 
             catch (Exception ex)
@@ -138,28 +156,6 @@ namespace TiristorModule
             {
                 throw ex;
             }
-        }
-
-        public static void WriteSingleRegister(ushort startAddress, ushort value)
-        {
-            const byte function = 6;
-            byte[] values = Word.ToByteArray(value);
-            byte[] frame = WriteSingleRegisterMsg(slaveAddress, startAddress, function, values);
-            serialPort1.Write(frame, 0, frame.Length);
-        }
-
-        private static byte[] WriteSingleRegisterMsg(byte slaveAddress, ushort startAddress, byte function, byte[] values)
-        {
-            byte[] frame = new byte[8];                     // Message size
-            frame[0] = slaveAddress;                        // Slave address
-            frame[1] = function;                            // Function code            
-            frame[2] = (byte)(startAddress >> 8);           // Register Address Hi
-            frame[3] = (byte)startAddress;                  // Register Address lo
-            Array.Copy(values, 0, frame, 4, values.Length); // Write Data
-            byte[] crc = CalculateCRC(frame);          // Calculate CRC
-            frame[frame.Length - 2] = crc[0];               //Error Check Lo
-            frame[frame.Length - 1] = crc[1];               //Error Check Hi
-            return frame;
         }
 
         private static byte[] StandartRequest(byte slaveAddress, byte commandNumber)//maybe correct
@@ -242,6 +238,7 @@ namespace TiristorModule
             frame[17] = data[22];
             frame[18] = data[23];
 
+
             return frame;
         }
 
@@ -265,162 +262,45 @@ namespace TiristorModule
             return frame;
         }
 
-        private static byte[] ReadHoldingRegistersMsg(byte slaveAddress, ushort startAddress, byte function, uint numberOfPoints)
+        public static ushort[] ReadHoldingRegistersFromResponce(byte commandNumber, int requestType)
         {
-            byte[] frame = new byte[8];
+            byte[] frame;
+            ushort[] result;
 
-            frame[0] = slaveAddress;                // Slave Address
-            frame[1] = function;                    // Function             
-            frame[2] = (byte)(startAddress >> 8);   // Starting Address High
-            frame[3] = (byte)startAddress;          // Starting Address Low            
-            frame[4] = (byte)(numberOfPoints >> 8); // Quantity of Registers High
-            frame[5] = (byte)numberOfPoints;        // Quantity of Registers Low
-
-            byte[] crc = CalculateCRC(frame);  // Calculate CRC.
-            frame[frame.Length - 2] = crc[0];       // Error Check Low
-            frame[frame.Length - 1] = crc[1];       // Error Check High
-
-            return frame;
-        }
-
-        /*public static List<DataModel> ReadHoldingRegistersFromProtocol(byte slaveAddress, bool plavniiPuskStart, byte commandNumber)
-        {
             if (serialPort1.IsOpen)
             {
-                byte[] frame;
-                ushort[] result;
-
-                switch (commandNumber)
+                if(requestType == standartRequest)
                 {
-                    case 0x88:
-                    case 0x90:
-                    case 0x92:
-                    case 0x99:
-                        frame = StandartRequest(slaveAddress, commandNumber);
-                        serialPort1.Write(frame, 0, frame.Length);
-                        break;
-
-                    case 0x87:
-                        frame = StartTiristorModuleRequest(slaveAddress, plavniiPuskStart);
-                        serialPort1.Write(frame, 0, frame.Length);
-                        break;
-
-                    case 0x91:
-                        frame = TestTiristorModuleRequest(slaveAddress, plavniiPuskStart);
-                        serialPort1.Write(frame, 0, frame.Length);
-                        break;
+                    frame = StandartRequest(slaveAddress, commandNumber);
                 }
-
-                Thread.Sleep(300); // Delay 300ms
+                else if(requestType == startRequest)
+                {
+                    frame = StartTiristorModuleRequest(slaveAddress);
+                }
+                else
+                {
+                    frame = TestTiristorModuleRequest(slaveAddress, true);//control plavnii pusk
+                }
+                 
+                serialPort1.Write(frame, 0, frame.Length);
+                Thread.Sleep(300); // Delay 100ms
                 if (serialPort1.BytesToRead >= 20)
                 {
                     byte[] bufferReceiver = new byte[serialPort1.BytesToRead];
-
                     serialPort1.Read(bufferReceiver, 0, serialPort1.BytesToRead);
                     serialPort1.DiscardInBuffer();
-
-                    byte[] data = new byte[bufferReceiver.Length];
-                    Array.Copy(bufferReceiver, 0, data, 0, data.Length);
-
-                    if (data[3] == 0x90)
+                    if(bufferReceiver[2] == 21)
                     {
-                        result = ObrabotkaTestTirResponse(data);//добавлить проверку CRC8
-                    }
-                    else if (data[3] == 0x91)
-                    {
-                        result = CurrentVoltageResponse(data);
+                        result = ObrabotkaTestTirResponse(bufferReceiver);
                     }
                     else
                     {
-                        result = null;
+                        result = CurrentVoltageResponse(bufferReceiver);
                     }
-
-                    for (int i = 0; i < result.Length; i++)
-                    {
-                        Datas[i].Voltage = result[i];//несколько value в модель(токи напруги)
-                        //Registers[i].VoltageA = result[i + 1];
-                        //Registers[i].VoltageB = result[i + 2];
-                        //Registers[i].VoltageC = result[i + 3];
-                        //Registers[i].AmperageA1 = result[i + 4];
-                        //Registers[i].AmperageA2 = result[i + 5];
-                        //Registers[i].AmperageB1 = result[i + 6];
-                        //Registers[i].AmperageB2 = result[i + 7];
-                        //11 полей
-
-                    }
-                }
-            }
-            return Datas;
-        }*/
-
-        public static ushort[] ReadHoldingRegisters(ushort startAddress, uint numberOfPoints)
-        {
-            const byte function = 3;
-            if (serialPort1.IsOpen)
-            {
-                byte[] frame = ReadHoldingRegistersMsg(slaveAddress, startAddress, function, numberOfPoints);               
-                serialPort1.Write(frame, 0, frame.Length);
-                Thread.Sleep(300); // Delay 100ms
-                if (serialPort1.BytesToRead >= 5)
-                {
-                    byte[] bufferReceiver = new byte[serialPort1.BytesToRead];
-                    serialPort1.Read(bufferReceiver, 0, serialPort1.BytesToRead);
-                    serialPort1.DiscardInBuffer();
-
-                    // Process data.
-                    byte[] data = new byte[bufferReceiver.Length - 5];
-                    Array.Copy(bufferReceiver, 3, data, 0, data.Length);
-                    ushort[] result = Word.ByteToUInt16(data);
                     BuffResponce = result;
                 }
             }
             return BuffResponce;
-        }
-
-        public static ushort[] ReadHoldingRegistersProtocol(ushort startAddress, uint numberOfPoints)
-        {
-            if (serialPort1.IsOpen)
-            {
-                byte[] frame = StandartRequest(slaveAddress, 0x88);
-                serialPort1.Write(frame, 0, frame.Length);
-                Thread.Sleep(300); // Delay 100ms
-                if (serialPort1.BytesToRead >= 20)
-                {
-                    byte[] bufferReceiver = new byte[serialPort1.BytesToRead];
-                    serialPort1.Read(bufferReceiver, 0, serialPort1.BytesToRead);
-                    serialPort1.DiscardInBuffer();
-
-                    // Process data.
-                    byte[] data = new byte[bufferReceiver.Length - 5];
-                    Array.Copy(bufferReceiver, 3, data, 0, data.Length);
-                    ushort[] result = Word.ByteToUInt16(data);
-                    BuffResponce = result;
-                }
-            }
-            return BuffResponce;
-        }
-
-        private static byte[] CalculateCRC(byte[] data)
-        {
-            ushort CRCFull = 0xFFFF; // Set the 16-bit register (CRC register) = FFFFH.
-            char CRCLSB;
-            byte[] CRC = new byte[2];
-            for (int i = 0; i < (data.Length) - 2; i++)
-            {
-                CRCFull = (ushort)(CRCFull ^ data[i]); // 
-
-                for (int j = 0; j < 8; j++)
-                {
-                    CRCLSB = (char)(CRCFull & 0x0001);
-                    CRCFull = (ushort)((CRCFull >> 1) & 0x7FFF);
-
-                    if (CRCLSB == 1)
-                        CRCFull = (ushort)(CRCFull ^ 0xA001);
-                }
-            }
-            CRC[1] = (byte)((CRCFull >> 8) & 0xFF);
-            CRC[0] = (byte)(CRCFull & 0xFF);
-            return CRC;
         }
 
         private static byte CalculateCRC8(byte[] array)//crc-8/cdma2000
