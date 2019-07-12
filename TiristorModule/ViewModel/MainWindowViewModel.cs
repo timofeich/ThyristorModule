@@ -23,7 +23,7 @@ namespace TiristorModule
         private static byte AddressResetAvariaTiristorCommand = 0x92;
         private static byte AddressAlarmStopCommand = 0x87;
 
-        private static SerialPort serialPort1 = new SerialPort("COM4", 9600, Parity.None, 8, StopBits.One);
+        private static SerialPort serialPort1 = new SerialPort("COM4", 9600, Parity.None, 8, StopBits.One);//baudRate 57600?
 
         private static byte[] Times = new byte[9] { 0, 5, 7, 9, 11, 13, 15, 17, 19 };
         private static byte[] Capacities = new byte[9] { 40, 30, 40, 50, 60, 70, 80, 90, 100 };
@@ -43,7 +43,7 @@ namespace TiristorModule
         private static byte[] BuffTir = new byte[18];
         private static ushort[] BuffResponce;
         private static byte FinishCheak;
-        private static string[] Status = new string[4] { "Crach_ostanov", "Tormoz", "Baipass", "Razgon" };
+        private static string[] Status = new string[4] { "Crach_ostanov", "Tormoz", "Baipass", "Razgon" };//мб кортеж/словарь
         private static int standartRequest = 0;
         private static int startRequest = 1;
         private static int testRequest = 2;
@@ -111,7 +111,7 @@ namespace TiristorModule
 
         private void StartTerristorModuleClick()
         {
-            //StartRequest(AddressStartTiristorModuleCommand, standartRequest);
+            StartRequest(AddressStartTiristorModuleCommand, standartRequest);
         }
 
         private void StopTerristorModuleClick()
