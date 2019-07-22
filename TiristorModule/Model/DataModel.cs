@@ -19,9 +19,6 @@ namespace TiristorModule
         #endregion
 
         #region Fields
-        private ushort address;
-        private ushort value;
-
         private ushort voltageA;
         private ushort voltageB;
         private ushort voltageC;
@@ -37,7 +34,7 @@ namespace TiristorModule
 
         private ushort temperatureOfTiristor;
         private string workingStatus;//enum перечисление
-        private ushort opredelenieFazRevers;//
+        private ushort opredelenieFazRevers;
         #endregion
 
         #region Properties

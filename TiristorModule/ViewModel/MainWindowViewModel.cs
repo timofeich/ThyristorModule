@@ -2,52 +2,52 @@
 using System.Collections.Generic;
 using System.IO.Ports;
 using System.Threading;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using TiristorModule.ViewModel;
 using System.Windows.Input;
-using System.Windows;
 
 namespace TiristorModule
 {
     class MainViewModel
     {
+        private static SerialPort serialPort1 = new SerialPort("COM3", 57600, Parity.None, 8, StopBits.One);//baudRate 57600?
+
         #region Fields
         private const byte slaveAddress = 0x67;
-        private static byte MasterAddress = 0xFF;
+        private const byte MasterAddress = 0xFF;// как с ним быть?
 
-        private static byte AddressStartTiristorModuleCommand = 0x87;
-        private static byte AddressStopTiristorModuleCommand = 0x88;
-        private static byte AddressRequestFotCurrentVoltageCommand = 0x90;
-        private static byte AddressTestTiristorModuleCommand = 0x91;
-        private static byte AddressResetAvariaTiristorCommand = 0x92;
-        private static byte AddressAlarmStopCommand = 0x87;
+        private const byte AddressStartTiristorModuleCommand = 0x87;
+        private const byte AddressStopTiristorModuleCommand = 0x88;
+        private const byte AddressRequestFotCurrentVoltageCommand = 0x90;
+        private const byte AddressTestTiristorModuleCommand = 0x91;
+        private const byte AddressResetAvariaTiristorCommand = 0x92;
+        private const byte AddressAlarmStopCommand = 0x87;
 
-        private static SerialPort serialPort1 = new SerialPort("COM4", 9600, Parity.None, 8, StopBits.One);//baudRate 57600?
-
-        private static byte[] Times = new byte[9] { 0, 5, 7, 9, 11, 13, 15, 17, 19 };
+        private static byte[] Times =      new byte[9] { 0,  5,  7,  9,  11, 13, 15, 17, 19 };
         private static byte[] Capacities = new byte[9] { 40, 30, 40, 50, 60, 70, 80, 90, 100 };
         private static ushort[] Buff;
 
-        private static byte AlarmTemperatureTiristor = 85;
+        private const byte AlarmTemperatureTiristor = 85;
 
-        private static byte VremiaKzMs1 = 10;
-        private static byte VremiaKzMs2 = 10;
+        private const byte VremiaKzMs1 = 10;
+        private const byte VremiaKzMs2 = 10;
 
-        private static ushort CurrentKz1_1 = 300;
-        private static ushort CurrentKz2_1 = 300;
+        private const ushort CurrentKz1_1 = 300;
+        private const ushort CurrentKz2_1 = 300;
 
-        private static byte PersentTestPower = 15;
-        private static byte NominalTok1sk = 54 / 10;
-        private static byte NumberOfTest = 10;
+        private const byte PersentTestPower = 15;
+        private const byte NominalTok1sk = 54 / 10;
+        private const byte NumberOfTest = 10;
         private static byte[] BuffTir = new byte[18];
         private static ushort[] BuffResponce;
-        private static byte FinishCheak;
-        private static string[] Status = new string[4] { "Crach_ostanov", "Tormoz", "Baipass", "Razgon" };//мб кортеж/словарь
+        private static byte FinishCheak;//что это?
+
+        private static Dictionary<int, string> Status = new Dictionary<int, string>(4);
+
         private static int standartRequest = 0;
         private static int startRequest = 1;
         private static int testRequest = 2;
 
+        private static bool flag = true;
 
         #endregion
 
@@ -76,6 +76,11 @@ namespace TiristorModule
             StopTerristorModuleCommand = new Command(arg => StopTerristorModuleClick());
             ResetAvatiaTirristorCommand = new Command(arg => ResetAvatiaTirristorClick());
 
+            Status.Add(0, "Crach_ostanov");
+            Status.Add(1, "Tormoz");
+            Status.Add(2, "Baipass");
+            Status.Add(3, "Razgon");
+
             Data = new DataModel
             {
                 AmperageA1 = 0,
@@ -94,6 +99,16 @@ namespace TiristorModule
 
         #region ClickHandler
 
+        private void StartTerristorModuleClick()
+        {
+            StartRequest(AddressStartTiristorModuleCommand, startRequest);
+        }
+
+        private void StopTerristorModuleClick()
+        {
+            StartRequest(AddressStopTiristorModuleCommand, standartRequest);
+        }
+
         private void CurrentVoltageClick()
         {
             StartRequest(AddressRequestFotCurrentVoltageCommand, standartRequest);
@@ -109,16 +124,6 @@ namespace TiristorModule
             StartRequest(AddressTestTiristorModuleCommand, testRequest);
         }
 
-        private void StartTerristorModuleClick()
-        {
-            StartRequest(AddressStartTiristorModuleCommand, standartRequest);
-        }
-
-        private void StopTerristorModuleClick()
-        {
-            StartRequest(AddressStopTiristorModuleCommand, standartRequest);
-        }
-
         private void ResetAvatiaTirristorClick()
         {
             StartRequest(AddressResetAvariaTiristorCommand, standartRequest);
@@ -126,21 +131,42 @@ namespace TiristorModule
         #endregion
 
         #region Methods
-        public static void StartRequest(byte AdressCommand, int RequestType)
+        public static void StartRequest(byte AddressCommand, int RequestType)
         {
             try
             {
-                if (serialPort1.IsOpen) serialPort1.Close();
-                serialPort1.Open();
-                Array.Copy(Buff, 0, ReadHoldingRegistersFromResponce(AdressCommand, RequestType), 0, 
-                    ReadHoldingRegistersFromResponce(AdressCommand, RequestType).Length);
+                flag = true;
+                if (AddressCommand == AddressRequestFotCurrentVoltageCommand)
+                {
+                    if (serialPort1.IsOpen) serialPort1.Close();
+                    serialPort1.Open();
+                    ThreadPool.QueueUserWorkItem(new WaitCallback((obj) =>
+                    {
+                        while (flag)
+                        {
+                            Buff = ReadHoldingRegistersFromResponce(AddressCommand, RequestType);
+                            OutputDataFromArrayToModel(Buff, AddressCommand);
+                            Buff = null;
+                            Thread.Sleep(20); // Delay 20ms
+                        }
+                    }));
+                }
+                else
+                {
+                    flag = false;
+                    if (serialPort1.IsOpen) serialPort1.Close();
+                    serialPort1.Open();
+                    Array.Copy(Buff, 0, ReadHoldingRegistersFromResponce(AddressCommand, RequestType), 0,
+                        ReadHoldingRegistersFromResponce(AddressCommand, RequestType).Length);
+                    OutputDataFromArrayToModel(Buff, AddressCommand);
+                    Buff = null;
+                }
 
-                OutputDataFromArrayToModel(Buff, AdressCommand);
-                Buff = null;
             }
 
             catch (Exception ex)
             {
+                //MessageBox.Show("Проверьте подключение COM-порта.");
                 throw ex;
             }
         }
@@ -158,7 +184,7 @@ namespace TiristorModule
             }
         }
 
-        private static void OutputDataFromArrayToModel(ushort[] buff, byte AdressCommand)//mb status output trables
+        private static void OutputDataFromArrayToModel(ushort[] buff, byte AdressCommand)//mb status output trubles
         {
             Data.VoltageA = buff[0];
             Data.VoltageB = buff[1];
@@ -170,12 +196,12 @@ namespace TiristorModule
             Data.AmperageB2 = buff[7];
             Data.AmperageC2 = buff[8];
             Data.TemperatureOfTiristor = buff[9];
-            if(AdressCommand == AddressStartTiristorModuleCommand) { Data.WorkingStatus = SetStatusWork(buff[10]); }
+            if(AdressCommand != AddressTestTiristorModuleCommand) { Data.WorkingStatus = SetStatusWork(buff[10]); }
         }
 
         private static string SetStatusWork(ushort buff)
         {
-            if(buff == 16)
+            if (buff == 16)
             {
                 return Status[0];
             } 
@@ -193,11 +219,11 @@ namespace TiristorModule
             }
             else
             {
-                return "Error";
+                return "Error !0 !32 !64 !128";
             }
         }
 
-        private static byte[] StandartRequest(byte slaveAddress, byte commandNumber)//maybe correct
+        private static byte[] StandartRequest(byte slaveAddress, byte commandNumber)
         {
             byte[] frame = new byte[4];
             frame[0] = slaveAddress;
@@ -208,10 +234,9 @@ namespace TiristorModule
             return frame;
         }
 
-        private static byte[] StartTiristorModuleRequest(byte slaveAddress)//maybe correct
+        private static byte[] StartTiristorModuleRequest(byte slaveAddress, bool plavniiPuskStart)
         {
             byte[] frame = new byte[32];
-            bool plavniiPuskStart = true;
 
             frame[0] = slaveAddress;
             frame[1] = 0x87;//adressCommand
@@ -244,7 +269,7 @@ namespace TiristorModule
             return frame;
         }
 
-        private static byte[] TestTiristorModuleRequest(byte slaveAddress, bool plavniiPuskStart)//номинальный ток = 5
+        private static byte[] TestTiristorModuleRequest(byte slaveAddress)//finish_cheak(0 - успех/1 - неудача) 
         {
             byte[] frame = new byte[11];
 
@@ -265,7 +290,7 @@ namespace TiristorModule
             return frame;
         }
 
-        private static ushort[] ObrabotkaTestTirResponse(byte[] data)//вопрос по данным
+        private static ushort[] ParseTestTirResponse(byte[] data)//output as a table
         {
             ushort[] frame = new ushort[18];
 
@@ -281,22 +306,21 @@ namespace TiristorModule
             return frame;
         }
 
-        private static ushort[] CurrentVoltageResponse(byte[] data)//перечисление вместо массивов?
+        private static ushort[] ParseCurrentVoltageResponse(byte[] data)//status_crash(0-suc-s/list of errors)
         {
             ushort[] frame = new ushort[12];
+            int j = 4;
 
-            frame[0] = Word.FromBytes(data[5], data[4]);
-            frame[1] = Word.FromBytes(data[7], data[6]);
-            frame[2] = Word.FromBytes(data[9], data[8]);
-            frame[3] = Word.FromBytes(data[11], data[10]);
-            frame[4] = Word.FromBytes(data[13], data[12]);
-            frame[5] = Word.FromBytes(data[15], data[14]);
-            frame[6] = Word.FromBytes(data[17], data[16]);
-            frame[7] = Word.FromBytes(data[19], data[18]);
-            frame[8] = Word.FromBytes(data[21], data[20]);
-            frame[9] = data[22];
-            frame[10] = data[23];
-            frame[11] = data[24];
+            for (int i = 0; i <= 8; i++)
+            {
+                frame[i] = Word.FromBytes(data[j + 1], data[j]);
+                j += 2;
+            }
+
+            for (int i = 9; i < frame.Length; i++)
+            {
+                frame[i] = data[i + 13];
+            }
 
             return frame;
         }
@@ -305,6 +329,12 @@ namespace TiristorModule
         {
             byte[] frame;
             ushort[] result;
+            frame = StandartRequest(slaveAddress, commandNumber);
+            while (true)
+            {
+                Thread.Sleep(100);
+                serialPort1.Write(frame, 0, frame.Length);
+            }
 
             if (serialPort1.IsOpen)
             {
@@ -314,15 +344,16 @@ namespace TiristorModule
                 }
                 else if(requestType == startRequest)
                 {
-                    frame = StartTiristorModuleRequest(slaveAddress);
+                    frame = StartTiristorModuleRequest(slaveAddress, true);
                 }
                 else
                 {
-                    frame = TestTiristorModuleRequest(slaveAddress, true);//control plavnii pusk
+                    frame = TestTiristorModuleRequest(slaveAddress);
                 }
                  
                 serialPort1.Write(frame, 0, frame.Length);
-                Thread.Sleep(300); // Delay 100ms
+               
+                Thread.Sleep(300); // Delay 300ms
                 if (serialPort1.BytesToRead >= 20)
                 {
                     byte[] bufferReceiver = new byte[serialPort1.BytesToRead];
@@ -330,11 +361,11 @@ namespace TiristorModule
                     serialPort1.DiscardInBuffer();
                     if(bufferReceiver[2] == 21)
                     {
-                        result = ObrabotkaTestTirResponse(bufferReceiver);
+                        result = ParseTestTirResponse(bufferReceiver);
                     }
                     else
                     {
-                        result = CurrentVoltageResponse(bufferReceiver);
+                        result = ParseCurrentVoltageResponse(bufferReceiver);
                     }
                     BuffResponce = result;
                 }
@@ -352,7 +383,7 @@ namespace TiristorModule
 
                 for (int i = 0; i < 8; i++)
                 {
-                    crc = (crc & 0x80) != 0 ? (byte)((crc << 1) ^ 0x9B) : (byte)(crc << 1);
+                    crc = (crc & 0x80) != 0 ? (byte)((crc << 1) ^ 0x31) : (byte)(crc << 1);
                 }
             }
 

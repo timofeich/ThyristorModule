@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 
 namespace TiristorModule.Veiw
 {
@@ -8,7 +7,6 @@ namespace TiristorModule.Veiw
         public MainWindowView()
         {
             InitializeComponent();
-            //InitializeRegisters();
         }
     }
 }
