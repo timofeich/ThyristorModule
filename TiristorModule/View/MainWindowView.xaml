@@ -6,134 +6,190 @@
         xmlns:local="clr-namespace:TiristorModule"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="582.5"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen" Background="LightGray">
 
     <Grid Margin="0,0,2,0">
-        <Grid HorizontalAlignment="Left" Margin="5,265,0,0" Width="567" Height="129" VerticalAlignment="Top">
+        <Grid Background="White" Margin="16,250,12,0" Height="129" VerticalAlignment="Top">
 
-            <Grid HorizontalAlignment="Left" Height="47" Margin="10,14,0,0" VerticalAlignment="Top" Width="186">
+            <Grid HorizontalAlignment="Left" Height="47" Margin="0,14,0,0" VerticalAlignment="Top" Width="181">
                 <Button x:Name="CurrentVoltageButton" Content="Текущее напряжение" HorizontalAlignment="Left" 
                         Margin="10,0,0,-1" VerticalAlignment="Top" Width="164" Height="48" Command="{Binding CurrentVoltageCommand}"/>
             </Grid>
 
-            <Grid HorizontalAlignment="Left" Height="47" Margin="10,72,0,0" VerticalAlignment="Top" Width="186">
+            <Grid HorizontalAlignment="Left" Height="47" Margin="0,72,0,0" VerticalAlignment="Top" Width="181">
                 <Button x:Name="StartTiristorModuleButton" Content="Запустить модуль тиристора" HorizontalAlignment="Left" 
                         Margin="10,0,0,0" VerticalAlignment="Top" Width="165" Height="47" Command="{Binding StartTerristorModuleCommand}"/>
             </Grid>
 
-            <Grid HorizontalAlignment="Left" Height="47" Margin="201,72,0,0" VerticalAlignment="Top" Width="192" RenderTransformOrigin="0.533,0.57">
+            <Grid HorizontalAlignment="Left" Height="47" Margin="186,72,0,0" VerticalAlignment="Top" Width="192" RenderTransformOrigin="0.533,0.57">
                 <Button x:Name="StopTiristorModuleButton" Content="Остановить модуль тиристора
                         " HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Width="173" Height="47" Command="{Binding StopTerristorModuleCommand}"/>
             </Grid>
 
-            <Grid HorizontalAlignment="Left" Height="47" Margin="201,14,0,0" VerticalAlignment="Top" Width="192">
+            <Grid HorizontalAlignment="Left" Height="47" Margin="186,14,0,0" VerticalAlignment="Top" Width="192">
                 <Button x:Name="AlarmStopButton" Content="Аварийный стоп" HorizontalAlignment="Left" Margin="10,0,0,0" 
                         VerticalAlignment="Top" Width="172" Height="47" Command="{Binding AlarmStopCommand}"/>
             </Grid>
-            <Grid HorizontalAlignment="Left" Height="47" Margin="398,14,0,0" VerticalAlignment="Top" Width="160">
-                <Button x:Name="TestTerristorModuleButton" Content="Тест модуля тиристора" Margin="10,0" VerticalAlignment="Top" 
+            <Grid HorizontalAlignment="Left" Height="47" Margin="383,14,0,0" VerticalAlignment="Top" Width="160">
+                <Button x:Name="TestTerristorModuleButton"  Content="Тест модуля тиристора" Margin="10,0" VerticalAlignment="Top" 
                         Height="47" Grid.RowSpan="2" Command="{Binding TestTerristorModuleCommand}"/>
             </Grid>
 
-            <Grid Height="47" Margin="398,72,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="160">
-                <Button x:Name="ResetAvariaTiristorModuleButton" Content="Resetavariatir" Margin="10,0" VerticalAlignment="Top" Height="47"
+            <Grid Height="47" Margin="383,72,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="160">
+                <Button x:Name="ResetAvariaTiristorModuleButton" Content="Сброс аварии" Margin="10,0" VerticalAlignment="Top" Height="47"
                         Command="{Binding ResetAvatiaTirristorCommand}"/>
             </Grid>
         </Grid>
+        <GroupBox Header="I1, вх" Background="White"  HorizontalAlignment="Left" Height="145" Margin="113,10,0,0" VerticalAlignment="Top" Width="90">
+            <Grid Margin="4,0,-2,-3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <TextBlock  Grid.Row="0" Grid.Column="0" FontSize="14" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="2,11,2,0"><Run Text="I"/><Run BaselineAlignment="Subscript" FontSize="8pt" Text="A1"/><Run Text="="/></TextBlock>
+                <TextBlock x:Name="AmperageA1" Text="{Binding Data.AmperageA1, Mode=OneWay}" Grid.Row="0" Grid.Column="1" FontSize="14" 
+                       VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,12,6,10" Height="20"/>
 
-        <Grid HorizontalAlignment="Left" Height="240" Margin="276,20,0,0" VerticalAlignment="Top" Width="162">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"></ColumnDefinition>
-                <ColumnDefinition Width="auto"></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition></RowDefinition>
-                <RowDefinition></RowDefinition>
-                <RowDefinition></RowDefinition>
-                <RowDefinition></RowDefinition>
-                <RowDefinition></RowDefinition>
-                <RowDefinition></RowDefinition>
-            </Grid.RowDefinitions>
+                <TextBlock Grid.Row="1" Grid.Column="0" FontSize="14" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="2,11,2,0"><Run Text="I"/><Run BaselineAlignment="Subscript" FontSize="8pt" Text="B1"/><Run Text="="/></TextBlock>
+                <TextBlock Text="{Binding Data.AmperageB1, Mode=OneWay}" Grid.Row="1" Grid.Column="1" FontSize="14" 
+                       VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,12,6,11"/>
 
-            <TextBlock Grid.Row="0" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center">
-                U<Run BaselineAlignment="Subscript" FontSize="8pt">A</Run>:
-            </TextBlock>
-            <TextBlock x:Name="VoltageATextBlock" Text="{Binding Path=Data.VoltageA, Mode=OneWay}" Grid.Row="0" Grid.Column="1" 
-                       FontSize="14" VerticalAlignment="Center" Margin="5,10,0,11" HorizontalAlignment="Left" Width="auto"/>
+                <TextBlock  Grid.Row="2" Grid.Column="0" FontSize="14" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,11,1,0"><Run Text="I"/><Run BaselineAlignment="Subscript" FontSize="8pt" Text="C1"/><Run Text="="/></TextBlock>
+                <TextBlock Text="{Binding Data.AmperageC1, Mode=OneWay}" Grid.Row="2" Grid.Column="1" FontSize="14" 
+                       VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,12,5,10" Height="20"/>
 
-            <TextBlock Grid.Row="1" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center">
-                U<Run BaselineAlignment="Subscript" FontSize="8pt">B</Run>:
-            </TextBlock>
-            <TextBlock x:Name="VoltageBTextBlock" Text="{Binding Path=Data.VoltageB, Mode=OneWay}" Grid.Row="1" Grid.Column="1" 
-                       FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="1,10,0,10"></TextBlock>
 
-            <TextBlock  Grid.Row="2" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center">
-                U<Run BaselineAlignment="Subscript" FontSize="8pt">C</Run>:
-            </TextBlock>
-            <TextBlock Text="{Binding Path=Data.VoltageC, Mode=OneWay}" Grid.Row="2" Grid.Column="1" FontSize="14" VerticalAlignment="Center"
-                       HorizontalAlignment="Left" Margin="1,10,0,11"></TextBlock>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="U, вх" Background="White" HorizontalAlignment="Left" Height="145" Margin="18,10,0,0" VerticalAlignment="Top" Width="90">
+            <Grid Margin="4,0,-2,-1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row="3" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center">
-               t<Run BaselineAlignment="Subscript" FontSize="7pt">тир-в</Run> С&#186;:
-            </TextBlock>
-            <TextBlock Text="{Binding Path=Data.TemperatureOfTiristor, Mode=OneWay}" Grid.Row="3" Grid.Column="1" FontSize="14" 
-                       VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5,10,0,10"></TextBlock>
+                <TextBlock Grid.Row="0" Grid.Column="0" FontSize="14" Margin="1,12,2,0" Height="18" VerticalAlignment="Top"><Run Text="U"/><Run BaselineAlignment="Subscript" FontSize="8pt" Text="A"/><Run Text="="/></TextBlock>
+                <TextBlock x:Name="VoltageATextBlock" Text="{Binding Data.VoltageA, Mode=OneWay}" Grid.Row="0" Grid.Column="1" 
+                       FontSize="14" VerticalAlignment="Top" Margin="0,13,0,0" HorizontalAlignment="Left" Width="auto"/>
 
-            <TextBlock Text="Статус:" Grid.Row="4" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-            <TextBlock Text="{Binding Path=Data.WorkingStatus, Mode=OneWay}" Grid.Row="4" Grid.Column="1" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,10,25,10"></TextBlock>
-        </Grid>
+                <TextBlock Grid.Row="1" FontSize="14" Margin="1,12,3,0" Height="18" VerticalAlignment="Top"><Run Text="U"/><Run BaselineAlignment="Subscript" FontSize="8pt" Text="B"/><Run Text="="/></TextBlock>
+                <TextBlock x:Name="VoltageBTextBlock" Text="{Binding Data.VoltageB, Mode=OneWay}" Grid.Row="1" Grid.Column="1" 
+                       FontSize="14" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,12,0,0"/>
 
-        <Grid HorizontalAlignment="Left" Height="240" Margin="196,20,0,0" VerticalAlignment="Top" Width="75">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="auto"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
+                <TextBlock  Grid.Row="2" Grid.Column="0" FontSize="14" Margin="2,12,2,0" Height="17" VerticalAlignment="Top"><Run Text="U"/><Run BaselineAlignment="Subscript" FontSize="8pt" Text="C"/><Run Text="="/></TextBlock>
+                <TextBlock Text="{Binding Data.VoltageC, Mode=OneWay}" Grid.Row="2" Grid.Column="1" FontSize="14" VerticalAlignment="Top"
+                       HorizontalAlignment="Left" Margin="0,12,-1,0"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="I2, вх" Background="White" HorizontalAlignment="Left" Height="145" Margin="208,10,0,0" VerticalAlignment="Top" Width="97">
+            <Grid HorizontalAlignment="Left" Height="125" Margin="4,0,-2,-2" VerticalAlignment="Top" Width="83">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
 
-            <TextBlock  Grid.Row="0" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center">
-               I<Run BaselineAlignment="Subscript" FontSize="8pt">A1</Run>:
-            </TextBlock>
-            <TextBlock x:Name="AmperageA1" Text="{Binding Path=Data.AmperageA1, Mode=OneWay}" Grid.Row="0" Grid.Column="1" FontSize="14" 
-                       VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4,10,2,10" Height="20"/>
 
-            <TextBlock Grid.Row="1" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center">
-                I<Run BaselineAlignment="Subscript" FontSize="8pt">B1</Run>:
-            </TextBlock>
-            <TextBlock Text="{Binding Path=Data.AmperageB1, Mode=OneWay}" Grid.Row="1" Grid.Column="1" FontSize="14" 
-                       VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4,10,2,11"/>
+                <TextBlock  Grid.Row="0" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center"><Run Text="I"/><Run BaselineAlignment="Subscript" FontSize="8pt" Text="A2"/><Run Text="="/></TextBlock>
+                <TextBlock Text="{Binding Data.AmperageA2, Mode=OneWay}" Grid.Row="0" Grid.Column="1" FontSize="14" 
+                       VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,11,3,11"/>
 
-            <TextBlock  Grid.Row="2" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center">
-                I<Run BaselineAlignment="Subscript" FontSize="8pt">C1</Run>:
-            </TextBlock>
-            <TextBlock Text="{Binding Path=Data.AmperageC1, Mode=OneWay}" Grid.Row="2" Grid.Column="1" FontSize="14" 
-                       VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4,10,2,10" Height="20"></TextBlock>
+                <TextBlock Grid.Row="1" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center"><Run Text="I"/><Run BaselineAlignment="Subscript" FontSize="8pt" Text="B2"/><Run Text="="/></TextBlock>
+                <TextBlock Text="{Binding Data.AmperageB2, Mode=OneWay}" Grid.Row="1" Grid.Column="1" FontSize="14" 
+                       VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,12,3,10"/>
 
-            <TextBlock  Grid.Row="3" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center">
-            I<Run BaselineAlignment="Subscript" FontSize="8pt">A2</Run>:
-            </TextBlock>
-            <TextBlock Text="{Binding Path=Data.AmperageA2, Mode=OneWay}" Grid.Row="3" Grid.Column="1" FontSize="14" 
-                       VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4,10,-1,12"></TextBlock>
+                <TextBlock Grid.Row="2" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center"><Run Text="I"/><Run BaselineAlignment="Subscript" FontSize="8pt" Text="C2"/><Run Text="="/></TextBlock>
+                <TextBlock Text="{Binding Data.AmperageC2, Mode=OneWay}" Grid.Row="2" Grid.Column="1" FontSize="14" 
+                       VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,12,2,11"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="Параметры" Background="White" HorizontalAlignment="Left" Height="226" Margin="310,10,0,0" VerticalAlignment="Top" Width="90">
+            <Grid HorizontalAlignment="Left" Margin="-2,0,-2,-4" Width="82">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="17*"/>
+                    <RowDefinition Height="17*"/>
+                    <RowDefinition Height="17*"/>
+                    <RowDefinition Height="17*"/>
+                    <RowDefinition Height="17*"/>
+                    <RowDefinition Height="17*"/>
+                    <RowDefinition Height="17*"/>
+                    <RowDefinition Height="16*"/>
+                </Grid.RowDefinitions>
+                <Label Content="Kz A1" BorderBrush="Gray" BorderThickness="1" HorizontalAlignment="Left" Width="82"/>
+                <Label Content="Kz A2" BorderBrush="Gray" BorderThickness="1" HorizontalAlignment="Left" Width="82" Grid.Row="1"/>
+                <Label Content="Kz B1" BorderBrush="Gray" BorderThickness="1" HorizontalAlignment="Left" Width="82" Grid.Row="2"/>
+                <Label Content="Kz B2" BorderBrush="Gray" BorderThickness="1" HorizontalAlignment="Left" Width="82" Grid.Row="3"/>
+                <Label Content="Kz C1" BorderBrush="Gray" BorderThickness="1" HorizontalAlignment="Left" Width="82" Grid.Row="4"/>
+                <Label Content="Kz C2" BorderBrush="Gray" BorderThickness="1" HorizontalAlignment="Left" Width="82" Grid.Row="5"/>
+                <Label Content="Отс. оп. н." BorderBrush="Gray" BorderThickness="1" HorizontalAlignment="Left" Width="82" Grid.Row="6"/>
+                <Label Content="Тест статус" BorderBrush="Gray" BorderThickness="1" HorizontalAlignment="Left" Width="82" Grid.Row="6" Margin="0,25,0,0" Grid.RowSpan="2"/>
 
-            <TextBlock Grid.Row="4" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center">
-                I<Run BaselineAlignment="Subscript" FontSize="8pt">B2</Run>:
-            </TextBlock>
-            <TextBlock Text="{Binding Path=Data.AmperageB2, Mode=OneWay}" Grid.Row="4" Grid.Column="1" FontSize="14" 
-                       VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4,10,-1,12"></TextBlock>
+            </Grid>
 
-            <TextBlock Grid.Row="5" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center">
-                I<Run BaselineAlignment="Subscript" FontSize="8pt">C2</Run>:
-            </TextBlock>
-            <TextBlock Text="{Binding Path=Data.AmperageC2, Mode=OneWay}" Grid.Row="5" Grid.Column="1" FontSize="14" 
-                       VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4,10,-1,12"></TextBlock>
+        </GroupBox>
+        <GroupBox Header="Состояние работы" Background="White" HorizontalAlignment="Left" Height="226" Margin="405,10,0,0" VerticalAlignment="Top" Width="144">
+            <Grid HorizontalAlignment="Left" Height="205" VerticalAlignment="Top" Width="148" Margin="0,0,-2,-1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="17*"/>
+                    <RowDefinition Height="17*"/>
+                    <RowDefinition Height="17*"/>
+                    <RowDefinition Height="17*"/>
+                    <RowDefinition Height="17*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="Старт:"  Grid.Row="0" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+                <TextBlock Text="" Grid.Row="0" Grid.Column="1" FontSize="14" 
+                       VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,11,3,11"/>
 
-        </Grid>
+                <TextBlock Text="Стоп:" Grid.Row="1" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+                <TextBlock Text="" Grid.Row="1" Grid.Column="1" FontSize="14" 
+                       VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,12,3,10"/>
 
+                <TextBlock Text="Статус:" Grid.Row="2" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+                <TextBlock Text="{Binding Path=Data.WorkingStatus, Mode=OneWay}" Grid.Row="2" Grid.Column="1" FontSize="14" 
+                       VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,12,2,11"/>
+
+                <TextBlock Grid.Row="3" Grid.Column="0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center">
+                     t<Run BaselineAlignment="Subscript" FontSize="7pt">тир-в</Run> С&#186;:
+                </TextBlock>
+                <TextBlock Text="{Binding Path=Data.TemperatureOfTiristor, Mode=OneWay}" Grid.Row="3" Grid.Column="1" FontSize="14" 
+                       VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,12,2,11"/>
+                <RadioButton Content="Цикл" HorizontalAlignment="Left" Margin="0,16,0,0" Grid.Row="4" VerticalAlignment="Top"/>
+
+
+
+            </Grid>
+
+
+        </GroupBox>
+        <Menu Height="25" VerticalAlignment="Bottom" Background="White" BorderBrush="Gray" BorderThickness="1" Margin="0,0,-2,0">
+            <MenuItem Header="Настройки" Background="LightGray" BorderBrush="Gray" Height="23" Width="77">
+                <MenuItem Header="Параметры связи" x:Name="ConnectSettingsButton" Command="{Binding ConnectionSettingsCommand}"></MenuItem>
+                <MenuItem Header="Параметры команд" >
+                    <MenuItem Header="Старт тир. модуля" x:Name="StartTiristorSettingsButton" Command="{Binding StartTiristorSettingsCommand}"></MenuItem>
+                    <MenuItem Header="Тест тир. модуля" x:Name="TestTiristorSettingsButton" Command="{Binding TestTiristorSettingsCommand}"></MenuItem>
+                </MenuItem>
+            </MenuItem>
+        </Menu>
     </Grid>
 </Window>

@@ -65,6 +65,9 @@ namespace TiristorModule
         public ICommand StartTerristorModuleCommand { get; set; }
         public ICommand StopTerristorModuleCommand { get; set; }
         public ICommand ResetAvatiaTirristorCommand { get; set; }
+        public ICommand ConnectionSettingsCommand { get; set; }
+        public ICommand StartTiristorSettingsCommand { get; set; }
+        public ICommand TestTiristorSettingsCommand { get; set; }
 
         #endregion
 
@@ -76,6 +79,11 @@ namespace TiristorModule
             StartTerristorModuleCommand = new Command(arg => StartTerristorModuleClick());
             StopTerristorModuleCommand = new Command(arg => StopTerristorModuleClick());
             ResetAvatiaTirristorCommand = new Command(arg => ResetAvatiaTirristorClick());
+            ConnectionSettingsCommand = new Command(arg => ConnectionSettingsClick());
+            StartTiristorSettingsCommand = new Command(arg => StartTiristorSettingsClick());
+            TestTiristorSettingsCommand = new Command(arg => TestTiristorSettingsClick());
+
+
 
             Status.Add(0, "Crach_ostanov");
             Status.Add(1, "Tormoz");
@@ -129,6 +137,21 @@ namespace TiristorModule
         {
             StartRequest(AddressResetAvariaTiristorCommand, standartRequest);
         }
+
+        private void ConnectionSettingsClick()
+        {
+            MessageBox.Show("реализация настроек связи??");
+        }
+
+        private void StartTiristorSettingsClick()
+        {
+            MessageBox.Show("реализация настроек старта тиристора??");
+        }
+
+        private void TestTiristorSettingsClick()
+        {
+            MessageBox.Show("реализация настроек теста тиристора??");//show window + new window (нарушение mvvm)
+        }
         #endregion
 
         #region Methods
@@ -144,9 +167,9 @@ namespace TiristorModule
                     {
                         while (flag)
                         {
-                            //Buff = ReadHoldingRegistersFromResponce(AddressCommand, RequestType);
-                            OutputDataFromArrayToModel(ReadHoldingRegistersFromResponce(AddressCommand, RequestType), AddressCommand);
-                            //Buff = null;
+                            Buff = ReadHoldingRegistersFromResponce(AddressCommand, RequestType);
+                            OutputDataFromArrayToModel(Buff, AddressCommand);
+                            Buff = null;
                             Thread.Sleep(20); // Delay 20ms
                         }
                     }));
@@ -355,6 +378,29 @@ namespace TiristorModule
                 }
             }
             return BuffResponce;
+        }
+
+        private static void GetStatusFromCurrentColtage(byte statusCrash)//finish_cheak(0 - успех/1 - неудача) 
+        {
+            if (statusCrash == 0)
+            {
+                //Label.TestTirStatus.Color = Green;      
+                //correct
+            }
+            else if(statusCrash == 1)
+            {
+                //A1_kz error
+                //Label.TestTirStatus.Color = Red;
+            }
+            else
+            {
+                int i = Convert.ToInt32(Math.Sqrt(Convert.ToDouble(statusCrash)));
+                //lable в словарь/список
+                //lable[i] = label.color(red); 
+                //Label.TestTirStatus.Color = Red; 
+                //связь label в mvvm
+
+            }
         }
 
         private static void OpenSerialPortConnection(SerialPort serialPort)
