@@ -201,22 +201,11 @@ namespace TiristorModule
 
         private static string SetStatusWork(ushort buff)
         {
-            if (buff == 16)
+            if (buff % 16 == 0)
             {
-                return Status[0];
-            } 
-            else if(buff == 32)
-            {
-                return Status[1];
-            }
-            else if(buff == 64)
-            {
-                return Status[2];
-            }
-            else if(buff == 128)
-            {
-                return Status[3];
-            }
+                int i = Convert.ToInt32(Math.Sqrt(Convert.ToDouble(buff)) - 4);
+                return Status[i];
+            }                
             else
             {
                 return "Value";
@@ -333,12 +322,6 @@ namespace TiristorModule
         {
             byte[] frame;
             ushort[] result;
-            //frame = StandartRequest(slaveAddress, commandNumber);
-            ////while (true)
-            ////{
-            //    Thread.Sleep(100);
-            //    serialPort1.Write(frame, 0, frame.Length);
-            ////}
 
             if (serialPort1.IsOpen)
             {
