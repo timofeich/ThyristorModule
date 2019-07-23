@@ -9,11 +9,11 @@ namespace TiristorModule
 {
     class MainViewModel
     {
-        private static SerialPort serialPort1 = new SerialPort("COM3", 57600, Parity.None, 8, StopBits.One);//baudRate 57600?
+        private static SerialPort serialPort1 = new SerialPort("COM3", 57600, Parity.None, 8, StopBits.One);
 
         #region Fields
         private const byte slaveAddress = 0x67;
-        private const byte MasterAddress = 0xFF;// как с ним быть?
+        private const byte MasterAddress = 0xFF;
 
         private const byte AddressStartTiristorModuleCommand = 0x87;
         private const byte AddressStopTiristorModuleCommand = 0x88;
@@ -35,11 +35,11 @@ namespace TiristorModule
         private const ushort CurrentKz2_1 = 300;
 
         private const byte PersentTestPower = 15;
-        private const byte NominalTok1sk = 54 / 10;
+        private const int NominalTok1sk = 54 / 10;
         private const byte NumberOfTest = 10;
         private static byte[] BuffTir = new byte[18];
         private static ushort[] BuffResponce;
-        private static byte FinishCheak;//что это?
+        private static byte FinishCheak;
 
         private static Dictionary<int, string> Status = new Dictionary<int, string>(4);
 
@@ -219,27 +219,30 @@ namespace TiristorModule
             }
             else
             {
-                return "Error !0 !32 !64 !128";
+                return "Value";
             }
         }
 
-        private static byte[] StandartRequest(byte slaveAddress, byte commandNumber)
+        private static byte[] StandartRequest(byte slaveAddress, byte commandNumber)//кастыль в массивах(мб список)
         {
-            byte[] frame = new byte[4];
+            byte[] frame = new byte[3];
+            byte[] frameout = new byte[4];
             frame[0] = slaveAddress;
             frame[1] = commandNumber;
             frame[2] = 0x00;
-            byte crc = CalculateCRC8(frame);
-            frame[3] = crc;
-            return frame;
+            Array.Copy(frame, frameout, frame.Length);
+            frameout[3] = CalculateCRC8(frame);//0x6e
+
+            return frameout;
         }
 
         private static byte[] StartTiristorModuleRequest(byte slaveAddress, bool plavniiPuskStart)
         {
-            byte[] frame = new byte[32];
+            byte[] frame = new byte[31];
+            byte[] frameout = new byte[32];
 
             frame[0] = slaveAddress;
-            frame[1] = 0x87;//adressCommand
+            frame[1] = AddressStartTiristorModuleCommand;//adressCommand
             frame[2] = 28;//quantityofbyte
 
             for (int i = 0; i < Times.Length; i++)
@@ -263,31 +266,32 @@ namespace TiristorModule
             frame[29] = AlarmTemperatureTiristor;
             frame[30] = Convert.ToByte(plavniiPuskStart);//flag
 
-            byte crc = CalculateCRC8(frame);
-            frame[frame.Length - 1] = crc;
+            Array.Copy(frame, frameout, frame.Length);
+            frameout[frameout.Length - 1] = CalculateCRC8(frame);
 
-            return frame;
+            return frameout;
         }
 
         private static byte[] TestTiristorModuleRequest(byte slaveAddress)//finish_cheak(0 - успех/1 - неудача) 
         {
-            byte[] frame = new byte[11];
+            byte[] frame = new byte[10];
+            byte[] frameout = new byte[11];
 
             frame[0] = slaveAddress;
-            frame[1] = 0x88;//adressCommand
+            frame[1] = AddressTestTiristorModuleCommand;//adressCommand
             frame[2] = 7;//quantityofbyte
             frame[3] = PersentTestPower;
-            frame[4] = NominalTok1sk;//5 вольт
+            frame[4] = NominalTok1sk;
             frame[5] = NumberOfTest;
             frame[6] = Convert.ToByte(CurrentKz1_1 >> 8);
             frame[7] = Convert.ToByte(CurrentKz1_1 ^ 0x100);
             frame[8] = Convert.ToByte(CurrentKz2_1 >> 8);
             frame[9] = Convert.ToByte(CurrentKz2_1 ^ 0x100);
 
-            byte crc = CalculateCRC8(frame);
-            frame[frame.Length - 1] = crc;
+            Array.Copy(frame, frameout, frame.Length);
+            frameout[frameout.Length - 1] = CalculateCRC8(frame);
 
-            return frame;
+            return frameout;
         }
 
         private static ushort[] ParseTestTirResponse(byte[] data)//output as a table
@@ -329,12 +333,12 @@ namespace TiristorModule
         {
             byte[] frame;
             ushort[] result;
-            frame = StandartRequest(slaveAddress, commandNumber);
-            while (true)
-            {
-                Thread.Sleep(100);
-                serialPort1.Write(frame, 0, frame.Length);
-            }
+            //frame = StandartRequest(slaveAddress, commandNumber);
+            ////while (true)
+            ////{
+            //    Thread.Sleep(100);
+            //    serialPort1.Write(frame, 0, frame.Length);
+            ////}
 
             if (serialPort1.IsOpen)
             {
