@@ -4,6 +4,7 @@ using System.IO.Ports;
 using System.Threading;
 using TiristorModule.ViewModel;
 using System.Windows.Input;
+using System.Windows;
 
 namespace TiristorModule
 {
@@ -138,15 +139,14 @@ namespace TiristorModule
                 flag = true;
                 if (AddressCommand == AddressRequestFotCurrentVoltageCommand)
                 {
-                    if (serialPort1.IsOpen) serialPort1.Close();
-                    serialPort1.Open();
+                    OpenSerialPortConnection(serialPort1);
                     ThreadPool.QueueUserWorkItem(new WaitCallback((obj) =>
                     {
                         while (flag)
                         {
-                            Buff = ReadHoldingRegistersFromResponce(AddressCommand, RequestType);
-                            OutputDataFromArrayToModel(Buff, AddressCommand);
-                            Buff = null;
+                            //Buff = ReadHoldingRegistersFromResponce(AddressCommand, RequestType);
+                            OutputDataFromArrayToModel(ReadHoldingRegistersFromResponce(AddressCommand, RequestType), AddressCommand);
+                            //Buff = null;
                             Thread.Sleep(20); // Delay 20ms
                         }
                     }));
@@ -154,10 +154,8 @@ namespace TiristorModule
                 else
                 {
                     flag = false;
-                    if (serialPort1.IsOpen) serialPort1.Close();
-                    serialPort1.Open();
-                    Array.Copy(Buff, 0, ReadHoldingRegistersFromResponce(AddressCommand, RequestType), 0,
-                        ReadHoldingRegistersFromResponce(AddressCommand, RequestType).Length);
+                    OpenSerialPortConnection(serialPort1);
+                    Buff = ReadHoldingRegistersFromResponce(AddressCommand, RequestType);
                     OutputDataFromArrayToModel(Buff, AddressCommand);
                     Buff = null;
                 }
@@ -166,8 +164,7 @@ namespace TiristorModule
 
             catch (Exception ex)
             {
-                //MessageBox.Show("Проверьте подключение COM-порта.");
-                throw ex;
+                MessageBox.Show("Ошибка: " + ex);
             }
         }
 
@@ -184,7 +181,7 @@ namespace TiristorModule
             }
         }
 
-        private static void OutputDataFromArrayToModel(ushort[] buff, byte AdressCommand)//mb status output trubles
+        private static void OutputDataFromArrayToModel(ushort[] buff, byte AdressCommand)
         {
             Data.VoltageA = buff[0];
             Data.VoltageB = buff[1];
@@ -199,16 +196,16 @@ namespace TiristorModule
             if(AdressCommand != AddressTestTiristorModuleCommand) { Data.WorkingStatus = SetStatusWork(buff[10]); }
         }
 
-        private static string SetStatusWork(ushort buff)
+        private static string SetStatusWork(ushort statusByte)
         {
-            if (buff % 16 == 0)
+            if (statusByte % 16 == 0 && statusByte != 0)
             {
-                int i = Convert.ToInt32(Math.Sqrt(Convert.ToDouble(buff)) - 4);
-                return Status[i];
-            }                
+                int i = Convert.ToInt32(Math.Sqrt(Convert.ToDouble(statusByte)) - 4);
+                return Status[1];
+            }     
             else
             {
-                return "Value";
+                return "Дежурный р-м";
             }
         }
 
@@ -286,36 +283,48 @@ namespace TiristorModule
         private static ushort[] ParseTestTirResponse(byte[] data)//output as a table
         {
             ushort[] frame = new ushort[18];
-
-            for (int i = 0; i < 17; i++)
+            if (data[23] == CalculateCRC8(data))
             {
-                frame[i] = data[i + 4];
+                for (int i = 0; i < 17; i++)
+                {
+                    frame[i] = data[i + 4];
+                }
+
+                frame[17] = data[22];
+                return frame;
             }
-
-            frame[17] = data[22];
-            frame[18] = data[23];
-
-
-            return frame;
+            else
+            {
+                frame[2] = 0;
+                return frame;
+            }
         }
 
         private static ushort[] ParseCurrentVoltageResponse(byte[] data)//status_crash(0-suc-s/list of errors)
         {
             ushort[] frame = new ushort[12];
             int j = 4;
-
-            for (int i = 0; i <= 8; i++)
+            if (data[24] == CalculateCRC8(data))
             {
-                frame[i] = Word.FromBytes(data[j + 1], data[j]);
-                j += 2;
+                for (int i = 0; i <= 8; i++)
+                {
+                    frame[i] = Word.FromBytes(data[j + 1], data[j]);
+                    j += 2;
+                }
+
+                for (int i = 9; i < frame.Length; i++)
+                {
+                    frame[i] = data[i + 13];
+                }
+
+                return frame;
+            }
+            else
+            {
+                frame[2] = 0;
+                return frame;
             }
 
-            for (int i = 9; i < frame.Length; i++)
-            {
-                frame[i] = data[i + 13];
-            }
-
-            return frame;
         }
 
         public static ushort[] ReadHoldingRegistersFromResponce(byte commandNumber, int requestType)
@@ -325,18 +334,9 @@ namespace TiristorModule
 
             if (serialPort1.IsOpen)
             {
-                if(requestType == standartRequest)
-                {
-                    frame = StandartRequest(slaveAddress, commandNumber);
-                }
-                else if(requestType == startRequest)
-                {
-                    frame = StartTiristorModuleRequest(slaveAddress, true);
-                }
-                else
-                {
-                    frame = TestTiristorModuleRequest(slaveAddress);
-                }
+                if (requestType == standartRequest) frame = StandartRequest(slaveAddress, commandNumber);
+                else if (requestType == startRequest) frame = StartTiristorModuleRequest(slaveAddress, true);
+                else frame = TestTiristorModuleRequest(slaveAddress);
                  
                 serialPort1.Write(frame, 0, frame.Length);
                
@@ -346,21 +346,24 @@ namespace TiristorModule
                     byte[] bufferReceiver = new byte[serialPort1.BytesToRead];
                     serialPort1.Read(bufferReceiver, 0, serialPort1.BytesToRead);
                     serialPort1.DiscardInBuffer();
-                    if(bufferReceiver[2] == 21)
-                    {
-                        result = ParseTestTirResponse(bufferReceiver);
-                    }
-                    else
-                    {
-                        result = ParseCurrentVoltageResponse(bufferReceiver);
-                    }
-                    BuffResponce = result;
+
+                    if (bufferReceiver[2] == 21) result = ParseTestTirResponse(bufferReceiver);
+                    else result = ParseCurrentVoltageResponse(bufferReceiver);
+
+                    if (result[2] == 0) MessageBox.Show("Нарушена целостность ответа.");
+                    else BuffResponce = result;
                 }
             }
             return BuffResponce;
         }
 
-        private static byte CalculateCRC8(byte[] array)//crc-8/cdma2000
+        private static void OpenSerialPortConnection(SerialPort serialPort)
+        {
+            if (serialPort.IsOpen) serialPort.Close();
+            serialPort.Open();
+        }
+
+        private static byte CalculateCRC8(byte[] array)
         {
             byte crc = 0xFF;
 
