@@ -1,0 +1,101 @@
+﻿<Window x:Class="TiristorModule.View.StartTiristorSettingsView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TiristorModule.View"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
+        Title="Параметры - Старт тир. модуля" Height="290.333" Width="390.5" Background="LightGray">
+    <Grid>
+        <GroupBox Header="Данные для разгона" Background="White" HorizontalAlignment="Left" Height="93" Margin="10,0,0,0" VerticalAlignment="Top" Width="362">
+            <Grid Margin="-4,0,-4,-3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <TextBlock TextWrapping="Wrap" Text="Время:" Margin="21,10,0,0"/>
+                <TextBox Grid.Column="1" HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="25"/>
+                <TextBox Grid.Column="2" HorizontalAlignment="Left" Height="20" Margin="1,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="25"/>
+                <TextBox Grid.Column="3" HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="25"/>
+                <TextBox Grid.Column="4" HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="25"/>
+                <TextBox Grid.Column="5" HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="25"/>
+                <TextBox Grid.Column="6" HorizontalAlignment="Left" Height="20" Margin="1,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="25"/>
+                <TextBox Grid.Column="7" HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="25"/>
+                <TextBox Grid.Column="8" HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="25"/>
+                <TextBox Grid.Column="9" HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="25"/>
+                <TextBlock TextWrapping="Wrap" Text="Мощность %:" Margin="0,10,0,0" Grid.Row="1"/>
+                <TextBox Grid.Column="1" HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="25" Grid.Row="1"/>
+                <TextBox Grid.Column="2" HorizontalAlignment="Left" Height="20" Margin="1,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="25" Grid.Row="1"/>
+                <TextBox Grid.Column="3" HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="25" Grid.Row="1"/>
+                <TextBox Grid.Column="4" HorizontalAlignment="Left" Height="20" Margin="1,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="25" Grid.Row="1"/>
+                <TextBox Grid.Column="5" HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="25" Grid.Row="1"/>
+                <TextBox Grid.Column="6" HorizontalAlignment="Left" Height="20" Margin="1,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="25" Grid.Row="1"/>
+                <TextBox Grid.Column="7" HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="25" Grid.Row="1"/>
+                <TextBox Grid.Column="8" HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="25" Grid.Row="1"/>
+                <TextBox Grid.Column="9" HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="25" Grid.Row="1"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="Параметры Kz1" Background="White" HorizontalAlignment="Left" Height="95" Margin="10,98,0,0" VerticalAlignment="Top" Width="170">
+            <Grid Margin="0,0,-2,3">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="41*"/>
+                    <ColumnDefinition Width="33*"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <TextBlock TextWrapping="Wrap" Text="Ток Kz1 =" Margin="17,10,0,1"/>
+                <TextBox HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="41" Grid.Column="1"/>
+                <TextBlock TextWrapping="Wrap" Text="Время Kz1 =" Margin="0,4,0,0" Height="23" VerticalAlignment="Top" HorizontalAlignment="Left" Width="74" Grid.Row="1"/>
+                <TextBox HorizontalAlignment="Left" Height="20" Margin="0,4,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="41" Grid.Column="1" Grid.Row="1"/>
+                <TextBlock Grid.Column="2" HorizontalAlignment="Left" Margin="1,4,0,0" TextWrapping="Wrap" Text="мс" VerticalAlignment="Top" Height="20" Width="22" Grid.Row="1"/>
+
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="Параметры Kz2" Background="White" HorizontalAlignment="Left" Height="95" Margin="203,98,0,0" VerticalAlignment="Top" Width="170">
+            <Grid HorizontalAlignment="Left" Height="73" Margin="0,1,-2,-2" VerticalAlignment="Top" Width="150">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" MinWidth="73"/>
+                    <ColumnDefinition Width="43*"/>
+                    <ColumnDefinition Width="34*"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <TextBlock TextWrapping="Wrap" Text="Ток Kz2 =" Margin="14,10,0,0" Height="23" VerticalAlignment="Top" HorizontalAlignment="Left" Width="59"/>
+                <TextBox HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="41" Grid.Column="1"/>
+                <TextBlock TextWrapping="Wrap" Margin="0,4,0,0" Height="29" VerticalAlignment="Top" HorizontalAlignment="Left" Width="73" Grid.Row="1"><Run Text="Время"/><Run Text=" "/><Run Text="Kz2 ="/></TextBlock>
+                <TextBox HorizontalAlignment="Left" Height="20" Margin="0,4,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="41" Grid.Column="1" Grid.Row="1"/>
+                <TextBlock Grid.Column="2" HorizontalAlignment="Left" Margin="0,4,0,0" Grid.Row="1" TextWrapping="Wrap" Text="мс" VerticalAlignment="Top"/>
+
+            </Grid>
+        </GroupBox>
+        <Grid HorizontalAlignment="Left" Background="White" Height="44" Margin="95,202,0,0" VerticalAlignment="Top" Width="200">
+            <Button Content="ОК"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Height="25" Margin="17,10,0,0"/>
+            <Button Content="Отмена" HorizontalAlignment="Left" Margin="103,10,0,0" VerticalAlignment="Top" Width="75" Height="25"/>
+        </Grid>
+
+    </Grid>
+
+
+</Window>

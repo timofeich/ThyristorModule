@@ -5,6 +5,7 @@ using System.Threading;
 using TiristorModule.ViewModel;
 using System.Windows.Input;
 using System.Windows;
+using TiristorModule.View;
 
 namespace TiristorModule
 {
@@ -40,9 +41,9 @@ namespace TiristorModule
         private const byte NumberOfTest = 10;
         private static byte[] BuffTir = new byte[18];
         private static ushort[] BuffResponce;
-        private static byte FinishCheak;
 
-        private static Dictionary<int, string> Status = new Dictionary<int, string>(4);
+        private static Dictionary<int, string> WorkingStatus = new Dictionary<int, string>(4);
+        private static Dictionary<int, string> TestingStatus = new Dictionary<int, string>(2);
 
         private static int standartRequest = 0;
         private static int startRequest = 1;
@@ -53,7 +54,6 @@ namespace TiristorModule
         #endregion
 
         #region Properties
-
         public static DataModel Data { get; set; }
         #endregion
 
@@ -65,6 +65,7 @@ namespace TiristorModule
         public ICommand StartTerristorModuleCommand { get; set; }
         public ICommand StopTerristorModuleCommand { get; set; }
         public ICommand ResetAvatiaTirristorCommand { get; set; }
+
         public ICommand ConnectionSettingsCommand { get; set; }
         public ICommand StartTiristorSettingsCommand { get; set; }
         public ICommand TestTiristorSettingsCommand { get; set; }
@@ -79,16 +80,13 @@ namespace TiristorModule
             StartTerristorModuleCommand = new Command(arg => StartTerristorModuleClick());
             StopTerristorModuleCommand = new Command(arg => StopTerristorModuleClick());
             ResetAvatiaTirristorCommand = new Command(arg => ResetAvatiaTirristorClick());
+
             ConnectionSettingsCommand = new Command(arg => ConnectionSettingsClick());
             StartTiristorSettingsCommand = new Command(arg => StartTiristorSettingsClick());
             TestTiristorSettingsCommand = new Command(arg => TestTiristorSettingsClick());
 
-
-
-            Status.Add(0, "Crach_ostanov");
-            Status.Add(1, "Tormoz");
-            Status.Add(2, "Baipass");
-            Status.Add(3, "Razgon");
+            InitializeWorkingStatusData();
+            InitializeTestingStatusData();
 
             Data = new DataModel
             {
@@ -102,8 +100,23 @@ namespace TiristorModule
                 VoltageB = 0,
                 VoltageC = 0,
                 TemperatureOfTiristor = 0,
-                WorkingStatus = null
+                WorkingStatus = null,
+                TestingStatus = null
             };
+        }
+
+        private static void InitializeWorkingStatusData()
+        {
+            WorkingStatus.Add(0, "Crach_ostanov");
+            WorkingStatus.Add(1, "Tormoz");
+            WorkingStatus.Add(2, "Baipass");
+            WorkingStatus.Add(3, "Razgon");
+        }
+
+        private static void InitializeTestingStatusData()
+        {
+            TestingStatus.Add(0, "Успешно");
+            TestingStatus.Add(1, "Ошибочно");
         }
 
         #region ClickHandler
@@ -138,19 +151,34 @@ namespace TiristorModule
             StartRequest(AddressResetAvariaTiristorCommand, standartRequest);
         }
 
-        private void ConnectionSettingsClick()
+        private void ConnectionSettingsClick()//switch window method
         {
-            MessageBox.Show("реализация настроек связи??");
+            var connectSettingView = new ConnectSettingWindowView
+            {
+                DataContext = new ConnectSettingViewModel()
+            };
+
+            connectSettingView.ShowDialog();
         }
 
         private void StartTiristorSettingsClick()
         {
-            MessageBox.Show("реализация настроек старта тиристора??");
+            var connectSettingView = new StartTiristorSettingsView
+            {
+                DataContext = new StartTiristorSettingsViewModel()
+            };
+
+            connectSettingView.ShowDialog(); 
         }
 
         private void TestTiristorSettingsClick()
         {
-            MessageBox.Show("реализация настроек теста тиристора??");//show window + new window (нарушение mvvm)
+            var connectSettingView = new TestTiristorSettingsView
+            {
+                DataContext = new TestTiristorSettingsViewModel()
+            };
+
+            connectSettingView.ShowDialog();
         }
         #endregion
 
@@ -159,15 +187,15 @@ namespace TiristorModule
         {
             try
             {
-                flag = true;
                 if (AddressCommand == AddressRequestFotCurrentVoltageCommand)
                 {
+                    flag = true;
                     OpenSerialPortConnection(serialPort1);
                     ThreadPool.QueueUserWorkItem(new WaitCallback((obj) =>
                     {
                         while (flag)
                         {
-                            Buff = ReadHoldingRegistersFromResponce(AddressCommand, RequestType);
+                            Buff = ReadHoldingResponcesFromBuffer(AddressCommand, RequestType);
                             OutputDataFromArrayToModel(Buff, AddressCommand);
                             Buff = null;
                             Thread.Sleep(20); // Delay 20ms
@@ -178,7 +206,7 @@ namespace TiristorModule
                 {
                     flag = false;
                     OpenSerialPortConnection(serialPort1);
-                    Buff = ReadHoldingRegistersFromResponce(AddressCommand, RequestType);
+                    Buff = ReadHoldingResponcesFromBuffer(AddressCommand, RequestType);
                     OutputDataFromArrayToModel(Buff, AddressCommand);
                     Buff = null;
                 }
@@ -216,15 +244,16 @@ namespace TiristorModule
             Data.AmperageB2 = buff[7];
             Data.AmperageC2 = buff[8];
             Data.TemperatureOfTiristor = buff[9];
-            if(AdressCommand != AddressTestTiristorModuleCommand) { Data.WorkingStatus = SetStatusWork(buff[10]); }
+            if(AdressCommand != AddressTestTiristorModuleCommand) { Data.WorkingStatus = GetWorkingStatus(buff[10]); }
+            else { Data.TestingStatus = GetStatusFromTestTiristor(buff[22]); }
         }
 
-        private static string SetStatusWork(ushort statusByte)
+        private static string GetWorkingStatus(ushort statusByte)
         {
             if (statusByte % 16 == 0 && statusByte != 0)
             {
                 int i = Convert.ToInt32(Math.Sqrt(Convert.ToDouble(statusByte)) - 4);
-                return Status[1];
+                return WorkingStatus[1];
             }     
             else
             {
@@ -232,7 +261,8 @@ namespace TiristorModule
             }
         }
 
-        private static byte[] StandartRequest(byte slaveAddress, byte commandNumber)//кастыль в массивах(мб список)
+        //standart request - zapros_cur_voltage, stop_tiristor_module, reset_avaria_tir, avarinii_stop
+        private static byte[] CreateStandartRequest(byte slaveAddress, byte commandNumber)
         {
             byte[] frame = new byte[3];
             byte[] frameout = new byte[4];
@@ -245,7 +275,7 @@ namespace TiristorModule
             return frameout;
         }
 
-        private static byte[] StartTiristorModuleRequest(byte slaveAddress, bool plavniiPuskStart)
+        private static byte[] CreateStartTiristorModuleRequest(byte slaveAddress, bool plavniiPuskStart)
         {
             byte[] frame = new byte[31];
             byte[] frameout = new byte[32];
@@ -281,7 +311,7 @@ namespace TiristorModule
             return frameout;
         }
 
-        private static byte[] TestTiristorModuleRequest(byte slaveAddress)//finish_cheak(0 - успех/1 - неудача) 
+        private static byte[] CreateTestTiristorModuleRequest(byte slaveAddress)
         {
             byte[] frame = new byte[10];
             byte[] frameout = new byte[11];
@@ -350,16 +380,16 @@ namespace TiristorModule
 
         }
 
-        public static ushort[] ReadHoldingRegistersFromResponce(byte commandNumber, int requestType)
+        public static ushort[] ReadHoldingResponcesFromBuffer(byte commandNumber, int requestType)
         {
             byte[] frame;
             ushort[] result;
 
             if (serialPort1.IsOpen)
             {
-                if (requestType == standartRequest) frame = StandartRequest(slaveAddress, commandNumber);
-                else if (requestType == startRequest) frame = StartTiristorModuleRequest(slaveAddress, true);
-                else frame = TestTiristorModuleRequest(slaveAddress);
+                if (requestType == standartRequest) frame = CreateStandartRequest(slaveAddress, commandNumber);
+                else if (requestType == startRequest) frame = CreateStartTiristorModuleRequest(slaveAddress, true);
+                else frame = CreateTestTiristorModuleRequest(slaveAddress);
                  
                 serialPort1.Write(frame, 0, frame.Length);
                
@@ -380,27 +410,30 @@ namespace TiristorModule
             return BuffResponce;
         }
 
-        private static void GetStatusFromCurrentColtage(byte statusCrash)//finish_cheak(0 - успех/1 - неудача) 
+        private static void GetStatusFromCurrentVoltage(ushort statusCrash) 
         {
-            if (statusCrash == 0)
+            //массив эл. управления
+            //перебор 
+            //логика вывода ошибок
+            //    int i = Convert.ToInt32(Math.Sqrt(Convert.ToDouble(statusCrash)));
+
+            switch (statusCrash)
             {
-                //Label.TestTirStatus.Color = Green;      
-                //correct
-            }
-            else if(statusCrash == 1)
-            {
-                //A1_kz error
-                //Label.TestTirStatus.Color = Red;
-            }
-            else
-            {
-                int i = Convert.ToInt32(Math.Sqrt(Convert.ToDouble(statusCrash)));
-                //lable в словарь/список
-                //lable[i] = label.color(red); 
-                //Label.TestTirStatus.Color = Red; 
-                //связь label в mvvm
+                case 0:
+
+                    break;
+                case 1:
+
+                    break;
+
+               
 
             }
+        }
+
+        private static string GetStatusFromTestTiristor(ushort statusTest)
+        {
+            return TestingStatus[statusTest];
         }
 
         private static void OpenSerialPortConnection(SerialPort serialPort)

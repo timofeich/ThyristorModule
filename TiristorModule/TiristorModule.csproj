@@ -57,7 +57,20 @@
     </ApplicationDefinition>
     <Compile Include="Model\DataModel.cs" />
     <Compile Include="ViewModel\Command.cs" />
+    <Compile Include="ViewModel\ConnectSettingViewModel.cs" />
+    <Compile Include="ViewModel\StartTiristorSettingsViewModel.cs" />
+    <Compile Include="ViewModel\TestTiristorSettingsViewModel.cs" />
     <Compile Include="ViewModel\Word.cs" />
+    <Compile Include="View\StartTiristorSettingsView.xaml.cs">
+      <DependentUpon>StartTiristorSettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\TestTiristorSettingsView.xaml.cs">
+      <DependentUpon>TestTiristorSettingsView.xaml</DependentUpon>
+    </Compile>
+    <Page Include="View\ConnectSettingView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\MainWindowView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -67,10 +80,21 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
+    <Compile Include="View\ConnectSettingView.xaml.cs">
+      <DependentUpon>ConnectSettingView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\MainWindowView.xaml.cs">
       <DependentUpon>MainWindowView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="View\StartTiristorSettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\TestTiristorSettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows.Media;
 
 namespace TiristorModule
 {
@@ -34,23 +35,21 @@ namespace TiristorModule
 
         private ushort temperatureOfTiristor;
         private string workingStatus;//enum перечисление
+        protected string testingStatus;
         private ushort opredelenieFazRevers;
+
         #endregion
 
         #region Properties
 
         public ushort VoltageA
         {
-            get
-            {
-                return voltageA;
-            }
-
+            get { return voltageA; }
             set
             {
-                if (this.voltageA != value)
+                if (voltageA != value)
                 {
-                    this.voltageA = value;
+                    voltageA = value;
                     OnPropertyChanged("VoltageA");
                 }
             }
@@ -58,16 +57,12 @@ namespace TiristorModule
 
         public ushort VoltageB
         {
-            get
-            {
-                return voltageB;
-            }
-
+            get { return voltageB; }
             set
             {
-                if (this.voltageB != value)
+                if (voltageB != value)
                 {
-                    this.voltageB = value;
+                    voltageB = value;
                     OnPropertyChanged("VoltageB");
                 }
             }
@@ -75,16 +70,12 @@ namespace TiristorModule
 
         public ushort VoltageC
         {
-            get
-            {
-                return voltageC;
-            }
-
+            get { return voltageC; }
             set
             {
-                if (this.voltageC != value)
+                if (voltageC != value)
                 {
-                    this.voltageC = value;
+                    voltageC = value;
                     OnPropertyChanged("VoltageC");
                 }
             }
@@ -92,16 +83,12 @@ namespace TiristorModule
 
         public ushort AmperageA1
         {
-            get
-            {
-                return amperageA1;
-            }
-
+            get { return amperageA1; }
             set
             {
-                if (this.amperageA1 != value)
+                if (amperageA1 != value)
                 {
-                    this.amperageA1 = value;
+                    amperageA1 = value;
                     OnPropertyChanged("AmperageA1");
                 }
             }
@@ -109,16 +96,12 @@ namespace TiristorModule
 
         public ushort AmperageB1
         {
-            get
-            {
-                return amperageB1;
-            }
-
+            get { return amperageB1; }
             set
             {
-                if (this.amperageB1 != value)
+                if (amperageB1 != value)
                 {
-                    this.amperageB1 = value;
+                    amperageB1 = value;
                     OnPropertyChanged("AmperageB1");
                 }
             }
@@ -126,16 +109,12 @@ namespace TiristorModule
 
         public ushort AmperageC1
         {
-            get
-            {
-                return amperageC1;
-            }
-
+            get { return amperageC1; }
             set
             {
-                if (this.amperageC1 != value)
+                if (amperageC1 != value)
                 {
-                    this.amperageC1 = value;
+                    amperageC1 = value;
                     OnPropertyChanged("AmperageC1");
                 }
             }
@@ -143,16 +122,12 @@ namespace TiristorModule
 
         public ushort AmperageA2
         {
-            get
-            {
-                return amperageA1;
-            }
-
+            get { return amperageA1; }
             set
             {
-                if (this.amperageA2 != value)
+                if (amperageA2 != value)
                 {
-                    this.amperageA2 = value;
+                    amperageA2 = value;
                     OnPropertyChanged("AmperageA2");
                 }
             }
@@ -160,16 +135,12 @@ namespace TiristorModule
 
         public ushort AmperageB2
         {
-            get
-            {
-                return amperageB2;
-            }
-
+            get { return amperageB2; }
             set
             {
-                if (this.amperageB2 != value)
+                if (amperageB2 != value)
                 {
-                    this.amperageB2 = value;
+                    amperageB2 = value;
                     OnPropertyChanged("AmperageB2");
                 }
             }
@@ -177,17 +148,12 @@ namespace TiristorModule
 
         public ushort AmperageC2
         {
-            get
-            {
-                return amperageC2;
-            }
-
-
+            get { return amperageC2; }
             set
             {
-                if (this.amperageC2 != value)
+                if (amperageC2 != value)
                 {
-                    this.amperageC2 = value;
+                    amperageC2 = value;
                     OnPropertyChanged("AmperageC2");
                 }
             }
@@ -195,11 +161,7 @@ namespace TiristorModule
 
         public ushort TemperatureOfTiristor
         {
-            get
-            {
-                return temperatureOfTiristor;
-            }
-
+            get { return temperatureOfTiristor; }
             set
             {
                 if (temperatureOfTiristor != value)
@@ -212,17 +174,26 @@ namespace TiristorModule
 
         public string WorkingStatus
         {
-            get
-            {
-                return workingStatus;
-            }
-
+            get { return workingStatus; }
             set
             {
                 if (workingStatus != value)
                 {
                     workingStatus = value;
                     OnPropertyChanged("WorkingStatus");
+                }
+            }
+        }
+   
+        public string TestingStatus
+        {
+            get { return testingStatus; }
+            set
+            {
+                if (testingStatus != value)
+                {
+                    testingStatus = value;
+                    OnPropertyChanged("TestingStatus");
                 }
             }
         }
