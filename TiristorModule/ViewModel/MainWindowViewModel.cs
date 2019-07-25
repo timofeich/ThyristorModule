@@ -30,15 +30,16 @@ namespace TiristorModule
 
         private const byte AlarmTemperatureTiristor = 85;
 
-        private const byte VremiaKzMs1 = 10;
-        private const byte VremiaKzMs2 = 10;
+        private static byte VremiaKzMs1 = Properties.Settings.Default.VremiaKzMs1;
+        private static byte VremiaKzMs2 = Properties.Settings.Default.VremiaKzMs2;
 
-        private const ushort CurrentKz1_1 = 300;
-        private const ushort CurrentKz2_1 = 300;
+        private static ushort CurrentKz1_1 = Properties.Settings.Default.CurrentKz1;
+        private static ushort CurrentKz2_1 = Properties.Settings.Default.CurrentKz2;
 
-        private const byte PersentTestPower = 15;
-        private const int NominalTok1sk = 54 / 10;
-        private const byte NumberOfTest = 10;
+        private static byte PersentTestPower = Properties.Settings.Default.PersentTestPower;
+        private static int NominalTok1sk = Properties.Settings.Default.NominalTok1sk / 10;
+        private static byte NumberOfTest = Properties.Settings.Default.NumberOfTest;
+
         private static byte[] BuffTir = new byte[18];
         private static ushort[] BuffResponce;
 
@@ -173,11 +174,12 @@ namespace TiristorModule
 
         private void TestTiristorSettingsClick()
         {
+            var vm = new TestTiristorSettingsViewModel();
             var connectSettingView = new TestTiristorSettingsView
             {
-                DataContext = new TestTiristorSettingsViewModel()
+                DataContext = vm
             };
-
+            vm.OnRequestClose += (s, e) => connectSettingView.Close();
             connectSettingView.ShowDialog();
         }
         #endregion
@@ -320,7 +322,7 @@ namespace TiristorModule
             frame[1] = AddressTestTiristorModuleCommand;//adressCommand
             frame[2] = 7;//quantityofbyte
             frame[3] = PersentTestPower;
-            frame[4] = NominalTok1sk;
+            frame[4] = Convert.ToByte(NominalTok1sk);
             frame[5] = NumberOfTest;
             frame[6] = Convert.ToByte(CurrentKz1_1 >> 8);
             frame[7] = Convert.ToByte(CurrentKz1_1 ^ 0x100);

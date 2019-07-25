@@ -34,9 +34,8 @@ namespace TiristorModule
         public ObservableCollection<DataModel> DataModels { get; set; }
 
         private ushort temperatureOfTiristor;
-        private string workingStatus;//enum перечисление
+        private string workingStatus;
         protected string testingStatus;
-        private ushort opredelenieFazRevers;
 
         #endregion
 

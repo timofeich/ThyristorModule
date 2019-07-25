@@ -35,6 +35,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Itenso.Configuration, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\UserSettingsApplied.1.2.0\lib\net20\Release\Itenso.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="Itenso.Configuration.Windows, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\UserSettingsApplied.1.2.0\lib\net20\Release\Itenso.Configuration.Windows.dll</HintPath>
+    </Reference>
+    <Reference Include="Itenso.Configuration.WindowsForms, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\UserSettingsApplied.1.2.0\lib\net20\Release\Itenso.Configuration.WindowsForms.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -56,6 +65,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Model\DataModel.cs" />
+    <Compile Include="Setting\AppSettings.cs" />
+    <Compile Include="Setting\SettingAttribute.cs" />
     <Compile Include="ViewModel\Command.cs" />
     <Compile Include="ViewModel\ConnectSettingViewModel.cs" />
     <Compile Include="ViewModel\StartTiristorSettingsViewModel.cs" />
@@ -114,6 +125,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
