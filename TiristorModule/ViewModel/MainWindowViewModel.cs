@@ -6,6 +6,7 @@ using TiristorModule.ViewModel;
 using System.Windows.Input;
 using System.Windows;
 using TiristorModule.View;
+using System.Linq;
 
 namespace TiristorModule
 {
@@ -14,8 +15,8 @@ namespace TiristorModule
         private static SerialPort serialPort1 = new SerialPort("COM3", 57600, Parity.None, 8, StopBits.One);
 
         #region Fields
-        private const byte slaveAddress = 0x67;
-        private const byte MasterAddress = 0xFF;
+        private static byte SlaveAddress = Properties.Settings.Default.AddressSlave;
+        private static byte MasterAddress = Properties.Settings.Default.AddressMaster;
 
         private const byte AddressStartTiristorModuleCommand = 0x87;
         private const byte AddressStopTiristorModuleCommand = 0x88;
@@ -24,8 +25,11 @@ namespace TiristorModule
         private const byte AddressResetAvariaTiristorCommand = 0x92;
         private const byte AddressAlarmStopCommand = 0x87;
 
-        private static byte[] Times =      new byte[9] { 0,  5,  7,  9,  11, 13, 15, 17, 19 };
-        private static byte[] Capacities = new byte[9] { 40, 30, 40, 50, 60, 70, 80, 90, 100 };
+        private static byte[] Times = ConvertStringCollectionToByte(Properties.Settings.Default.Time);
+        private static byte[] Capacities = ConvertStringCollectionToByte(Properties.Settings.Default.Capacity);
+
+        //private static string portName = Properties.Settings.Default.DataBits;
+
         private static ushort[] Buff;
 
         private const byte AlarmTemperatureTiristor = 85;
@@ -75,6 +79,7 @@ namespace TiristorModule
 
         public MainViewModel()
         {
+
             CurrentVoltageCommand = new Command(arg => CurrentVoltageClick());
             AlarmStopCommand = new Command(arg => AlarmStopClick());
             TestTerristorModuleCommand = new Command(arg => TestTerristorModuleClick());
@@ -104,6 +109,14 @@ namespace TiristorModule
                 WorkingStatus = null,
                 TestingStatus = null
             };
+        }
+
+        private static byte[] ConvertStringCollectionToByte(System.Collections.Specialized.StringCollection stringCollection)
+        {
+            string[] stringArray = new string[stringCollection.Count];
+            stringCollection.CopyTo(stringArray, 0);
+
+            return stringArray.Select(byte.Parse).ToArray();
         }
 
         private static void InitializeWorkingStatusData()
@@ -154,33 +167,40 @@ namespace TiristorModule
 
         private void ConnectionSettingsClick()//switch window method
         {
-            var connectSettingView = new ConnectSettingWindowView
-            {
-                DataContext = new ConnectSettingViewModel()
-            };
-
-            connectSettingView.ShowDialog();
-        }
-
-        private void StartTiristorSettingsClick()
-        {
-            var connectSettingView = new StartTiristorSettingsView
-            {
-                DataContext = new StartTiristorSettingsViewModel()
-            };
-
-            connectSettingView.ShowDialog(); 
-        }
-
-        private void TestTiristorSettingsClick()
-        {
-            var vm = new TestTiristorSettingsViewModel();
-            var connectSettingView = new TestTiristorSettingsView
+            var vm = new ConnectSettingsViewModel();
+            var connectSettingView = new ConnectSettingsView
             {
                 DataContext = vm
             };
             vm.OnRequestClose += (s, e) => connectSettingView.Close();
             connectSettingView.ShowDialog();
+        }
+
+        private void StartTiristorSettingsClick()
+        {
+            var vm = new StartTiristorSettingsViewModel();
+            var startSettingView = new StartTiristorSettingsView
+            {
+                DataContext = vm
+            };
+            vm.OnRequestClose += (s, e) => startSettingView.Close();
+            startSettingView.ShowDialog();
+        }
+
+        private void TestTiristorSettingsClick()
+        {
+            var vm = new TestTiristorSettingsViewModel();
+            var testSettingView = new TestTiristorSettingsView
+            {
+                DataContext = vm
+            };
+            vm.OnRequestClose += (s, e) => testSettingView.Close();
+            testSettingView.ShowDialog();
+        }
+
+        private void WindowOpen()//единый метод для открытия окон
+        {
+
         }
         #endregion
 
@@ -389,9 +409,9 @@ namespace TiristorModule
 
             if (serialPort1.IsOpen)
             {
-                if (requestType == standartRequest) frame = CreateStandartRequest(slaveAddress, commandNumber);
-                else if (requestType == startRequest) frame = CreateStartTiristorModuleRequest(slaveAddress, true);
-                else frame = CreateTestTiristorModuleRequest(slaveAddress);
+                if (requestType == standartRequest) frame = CreateStandartRequest(SlaveAddress, commandNumber);
+                else if (requestType == startRequest) frame = CreateStartTiristorModuleRequest(SlaveAddress, true);
+                else frame = CreateTestTiristorModuleRequest(SlaveAddress);
                  
                 serialPort1.Write(frame, 0, frame.Length);
                

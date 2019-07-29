@@ -65,10 +65,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Model\DataModel.cs" />
-    <Compile Include="Setting\AppSettings.cs" />
-    <Compile Include="Setting\SettingAttribute.cs" />
     <Compile Include="ViewModel\Command.cs" />
-    <Compile Include="ViewModel\ConnectSettingViewModel.cs" />
+    <Compile Include="ViewModel\ConnectSettingsViewModel.cs" />
     <Compile Include="ViewModel\StartTiristorSettingsViewModel.cs" />
     <Compile Include="ViewModel\TestTiristorSettingsViewModel.cs" />
     <Compile Include="ViewModel\Word.cs" />
@@ -78,7 +76,7 @@
     <Compile Include="View\TestTiristorSettingsView.xaml.cs">
       <DependentUpon>TestTiristorSettingsView.xaml</DependentUpon>
     </Compile>
-    <Page Include="View\ConnectSettingView.xaml">
+    <Page Include="View\ConnectSettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -91,8 +89,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
-    <Compile Include="View\ConnectSettingView.xaml.cs">
-      <DependentUpon>ConnectSettingView.xaml</DependentUpon>
+    <Compile Include="View\ConnectSettingsView.xaml.cs">
+      <DependentUpon>ConnectSettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\MainWindowView.xaml.cs">
       <DependentUpon>MainWindowView.xaml</DependentUpon>
@@ -129,6 +127,7 @@
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <ItemGroup>

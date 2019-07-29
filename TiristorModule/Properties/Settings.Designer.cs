@@ -109,85 +109,170 @@ namespace TiristorModule.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Time2 {
+        [global::System.Configuration.DefaultSettingValueAttribute("255")]
+        public byte AddressMaster {
             get {
-                return ((string)(this["Time2"]));
+                return ((byte)(this["AddressMaster"]));
             }
             set {
-                this["Time2"] = value;
+                this["AddressMaster"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Time3 {
+        [global::System.Configuration.DefaultSettingValueAttribute("103")]
+        public byte AddressSlave {
             get {
-                return ((string)(this["Time3"]));
+                return ((byte)(this["AddressSlave"]));
             }
             set {
-                this["Time3"] = value;
+                this["AddressSlave"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Time4 {
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<ArrayOfString xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+  <string>0</string>
+  <string>5</string>
+  <string>7</string>
+  <string>9</string>
+  <string>11</string>
+  <string>13</string>
+  <string>15</string>
+  <string>17</string>
+  <string>19</string>
+</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection Time {
             get {
-                return ((string)(this["Time4"]));
+                return ((global::System.Collections.Specialized.StringCollection)(this["Time"]));
             }
             set {
-                this["Time4"] = value;
+                this["Time"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Time5 {
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<ArrayOfString xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+  <string>40</string>
+  <string>30</string>
+  <string>40</string>
+  <string>50</string>
+  <string>60</string>
+  <string>70</string>
+  <string>80</string>
+  <string>90</string>
+  <string>100</string>
+</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection Capacity {
             get {
-                return ((string)(this["Time5"]));
+                return ((global::System.Collections.Specialized.StringCollection)(this["Capacity"]));
             }
             set {
-                this["Time5"] = value;
+                this["Capacity"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Time6 {
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<ArrayOfString xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+  <string>COM1</string>
+  <string>COM2</string>
+  <string>COM3</string>
+  <string>COM4</string>
+  <string>COM5</string>
+  <string>COM6</string>
+  <string>COM7</string>
+  <string>COM8</string>
+  <string>COM9</string>
+  <string>COM10</string>
+</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection PortName {
             get {
-                return ((string)(this["Time6"]));
+                return ((global::System.Collections.Specialized.StringCollection)(this["PortName"]));
             }
             set {
-                this["Time6"] = value;
+                this["PortName"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Time7 {
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsi=\"http://www.w3." +
+            "org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n  <s" +
+            "tring>1</string>\r\n  <string>2</string>\r\n</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection StopBit {
             get {
-                return ((string)(this["Time7"]));
+                return ((global::System.Collections.Specialized.StringCollection)(this["StopBit"]));
             }
             set {
-                this["Time7"] = value;
+                this["StopBit"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Time8 {
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<ArrayOfString xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+  <string>0</string>
+  <string>1</string>
+  <string>1.5</string>
+  <string>2</string>
+</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection Parity {
             get {
-                return ((string)(this["Time8"]));
+                return ((global::System.Collections.Specialized.StringCollection)(this["Parity"]));
             }
             set {
-                this["Time8"] = value;
+                this["Parity"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsi=\"http://www.w3." +
+            "org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n  <s" +
+            "tring>7</string>\r\n  <string>8</string>\r\n</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection DataBits {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["DataBits"]));
+            }
+            set {
+                this["DataBits"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<ArrayOfString xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+  <string>300</string>
+  <string>600</string>
+  <string>1200</string>
+  <string>2400</string>
+  <string>4800</string>
+  <string>9600</string>
+  <string>14400</string>
+  <string>19200</string>
+  <string>38400</string>
+  <string>56000</string>
+  <string>57600</string>
+  <string>115200</string>
+  <string>128000</string>
+  <string>230400</string>
+  <string>256000</string>
+</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection BaudRate {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["BaudRate"]));
+            }
+            set {
+                this["BaudRate"] = value;
             }
         }
     }

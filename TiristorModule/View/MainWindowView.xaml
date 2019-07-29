@@ -9,7 +9,7 @@
         WindowStartupLocation="CenterScreen" Background="LightGray">
 
     <Grid Margin="0,0,2,0">
-        <Grid Background="White" Margin="16,250,12,0" Height="129" VerticalAlignment="Top">
+        <Grid Background="White" Margin="16,250,0,0" Height="129" VerticalAlignment="Top" HorizontalAlignment="Left" Width="544">
 
             <Grid HorizontalAlignment="Left" Height="47" Margin="0,14,0,0" VerticalAlignment="Top" Width="181">
                 <Button x:Name="CurrentVoltageButton" Content="Текущее напряжение" HorizontalAlignment="Left" 
@@ -33,7 +33,7 @@
                 <Button x:Name="AlarmStopButton" Content="Аварийный стоп" HorizontalAlignment="Left" Margin="10,0,0,0" 
                         VerticalAlignment="Top" Width="172" Height="47" Command="{Binding AlarmStopCommand}"/>
             </Grid>
-            
+
             <Grid HorizontalAlignment="Left" Height="47" Margin="383,14,0,0" VerticalAlignment="Top" Width="160">
                 <Button x:Name="TestTerristorModuleButton"  Content="Тест модуля тиристора" Margin="10,0" VerticalAlignment="Top" 
                         Height="47" Grid.RowSpan="2" Command="{Binding TestTerristorModuleCommand}"/>
@@ -44,9 +44,9 @@
                         Command="{Binding ResetAvatiaTirristorCommand}"/>
             </Grid>
         </Grid>
-        
-        <GroupBox Header="I1, вх" Background="White"  HorizontalAlignment="Left" Height="145" Margin="113,10,0,0" 
-                  VerticalAlignment="Top" Width="90">
+
+        <GroupBox Header="I1, вх" Background="White" Height="145" Margin="113,10,0,0" 
+                  VerticalAlignment="Top" HorizontalAlignment="Left" Width="90">
 
             <Grid Margin="4,0,-2,-3">
 
@@ -74,15 +74,15 @@
                 <TextBlock Text="{Binding Data.AmperageC1, Mode=OneWay}" Grid.Row="2" Grid.Column="1" FontSize="14" HorizontalAlignment="Left" Margin="1,0,0,0"/>
             </Grid>
         </GroupBox>
-        
-        <GroupBox Header="U, вх" Background="White" HorizontalAlignment="Left" Height="145" Margin="18,10,0,0" VerticalAlignment="Top" Width="90">
+
+        <GroupBox Header="U, вх" Background="White" Height="145" Margin="18,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="90">
             <Grid Margin="4,0,-2,-1">
-                
+
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
-                
+
                 <Grid.RowDefinitions>
                     <RowDefinition/>
                     <RowDefinition/>
@@ -103,15 +103,15 @@
                        HorizontalAlignment="Left"/>
             </Grid>
         </GroupBox>
-        
-        <GroupBox Header="I2, вх" Background="White" HorizontalAlignment="Left" Height="145" Margin="208,10,0,0" VerticalAlignment="Top" Width="97">
+
+        <GroupBox Header="I2, вх" Background="White" Height="145" Margin="208,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="97">
             <Grid HorizontalAlignment="Left" Height="125" Margin="4,0,-2,-2" VerticalAlignment="Top" Width="83">
-                
+
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
-                
+
                 <Grid.RowDefinitions>
                     <RowDefinition/>
                     <RowDefinition/>
@@ -128,8 +128,8 @@
                 <TextBlock Text="{Binding Data.AmperageC2, Mode=OneWay}" Grid.Row="2" Grid.Column="1" FontSize="14" HorizontalAlignment="Left" Margin="1,0,0,0"/>
             </Grid>
         </GroupBox>
-        
-        <GroupBox Header="Параметры" Background="White" HorizontalAlignment="Left" Height="226" Margin="310,10,0,0" VerticalAlignment="Top" Width="90">
+
+        <GroupBox Header="Параметры" Background="White" Height="226" Margin="310,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="90">
             <Grid HorizontalAlignment="Left" Height="208" Margin="-4,0,-4,-4" VerticalAlignment="Top" Width="86">
 
                 <Grid.ColumnDefinitions>
@@ -173,8 +173,8 @@
                 <TextBlock Text="{Binding Path=Data.TestingStatus, Mode=OneWay}" Grid.Row="7" Grid.Column="1" FontSize="14" HorizontalAlignment="Left" Margin="1,0,-33,0" Width="38"/>
             </Grid>
         </GroupBox>
-        
-        <GroupBox Header="Состояние работы" Background="White" HorizontalAlignment="Left" Height="226" Margin="405,10,0,0" VerticalAlignment="Top" Width="144">
+
+        <GroupBox Header="Состояние работы" Background="White" Margin="405,10,0,0" HorizontalAlignment="Left" Width="144" Height="226" VerticalAlignment="Top">
             <Grid Height="205" VerticalAlignment="Top" Margin="0,0,-2,-1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
@@ -207,7 +207,7 @@
                 <RadioButton Content="Цикл" Grid.Row="4"/>
             </Grid>
         </GroupBox>
-        
+
         <Menu Height="25" VerticalAlignment="Bottom" Background="White" BorderBrush="Gray" BorderThickness="1" Margin="0,0,-2,0">
             <MenuItem Header="Настройки" Background="LightGray" BorderBrush="Gray" Height="23" Width="77">
                 <MenuItem Header="Параметры связи" x:Name="ConnectSettingsButton" 

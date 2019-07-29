@@ -18,31 +18,102 @@
       <Value Profile="(Default)">54</Value>
     </Setting>
     <Setting Name="VremiaKzMs1" Type="System.Byte" Scope="User">
-      <Value Profile="(Default)">0</Value>
+      <Value Profile="(Default)">10</Value>
     </Setting>
     <Setting Name="VremiaKzMs2" Type="System.Byte" Scope="User">
-      <Value Profile="(Default)">0</Value>
+      <Value Profile="(Default)">10</Value>
     </Setting>
-    <Setting Name="Time2" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+    <Setting Name="AddressMaster" Type="System.Byte" Scope="User">
+      <Value Profile="(Default)">255</Value>
     </Setting>
-    <Setting Name="Time3" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+    <Setting Name="AddressSlave" Type="System.Byte" Scope="User">
+      <Value Profile="(Default)">103</Value>
     </Setting>
-    <Setting Name="Time4" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+    <Setting Name="Time" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;0&lt;/string&gt;
+  &lt;string&gt;5&lt;/string&gt;
+  &lt;string&gt;7&lt;/string&gt;
+  &lt;string&gt;9&lt;/string&gt;
+  &lt;string&gt;11&lt;/string&gt;
+  &lt;string&gt;13&lt;/string&gt;
+  &lt;string&gt;15&lt;/string&gt;
+  &lt;string&gt;17&lt;/string&gt;
+  &lt;string&gt;19&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
     </Setting>
-    <Setting Name="Time5" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+    <Setting Name="Capacity" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;40&lt;/string&gt;
+  &lt;string&gt;30&lt;/string&gt;
+  &lt;string&gt;40&lt;/string&gt;
+  &lt;string&gt;50&lt;/string&gt;
+  &lt;string&gt;60&lt;/string&gt;
+  &lt;string&gt;70&lt;/string&gt;
+  &lt;string&gt;80&lt;/string&gt;
+  &lt;string&gt;90&lt;/string&gt;
+  &lt;string&gt;100&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
     </Setting>
-    <Setting Name="Time6" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+    <Setting Name="PortName" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;COM1&lt;/string&gt;
+  &lt;string&gt;COM2&lt;/string&gt;
+  &lt;string&gt;COM3&lt;/string&gt;
+  &lt;string&gt;COM4&lt;/string&gt;
+  &lt;string&gt;COM5&lt;/string&gt;
+  &lt;string&gt;COM6&lt;/string&gt;
+  &lt;string&gt;COM7&lt;/string&gt;
+  &lt;string&gt;COM8&lt;/string&gt;
+  &lt;string&gt;COM9&lt;/string&gt;
+  &lt;string&gt;COM10&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
     </Setting>
-    <Setting Name="Time7" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+    <Setting Name="StopBit" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;1&lt;/string&gt;
+  &lt;string&gt;2&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
     </Setting>
-    <Setting Name="Time8" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+    <Setting Name="Parity" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;0&lt;/string&gt;
+  &lt;string&gt;1&lt;/string&gt;
+  &lt;string&gt;1.5&lt;/string&gt;
+  &lt;string&gt;2&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
+    </Setting>
+    <Setting Name="DataBits" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;7&lt;/string&gt;
+  &lt;string&gt;8&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
+    </Setting>
+    <Setting Name="BaudRate" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;300&lt;/string&gt;
+  &lt;string&gt;600&lt;/string&gt;
+  &lt;string&gt;1200&lt;/string&gt;
+  &lt;string&gt;2400&lt;/string&gt;
+  &lt;string&gt;4800&lt;/string&gt;
+  &lt;string&gt;9600&lt;/string&gt;
+  &lt;string&gt;14400&lt;/string&gt;
+  &lt;string&gt;19200&lt;/string&gt;
+  &lt;string&gt;38400&lt;/string&gt;
+  &lt;string&gt;56000&lt;/string&gt;
+  &lt;string&gt;57600&lt;/string&gt;
+  &lt;string&gt;115200&lt;/string&gt;
+  &lt;string&gt;128000&lt;/string&gt;
+  &lt;string&gt;230400&lt;/string&gt;
+  &lt;string&gt;256000&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
     </Setting>
   </Settings>
 </SettingsFile>

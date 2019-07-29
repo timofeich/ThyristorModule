@@ -37,5 +37,7 @@ namespace TiristorModule
         {
             return arr.Where((el, ind) => (el % 2 == 0 && ind % 2 != 0)).ToArray();
         }
+
+        
     }
 }
