@@ -14,10 +14,10 @@ namespace TiristorModule
     class MainViewModel
     {
         private static SerialPort serialPort1 = new SerialPort(Settings.Default.PortName,
-            Convert.ToInt32(Settings.Default.BaudRate), 
+            Convert.ToInt32(Settings.Default.BaudRate),
             SetPortParity(Settings.Default.Parity),
-            Convert.ToInt32(Settings.Default.DataBit), 
-            StopBits.One);
+            Convert.ToInt32(Settings.Default.DataBit),
+            SetStopBits(Settings.Default.StopBit));
 
         #region Fields
         private static byte SlaveAddress = Settings.Default.AddressSlave;
@@ -122,7 +122,7 @@ namespace TiristorModule
             return Convert.ToInt32(stringCollection);
         }
 
-        private static Parity SetPortParity(string stringCollection)
+        private static Parity SetPortParity(string stringCollection)//динамичное обновление свойств serialport
         {
             string[] array = new string[] { };
 
@@ -139,6 +139,28 @@ namespace TiristorModule
             }
 
             return (Parity)Enum.Parse(typeof(Parity), array[0], true);
+        }
+
+        private static StopBits SetStopBits(string stringCollection)//динамичное обновление свойств serialport
+        {
+            string[] array = new string[] { };
+
+            array = Enum.GetNames(typeof(StopBits));
+
+            switch (stringCollection)
+            {
+                case "0":
+                    return (StopBits)Enum.Parse(typeof(StopBits), array[0], true);
+                case "1":
+                    return (StopBits)Enum.Parse(typeof(StopBits), array[1], true);
+                case "1.5": 
+                    return (StopBits)Enum.Parse(typeof(StopBits), array[3], true);
+                case "2":
+                    return (StopBits)Enum.Parse(typeof(StopBits), array[2], true);
+
+            }
+
+            return (StopBits)Enum.Parse(typeof(StopBits), array[1], true);
         }
 
         private static byte[] ConvertStringCollectionToByte(System.Collections.Specialized.StringCollection stringCollection)
