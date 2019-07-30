@@ -58,7 +58,6 @@ namespace TiristorModule
         private static int testRequest = 2;
 
         private static bool flag = true;
-
         #endregion
 
         #region Properties
@@ -78,12 +77,12 @@ namespace TiristorModule
         public ICommand ConnectionSettingsCommand { get; set; }
         public ICommand StartTiristorSettingsCommand { get; set; }
         public ICommand TestTiristorSettingsCommand { get; set; }
+        public ICommand ChangeColorCommand { get; set; }
 
         #endregion
 
         public MainViewModel()
         {
-
             CurrentVoltageCommand = new Command(arg => CurrentVoltageClick());
             AlarmStopCommand = new Command(arg => AlarmStopClick());
             TestTerristorModuleCommand = new Command(arg => TestTerristorModuleClick());
@@ -94,6 +93,7 @@ namespace TiristorModule
             ConnectionSettingsCommand = new Command(arg => ConnectionSettingsClick());
             StartTiristorSettingsCommand = new Command(arg => StartTiristorSettingsClick());
             TestTiristorSettingsCommand = new Command(arg => TestTiristorSettingsClick());
+            //ChangeColorCommand = new Command(arg => ChangeColor());
 
             InitializeWorkingStatusData();
             InitializeTestingStatusData();
@@ -114,12 +114,14 @@ namespace TiristorModule
                 TestingStatus = null
 
             };
-
         }
 
-        private static int ConvertStringCollectionToInt(string stringCollection)
+        public static byte[] ConvertStringCollectionToByte(System.Collections.Specialized.StringCollection stringCollection)
         {
-            return Convert.ToInt32(stringCollection);
+            string[] stringArray = new string[stringCollection.Count];
+            stringCollection.CopyTo(stringArray, 0);
+
+            return stringArray.Select(byte.Parse).ToArray();
         }
 
         private static Parity SetPortParity(string stringCollection)//динамичное обновление свойств serialport
@@ -161,14 +163,6 @@ namespace TiristorModule
             }
 
             return (StopBits)Enum.Parse(typeof(StopBits), array[1], true);
-        }
-
-        private static byte[] ConvertStringCollectionToByte(System.Collections.Specialized.StringCollection stringCollection)
-        {
-            string[] stringArray = new string[stringCollection.Count];
-            stringCollection.CopyTo(stringArray, 0);
-
-            return stringArray.Select(byte.Parse).ToArray();
         }
 
         private static void InitializeWorkingStatusData()
@@ -217,7 +211,7 @@ namespace TiristorModule
             StartRequest(AddressResetAvariaTiristorCommand, standartRequest);
         }
 
-        private void ConnectionSettingsClick()//switch window method
+        private void ConnectionSettingsClick()
         {
             var vm = new ConnectSettingsViewModel();
             var connectSettingView = new ConnectSettingsView
@@ -248,11 +242,6 @@ namespace TiristorModule
             };
             vm.OnRequestClose += (s, e) => testSettingView.Close();
             testSettingView.ShowDialog();
-        }
-
-        private void WindowOpen()//единый метод для открытия окон
-        {
-
         }
         #endregion
 

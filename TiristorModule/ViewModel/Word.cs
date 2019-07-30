@@ -5,7 +5,7 @@ namespace TiristorModule
 {
     public class Word
     {
-        public static UInt16 FromByteArray(byte[] bytes)
+        public static ushort FromByteArray(byte[] bytes)
         {
             // bytes[0] -> HighByte
             // bytes[1] -> LowByte
@@ -17,7 +17,7 @@ namespace TiristorModule
             return (ushort)(HiVal * 256 + LoVal);
         }
 
-        public static UInt16[] ByteToUInt16(byte[] bytes)
+        public static ushort[] ByteToUInt16(byte[] bytes)
         {
             UInt16[] values = new UInt16[bytes.Length / 2];
             int counter = 0;
@@ -26,7 +26,7 @@ namespace TiristorModule
             return values;
         }
 
-        public static byte[] ToByteArray(UInt16 value)
+        public static byte[] ToByteArray(ushort value)
         {
             byte[] array = BitConverter.GetBytes(value);
             Array.Reverse(array);
@@ -37,7 +37,5 @@ namespace TiristorModule
         {
             return arr.Where((el, ind) => (el % 2 == 0 && ind % 2 != 0)).ToArray();
         }
-
-        
     }
 }
