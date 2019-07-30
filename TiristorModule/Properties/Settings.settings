@@ -57,7 +57,7 @@
   &lt;string&gt;100&lt;/string&gt;
 &lt;/ArrayOfString&gt;</Value>
     </Setting>
-    <Setting Name="PortName" Type="System.Collections.Specialized.StringCollection" Scope="User">
+    <Setting Name="PortNames" Type="System.Collections.Specialized.StringCollection" Scope="User">
       <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
 &lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
   &lt;string&gt;COM1&lt;/string&gt;
@@ -70,21 +70,22 @@
   &lt;string&gt;COM8&lt;/string&gt;
   &lt;string&gt;COM9&lt;/string&gt;
   &lt;string&gt;COM10&lt;/string&gt;
+  &lt;string&gt;COM11&lt;/string&gt;
+  &lt;string&gt;COM12&lt;/string&gt;
+  &lt;string&gt;COM13&lt;/string&gt;
+  &lt;string&gt;COM14&lt;/string&gt;
+  &lt;string&gt;COM15&lt;/string&gt;
+  &lt;string&gt;COM16&lt;/string&gt;
+  &lt;string&gt;COM17&lt;/string&gt;
+  &lt;string&gt;COM18&lt;/string&gt;
+  &lt;string&gt;COM19&lt;/string&gt;
+  &lt;string&gt;COM20&lt;/string&gt;
 &lt;/ArrayOfString&gt;</Value>
     </Setting>
-    <Setting Name="StopBit" Type="System.Collections.Specialized.StringCollection" Scope="User">
+    <Setting Name="StopBits" Type="System.Collections.Specialized.StringCollection" Scope="User">
       <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
 &lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
   &lt;string&gt;1&lt;/string&gt;
-  &lt;string&gt;2&lt;/string&gt;
-&lt;/ArrayOfString&gt;</Value>
-    </Setting>
-    <Setting Name="Parity" Type="System.Collections.Specialized.StringCollection" Scope="User">
-      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
-&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-  &lt;string&gt;0&lt;/string&gt;
-  &lt;string&gt;1&lt;/string&gt;
-  &lt;string&gt;1.5&lt;/string&gt;
   &lt;string&gt;2&lt;/string&gt;
 &lt;/ArrayOfString&gt;</Value>
     </Setting>
@@ -95,7 +96,7 @@
   &lt;string&gt;8&lt;/string&gt;
 &lt;/ArrayOfString&gt;</Value>
     </Setting>
-    <Setting Name="BaudRate" Type="System.Collections.Specialized.StringCollection" Scope="User">
+    <Setting Name="BaudRates" Type="System.Collections.Specialized.StringCollection" Scope="User">
       <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
 &lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
   &lt;string&gt;300&lt;/string&gt;
@@ -113,6 +114,29 @@
   &lt;string&gt;128000&lt;/string&gt;
   &lt;string&gt;230400&lt;/string&gt;
   &lt;string&gt;256000&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
+    </Setting>
+    <Setting Name="PortName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">COM1</Value>
+    </Setting>
+    <Setting Name="StopBit" Type="System.String" Scope="User">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
+    <Setting Name="BaudRate" Type="System.String" Scope="User">
+      <Value Profile="(Default)">9600</Value>
+    </Setting>
+    <Setting Name="Parity" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Нет проверки</Value>
+    </Setting>
+    <Setting Name="DataBit" Type="System.String" Scope="User">
+      <Value Profile="(Default)">8</Value>
+    </Setting>
+    <Setting Name="Parities" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;Нет проверки&lt;/string&gt;
+  &lt;string&gt;Четный&lt;/string&gt;
+  &lt;string&gt;Нечетный&lt;/string&gt;
 &lt;/ArrayOfString&gt;</Value>
     </Setting>
   </Settings>

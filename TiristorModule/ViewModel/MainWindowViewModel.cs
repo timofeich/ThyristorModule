@@ -7,16 +7,21 @@ using System.Windows.Input;
 using System.Windows;
 using TiristorModule.View;
 using System.Linq;
+using TiristorModule.Properties;
 
 namespace TiristorModule
 {
     class MainViewModel
     {
-        private static SerialPort serialPort1 = new SerialPort("COM3", 57600, Parity.None, 8, StopBits.One);
+        private static SerialPort serialPort1 = new SerialPort(Settings.Default.PortName,
+            Convert.ToInt32(Settings.Default.BaudRate), 
+            SetPortParity(Settings.Default.Parity),
+            Convert.ToInt32(Settings.Default.DataBit), 
+            StopBits.One);
 
         #region Fields
-        private static byte SlaveAddress = Properties.Settings.Default.AddressSlave;
-        private static byte MasterAddress = Properties.Settings.Default.AddressMaster;
+        private static byte SlaveAddress = Settings.Default.AddressSlave;
+        private static byte MasterAddress = Settings.Default.AddressMaster;
 
         private const byte AddressStartTiristorModuleCommand = 0x87;
         private const byte AddressStopTiristorModuleCommand = 0x88;
@@ -25,24 +30,22 @@ namespace TiristorModule
         private const byte AddressResetAvariaTiristorCommand = 0x92;
         private const byte AddressAlarmStopCommand = 0x87;
 
-        private static byte[] Times = ConvertStringCollectionToByte(Properties.Settings.Default.Time);
-        private static byte[] Capacities = ConvertStringCollectionToByte(Properties.Settings.Default.Capacity);
-
-        //private static string portName = Properties.Settings.Default.DataBits;
+        private static byte[] Times = ConvertStringCollectionToByte(Settings.Default.Time);
+        private static byte[] Capacities = ConvertStringCollectionToByte(Settings.Default.Capacity);
 
         private static ushort[] Buff;
 
         private const byte AlarmTemperatureTiristor = 85;
 
-        private static byte VremiaKzMs1 = Properties.Settings.Default.VremiaKzMs1;
-        private static byte VremiaKzMs2 = Properties.Settings.Default.VremiaKzMs2;
+        private static byte VremiaKzMs1 = Settings.Default.VremiaKzMs1;
+        private static byte VremiaKzMs2 = Settings.Default.VremiaKzMs2;
 
-        private static ushort CurrentKz1_1 = Properties.Settings.Default.CurrentKz1;
-        private static ushort CurrentKz2_1 = Properties.Settings.Default.CurrentKz2;
+        private static ushort CurrentKz1_1 = Settings.Default.CurrentKz1;
+        private static ushort CurrentKz2_1 = Settings.Default.CurrentKz2;
 
-        private static byte PersentTestPower = Properties.Settings.Default.PersentTestPower;
-        private static int NominalTok1sk = Properties.Settings.Default.NominalTok1sk / 10;
-        private static byte NumberOfTest = Properties.Settings.Default.NumberOfTest;
+        private static byte PersentTestPower = Settings.Default.PersentTestPower;
+        private static int NominalTok1sk = Settings.Default.NominalTok1sk / 10;
+        private static byte NumberOfTest = Settings.Default.NumberOfTest;
 
         private static byte[] BuffTir = new byte[18];
         private static ushort[] BuffResponce;
@@ -60,6 +63,7 @@ namespace TiristorModule
 
         #region Properties
         public static DataModel Data { get; set; }
+
         #endregion
 
         #region Commands
@@ -95,7 +99,7 @@ namespace TiristorModule
             InitializeTestingStatusData();
 
             Data = new DataModel
-            {
+            {               
                 AmperageA1 = 0,
                 AmperageB1 = 0,
                 AmperageC1 = 0,
@@ -108,7 +112,33 @@ namespace TiristorModule
                 TemperatureOfTiristor = 0,
                 WorkingStatus = null,
                 TestingStatus = null
+
             };
+
+        }
+
+        private static int ConvertStringCollectionToInt(string stringCollection)
+        {
+            return Convert.ToInt32(stringCollection);
+        }
+
+        private static Parity SetPortParity(string stringCollection)
+        {
+            string[] array = new string[] { };
+
+            array = Enum.GetNames(typeof(Parity));
+
+            switch (stringCollection)
+            {
+                case "Нет проверки":
+                    return (Parity)Enum.Parse(typeof(Parity), array[0], true);
+                case "Нечетный":
+                    return (Parity)Enum.Parse(typeof(Parity), array[1], true);
+                case "Четный":
+                    return (Parity)Enum.Parse(typeof(Parity), array[2], true);
+            }
+
+            return (Parity)Enum.Parse(typeof(Parity), array[0], true);
         }
 
         private static byte[] ConvertStringCollectionToByte(System.Collections.Specialized.StringCollection stringCollection)

@@ -13,13 +13,15 @@ namespace TiristorModule.ViewModel
 
         public ICommand SaveConnectSettingsCommand { get; set; }
         public ICommand CancelConnectSettingsCommand { get; set; }
+       //public ICommand SelectPortNameCommand { set; get; }
 
         public event EventHandler OnRequestClose;
 
         public ConnectSettingsViewModel()
         {
             SaveConnectSettingsCommand = new Command(arg => OkStartTiristorButtonClick());
-            CancelConnectSettingsCommand = new Command(arg => CancelStartTiristorButtonClick());;
+            CancelConnectSettingsCommand = new Command(arg => CancelStartTiristorButtonClick());
+           // SelectPortNameCommand = new Command(arg => SelectPortNameComboboxItem());
         }
 
         private void OkStartTiristorButtonClick()
@@ -34,9 +36,9 @@ namespace TiristorModule.ViewModel
             OnRequestClose(this, new EventArgs());
         }
 
-        private void SelectItemCommandClick()
-        {
-            
-        }
+        //private string SelectPortNameComboboxItem()
+        //{
+        //   //return Properties.Settings.Default.PortName.SelectedItem;
+        //}
     }
 }

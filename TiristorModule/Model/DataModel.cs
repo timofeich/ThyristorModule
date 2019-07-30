@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 
 namespace TiristorModule
@@ -34,6 +35,7 @@ namespace TiristorModule
         private ushort temperatureOfTiristor;
         private string workingStatus;
         protected string testingStatus;
+        private string portName;
 
         #endregion
 
@@ -194,6 +196,9 @@ namespace TiristorModule
                 }
             }
         }
+
+
+
         #endregion
     }
 }

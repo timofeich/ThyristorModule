@@ -191,13 +191,23 @@ namespace TiristorModule.Properties {
   <string>COM8</string>
   <string>COM9</string>
   <string>COM10</string>
+  <string>COM11</string>
+  <string>COM12</string>
+  <string>COM13</string>
+  <string>COM14</string>
+  <string>COM15</string>
+  <string>COM16</string>
+  <string>COM17</string>
+  <string>COM18</string>
+  <string>COM19</string>
+  <string>COM20</string>
 </ArrayOfString>")]
-        public global::System.Collections.Specialized.StringCollection PortName {
+        public global::System.Collections.Specialized.StringCollection PortNames {
             get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["PortName"]));
+                return ((global::System.Collections.Specialized.StringCollection)(this["PortNames"]));
             }
             set {
-                this["PortName"] = value;
+                this["PortNames"] = value;
             }
         }
         
@@ -206,30 +216,12 @@ namespace TiristorModule.Properties {
         [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsi=\"http://www.w3." +
             "org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n  <s" +
             "tring>1</string>\r\n  <string>2</string>\r\n</ArrayOfString>")]
-        public global::System.Collections.Specialized.StringCollection StopBit {
+        public global::System.Collections.Specialized.StringCollection StopBits {
             get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["StopBit"]));
+                return ((global::System.Collections.Specialized.StringCollection)(this["StopBits"]));
             }
             set {
-                this["StopBit"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
-<ArrayOfString xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
-  <string>0</string>
-  <string>1</string>
-  <string>1.5</string>
-  <string>2</string>
-</ArrayOfString>")]
-        public global::System.Collections.Specialized.StringCollection Parity {
-            get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["Parity"]));
-            }
-            set {
-                this["Parity"] = value;
+                this["StopBits"] = value;
             }
         }
         
@@ -267,12 +259,89 @@ namespace TiristorModule.Properties {
   <string>230400</string>
   <string>256000</string>
 </ArrayOfString>")]
-        public global::System.Collections.Specialized.StringCollection BaudRate {
+        public global::System.Collections.Specialized.StringCollection BaudRates {
             get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["BaudRate"]));
+                return ((global::System.Collections.Specialized.StringCollection)(this["BaudRates"]));
+            }
+            set {
+                this["BaudRates"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("COM1")]
+        public string PortName {
+            get {
+                return ((string)(this["PortName"]));
+            }
+            set {
+                this["PortName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public string StopBit {
+            get {
+                return ((string)(this["StopBit"]));
+            }
+            set {
+                this["StopBit"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("9600")]
+        public string BaudRate {
+            get {
+                return ((string)(this["BaudRate"]));
             }
             set {
                 this["BaudRate"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Нет проверки")]
+        public string Parity {
+            get {
+                return ((string)(this["Parity"]));
+            }
+            set {
+                this["Parity"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("8")]
+        public string DataBit {
+            get {
+                return ((string)(this["DataBit"]));
+            }
+            set {
+                this["DataBit"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<ArrayOfString xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+  <string>Нет проверки</string>
+  <string>Четный</string>
+  <string>Нечетный</string>
+</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection Parities {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["Parities"]));
+            }
+            set {
+                this["Parities"] = value;
             }
         }
     }
