@@ -35,8 +35,9 @@ namespace TiristorModule
         private ushort temperatureOfTiristor;
         private string workingStatus;
         protected string testingStatus;
-        private string portName;
 
+        private bool isRequestSingle;
+        
         #endregion
 
         #region Properties
@@ -197,7 +198,18 @@ namespace TiristorModule
             }
         }
 
-
+        public bool IsRequestSingle
+        {
+            get { return isRequestSingle; }
+            set
+            {
+                if (isRequestSingle != value)
+                {
+                    isRequestSingle = value;
+                    OnPropertyChanged("IsCycle");
+                }
+            }
+        }
 
         #endregion
     }

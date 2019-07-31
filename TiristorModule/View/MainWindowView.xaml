@@ -175,7 +175,7 @@
         </GroupBox>
 
         <GroupBox Header="Состояние работы" Background="White" Margin="405,10,0,0" HorizontalAlignment="Left" Width="144" Height="226" VerticalAlignment="Top">
-            <Grid Height="205" VerticalAlignment="Top" Margin="0,0,-2,-1">
+            <Grid Height="147" VerticalAlignment="Top" Margin="0,0,-2,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="auto"/>
@@ -185,7 +185,7 @@
                     <RowDefinition Height="17*"/>
                     <RowDefinition Height="17*"/>
                     <RowDefinition Height="17*"/>
-                    <RowDefinition Height="17*"/>
+
                 </Grid.RowDefinitions>
 
                 <TextBlock Text="Старт:"  Grid.Row="0" Grid.Column="0" FontSize="14"/>
@@ -203,8 +203,6 @@
                      t<Run BaselineAlignment="Subscript" FontSize="7pt">тир-в</Run> С&#186;:
                 </TextBlock>
                 <TextBlock Text="{Binding Path=Data.TemperatureOfTiristor, Mode=OneWay}" Grid.Row="3" Grid.Column="1" FontSize="14" HorizontalAlignment="Left" Margin="1,0,0,0"/>
-
-                <RadioButton Content="Цикл" Grid.Row="4"/>
             </Grid>
         </GroupBox>
 
@@ -220,5 +218,8 @@
                 </MenuItem>
             </MenuItem>
         </Menu>
+        <Grid HorizontalAlignment="Left" Height="51" Margin="405,185,0,0" VerticalAlignment="Top" Width="144">
+            <CheckBox Content="Режим один-х запросов" IsChecked="{Binding Path=Data.IsRequestSingle, Mode=TwoWay}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="134" Height="41" Margin="6,0,0,0"/>
+        </Grid>
     </Grid>
 </Window>

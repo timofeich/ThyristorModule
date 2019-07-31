@@ -15,9 +15,9 @@ namespace TiristorModule
     {
         private static SerialPort serialPort1 = new SerialPort(Settings.Default.PortName,
             Convert.ToInt32(Settings.Default.BaudRate),
-            SetPortParity(Settings.Default.Parity),
+            SerialPortSettings.SetPortParity(Settings.Default.Parity),
             Convert.ToInt32(Settings.Default.DataBit),
-            SetStopBits(Settings.Default.StopBit));
+            SerialPortSettings.SetStopBits(Settings.Default.StopBit));
 
         #region Fields
         private static byte SlaveAddress = Settings.Default.AddressSlave;
@@ -32,8 +32,6 @@ namespace TiristorModule
 
         private static byte[] Times = ConvertStringCollectionToByte(Settings.Default.Time);
         private static byte[] Capacities = ConvertStringCollectionToByte(Settings.Default.Capacity);
-
-        private static ushort[] Buff;
 
         private const byte AlarmTemperatureTiristor = 85;
 
@@ -57,7 +55,8 @@ namespace TiristorModule
         private static int startRequest = 1;
         private static int testRequest = 2;
 
-        private static bool flag = true;
+        private static bool IsCurrentVoltageRequestCyclical = true;
+        private static bool IsRequestCycle = true;
         #endregion
 
         #region Properties
@@ -77,7 +76,7 @@ namespace TiristorModule
         public ICommand ConnectionSettingsCommand { get; set; }
         public ICommand StartTiristorSettingsCommand { get; set; }
         public ICommand TestTiristorSettingsCommand { get; set; }
-        public ICommand ChangeColorCommand { get; set; }
+        public ICommand CycleModeCommand { get; set; }
 
         #endregion
 
@@ -93,7 +92,7 @@ namespace TiristorModule
             ConnectionSettingsCommand = new Command(arg => ConnectionSettingsClick());
             StartTiristorSettingsCommand = new Command(arg => StartTiristorSettingsClick());
             TestTiristorSettingsCommand = new Command(arg => TestTiristorSettingsClick());
-            //ChangeColorCommand = new Command(arg => ChangeColor());
+            CycleModeCommand = new Command(arg => SetRequestMode());
 
             InitializeWorkingStatusData();
             InitializeTestingStatusData();
@@ -111,60 +110,18 @@ namespace TiristorModule
                 VoltageC = 0,
                 TemperatureOfTiristor = 0,
                 WorkingStatus = null,
-                TestingStatus = null
+                TestingStatus = null,
+                IsRequestSingle = false
+
 
             };
         }
 
-        public static byte[] ConvertStringCollectionToByte(System.Collections.Specialized.StringCollection stringCollection)
+        ~MainViewModel()
         {
-            string[] stringArray = new string[stringCollection.Count];
-            stringCollection.CopyTo(stringArray, 0);
-
-            return stringArray.Select(byte.Parse).ToArray();
+            SerialPortSettings.CloseSerialPortConnection(serialPort1);
         }
-
-        private static Parity SetPortParity(string stringCollection)//динамичное обновление свойств serialport
-        {
-            string[] array = new string[] { };
-
-            array = Enum.GetNames(typeof(Parity));
-
-            switch (stringCollection)
-            {
-                case "Нет проверки":
-                    return (Parity)Enum.Parse(typeof(Parity), array[0], true);
-                case "Нечетный":
-                    return (Parity)Enum.Parse(typeof(Parity), array[1], true);
-                case "Четный":
-                    return (Parity)Enum.Parse(typeof(Parity), array[2], true);
-            }
-
-            return (Parity)Enum.Parse(typeof(Parity), array[0], true);
-        }
-
-        private static StopBits SetStopBits(string stringCollection)//динамичное обновление свойств serialport
-        {
-            string[] array = new string[] { };
-
-            array = Enum.GetNames(typeof(StopBits));
-
-            switch (stringCollection)
-            {
-                case "0":
-                    return (StopBits)Enum.Parse(typeof(StopBits), array[0], true);
-                case "1":
-                    return (StopBits)Enum.Parse(typeof(StopBits), array[1], true);
-                case "1.5": 
-                    return (StopBits)Enum.Parse(typeof(StopBits), array[3], true);
-                case "2":
-                    return (StopBits)Enum.Parse(typeof(StopBits), array[2], true);
-
-            }
-
-            return (StopBits)Enum.Parse(typeof(StopBits), array[1], true);
-        }
-
+       
         private static void InitializeWorkingStatusData()
         {
             WorkingStatus.Add(0, "Crach_ostanov");
@@ -179,36 +136,49 @@ namespace TiristorModule
             TestingStatus.Add(1, "Ошибочно");
         }
 
-        #region ClickHandler
-
-        private void StartTerristorModuleClick()
+        public static byte[] ConvertStringCollectionToByte(System.Collections.Specialized.StringCollection stringCollection)
         {
-            StartRequest(AddressStartTiristorModuleCommand, startRequest);
+            string[] stringArray = new string[stringCollection.Count];
+            stringCollection.CopyTo(stringArray, 0);
+
+            return stringArray.Select(byte.Parse).ToArray();
         }
 
+        #region ClickHandler
+        
+        private void StartTerristorModuleClick()
+        {
+            ChooseRequestMode(AddressStartTiristorModuleCommand, startRequest);
+        }
+        
         private void StopTerristorModuleClick()
         {
-            StartRequest(AddressStopTiristorModuleCommand, standartRequest);
+            ChooseRequestMode(AddressStopTiristorModuleCommand, standartRequest);
         }
 
         private void CurrentVoltageClick()
         {
-            StartRequest(AddressRequestFotCurrentVoltageCommand, standartRequest);
+            ChooseRequestMode(AddressRequestFotCurrentVoltageCommand, standartRequest);
         }
 
         private void AlarmStopClick()
         {
-            StartRequest(AddressAlarmStopCommand, standartRequest);
+            ChooseRequestMode(AddressAlarmStopCommand, standartRequest);
         }
 
         private void TestTerristorModuleClick()
         {
-            StartRequest(AddressTestTiristorModuleCommand, testRequest);
+            ChooseRequestMode(AddressTestTiristorModuleCommand, testRequest);
         }
 
         private void ResetAvatiaTirristorClick()
         {
-            StartRequest(AddressResetAvariaTiristorCommand, standartRequest);
+            ChooseRequestMode(AddressResetAvariaTiristorCommand, standartRequest);
+        }
+
+        private void SetRequestMode()
+        {
+            ChooseRequestMode(AddressResetAvariaTiristorCommand, standartRequest);
         }
 
         private void ConnectionSettingsClick()
@@ -246,53 +216,72 @@ namespace TiristorModule
         #endregion
 
         #region Methods
-        public static void StartRequest(byte AddressCommand, int RequestType)
+
+        public static void ChooseRequestMode(byte AddressCommand, int RequestType)
+        {
+            if (Data.IsRequestSingle)
+            {
+                StartSingleRequest(AddressCommand, RequestType);
+            }
+            else
+            {
+                StartCycleRequest(AddressCommand, RequestType);
+            }
+        }
+
+        public static void StartSingleRequest(byte AddressCommand, int RequestType)
         {
             try
             {
                 if (AddressCommand == AddressRequestFotCurrentVoltageCommand)
                 {
-                    flag = true;
-                    OpenSerialPortConnection(serialPort1);
-                    ThreadPool.QueueUserWorkItem(new WaitCallback((obj) =>
-                    {
-                        while (flag)
-                        {
-                            Buff = ReadHoldingResponcesFromBuffer(AddressCommand, RequestType);
-                            OutputDataFromArrayToModel(Buff, AddressCommand);
-                            Buff = null;
-                            Thread.Sleep(20); // Delay 20ms
-                        }
-                    }));
+                    OutputRequestData(AddressCommand, RequestType);
+                    Thread.Sleep(20);
                 }
                 else
                 {
-                    flag = false;
-                    OpenSerialPortConnection(serialPort1);
-                    Buff = ReadHoldingResponcesFromBuffer(AddressCommand, RequestType);
-                    OutputDataFromArrayToModel(Buff, AddressCommand);
-                    Buff = null;
+                    OutputRequestData(AddressCommand, RequestType);
+                    AddressCommand = AddressRequestFotCurrentVoltageCommand;
                 }
 
             }
-
             catch (Exception ex)
             {
                 MessageBox.Show("Ошибка: " + ex);
             }
         }
 
-        public static void StopRequest()
+        public static void StartCycleRequest(byte AddressCommand, int RequestType)
         {
             try
-            {
-                if (serialPort1.IsOpen) serialPort1.Close();
+            {               
+                SerialPortSettings.OpenSerialPortConnection(serialPort1);
+                ThreadPool.QueueUserWorkItem(new WaitCallback((obj) =>
+                {
+                    while (IsCurrentVoltageRequestCyclical)
+                    {
+                        if (AddressCommand == AddressRequestFotCurrentVoltageCommand)
+                        {
+                            OutputRequestData(AddressCommand, RequestType);
+                            Thread.Sleep(20);
+                        }
+                        else
+                        {
+                            OutputRequestData(AddressCommand, RequestType);
+                            AddressCommand = AddressRequestFotCurrentVoltageCommand;
+                        }
+                    }
+                }));
             }
-
             catch (Exception ex)
             {
-                throw ex;
+                MessageBox.Show("Ошибка: " + ex);
             }
+        }
+
+        public static void OutputRequestData(byte AddressCommand, int RequestType)
+        {
+            OutputDataFromArrayToModel(ReadHoldingResponcesFromBuffer(AddressCommand, RequestType), AddressCommand);
         }
 
         private static void OutputDataFromArrayToModel(ushort[] buff, byte AdressCommand)
@@ -324,7 +313,7 @@ namespace TiristorModule
             }
         }
 
-        //standart request - zapros_cur_voltage, stop_tiristor_module, reset_avaria_tir, avarinii_stop
+        //standart request - zapros_cur_voltage, stop_Tiristor_module, reset_avaria_tir, avarinii_stop
         private static byte[] CreateStandartRequest(byte slaveAddress, byte commandNumber)
         {
             byte[] frame = new byte[3];
@@ -445,17 +434,12 @@ namespace TiristorModule
 
         public static ushort[] ReadHoldingResponcesFromBuffer(byte commandNumber, int requestType)
         {
-            byte[] frame;
             ushort[] result;
-
             if (serialPort1.IsOpen)
-            {
-                if (requestType == standartRequest) frame = CreateStandartRequest(SlaveAddress, commandNumber);
-                else if (requestType == startRequest) frame = CreateStartTiristorModuleRequest(SlaveAddress, true);
-                else frame = CreateTestTiristorModuleRequest(SlaveAddress);
-                 
-                serialPort1.Write(frame, 0, frame.Length);
-               
+            {                 
+                serialPort1.Write(GetFrameDependentOnTypeOfRequest(requestType, commandNumber), 0, 
+                    GetFrameDependentOnTypeOfRequest(requestType, commandNumber).Length);
+                
                 Thread.Sleep(300); // Delay 300ms
                 if (serialPort1.BytesToRead >= 20)
                 {
@@ -473,6 +457,13 @@ namespace TiristorModule
             return BuffResponce;
         }
 
+        private static byte[] GetFrameDependentOnTypeOfRequest(int requestType, byte commandNumber)
+        {
+            if (requestType == standartRequest) return CreateStandartRequest(SlaveAddress, commandNumber);
+            else if (requestType == startRequest) return CreateStartTiristorModuleRequest(SlaveAddress, true);
+            else return CreateTestTiristorModuleRequest(SlaveAddress);
+        }
+        
         private static void GetStatusFromCurrentVoltage(ushort statusCrash) 
         {
             //массив эл. управления
@@ -497,12 +488,6 @@ namespace TiristorModule
         private static string GetStatusFromTestTiristor(ushort statusTest)
         {
             return TestingStatus[statusTest];
-        }
-
-        private static void OpenSerialPortConnection(SerialPort serialPort)
-        {
-            if (serialPort.IsOpen) serialPort.Close();
-            serialPort.Open();
         }
 
         private static byte CalculateCRC8(byte[] array)
