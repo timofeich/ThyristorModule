@@ -64,18 +64,25 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Indicators\IndicatorColor.cs" />
     <Compile Include="Model\DataModel.cs" />
+    <Compile Include="Model\TestData.cs" />
+    <Compile Include="Model\TestThyristorModel.cs" />
     <Compile Include="ViewModel\Command.cs" />
     <Compile Include="ViewModel\ConnectSettingsViewModel.cs" />
     <Compile Include="ViewModel\SerialPortSettings.cs" />
     <Compile Include="ViewModel\StartThyristorSettingsViewModel.cs" />
     <Compile Include="ViewModel\TestThyristorSettingsViewModel.cs" />
     <Compile Include="ViewModel\BytesManipulating.cs" />
+    <Compile Include="ViewModel\TestThyristorWindowViewModel.cs" />
     <Compile Include="View\StartThyristorSettingsView.xaml.cs">
       <DependentUpon>StartThyristorSettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\TestThyristorSettingsView.xaml.cs">
       <DependentUpon>TestThyristorSettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\TestThyristorWindowView.xaml.cs">
+      <DependentUpon>TestThyristorWindowView.xaml</DependentUpon>
     </Compile>
     <Page Include="View\ConnectSettingsView.xaml">
       <SubType>Designer</SubType>
@@ -102,6 +109,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\TestThyristorSettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\TestThyristorWindowView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -8,6 +8,7 @@ using System.Windows;
 using TiristorModule.View;
 using System.Linq;
 using TiristorModule.Properties;
+using TiristorModule.Indicators;
 
 namespace TiristorModule
 {
@@ -49,14 +50,12 @@ namespace TiristorModule
         private static ushort[] BuffResponce;
 
         private static Dictionary<int, string> WorkingStatus = new Dictionary<int, string>(4);
-        private static Dictionary<int, string> TestingStatus = new Dictionary<int, string>(2);
 
         private static int standartRequest = 0;
         private static int startRequest = 1;
         private static int testRequest = 2;
 
         private static bool IsCurrentVoltageRequestCyclical = true;
-        private static bool IsRequestCycle = true;
         #endregion
 
         #region Properties
@@ -92,13 +91,15 @@ namespace TiristorModule
             ConnectionSettingsCommand = new Command(arg => ConnectionSettingsClick());
             StartTiristorSettingsCommand = new Command(arg => StartTiristorSettingsClick());
             TestTiristorSettingsCommand = new Command(arg => TestTiristorSettingsClick());
+
             CycleModeCommand = new Command(arg => SetRequestMode());
 
             InitializeWorkingStatusData();
-            InitializeTestingStatusData();
+            IndicatorColor.InitializeTestingStatusData();
+            IndicatorColor.InitializeStartData();
 
             Data = new DataModel
-            {               
+            {
                 AmperageA1 = 0,
                 AmperageB1 = 0,
                 AmperageC1 = 0,
@@ -111,9 +112,7 @@ namespace TiristorModule
                 TemperatureOfTiristor = 0,
                 WorkingStatus = null,
                 TestingStatus = null,
-                IsRequestSingle = false
-
-
+                IsRequestSingle = false,
             };
         }
 
@@ -128,12 +127,6 @@ namespace TiristorModule
             WorkingStatus.Add(1, "Tormoz");
             WorkingStatus.Add(2, "Baipass");
             WorkingStatus.Add(3, "Razgon");
-        }
-
-        private static void InitializeTestingStatusData()
-        {
-            TestingStatus.Add(0, "Успешно");
-            TestingStatus.Add(1, "Ошибочно");
         }
 
         public static byte[] ConvertStringCollectionToByte(System.Collections.Specialized.StringCollection stringCollection)
@@ -168,7 +161,8 @@ namespace TiristorModule
 
         private void TestTerristorModuleClick()
         {
-            ChooseRequestMode(AddressTestTiristorModuleCommand, testRequest);
+            //ChooseRequestMode(AddressTestTiristorModuleCommand, testRequest);
+            TestThyristorWindowShow();
         }
 
         private void ResetAvatiaTirristorClick()
@@ -179,6 +173,17 @@ namespace TiristorModule
         private void SetRequestMode()
         {
             ChooseRequestMode(AddressResetAvariaTiristorCommand, standartRequest);
+        }
+
+        private void TestThyristorWindowShow()
+        {
+            var vm = new TestThyristorWindowViewModel();
+            var connectSettingView = new TestThyristorWindowView
+            {
+                DataContext = vm
+            };
+            vm.OnRequestClose += (s, e) => connectSettingView.Close();
+            connectSettingView.ShowDialog();
         }
 
         private void ConnectionSettingsClick()
@@ -284,7 +289,7 @@ namespace TiristorModule
             OutputDataFromArrayToModel(ReadHoldingResponcesFromBuffer(AddressCommand, RequestType), AddressCommand);
         }
 
-        private static void OutputDataFromArrayToModel(ushort[] buff, byte AdressCommand)
+        private static void OutputDataFromArrayToModel(ushort[] buff, byte AdressCommand)//wich status will open thyristor module
         {
             Data.VoltageA = buff[0];
             Data.VoltageB = buff[1];
@@ -296,21 +301,21 @@ namespace TiristorModule
             Data.AmperageB2 = buff[7];
             Data.AmperageC2 = buff[8];
             Data.TemperatureOfTiristor = buff[9];
-            if(AdressCommand != AddressTestTiristorModuleCommand) { Data.WorkingStatus = GetWorkingStatus(buff[10]); }
-            else { Data.TestingStatus = GetStatusFromTestTiristor(buff[22]); }
-        }
-
-        private static string GetWorkingStatus(ushort statusByte)
-        {
-            if (statusByte % 16 == 0 && statusByte != 0)
+            if(AdressCommand != AddressTestTiristorModuleCommand)
             {
-                int i = Convert.ToInt32(Math.Sqrt(Convert.ToDouble(statusByte)) - 4);
-                return WorkingStatus[1];
-            }     
-            else
-            {
-                return "Дежурный р-м";
+                Data.WorkingStatus = GetWorkingStatus(buff[10]);
+                if (buff[10] == 128 || buff[10] == 1)
+                {
+                    Data.StartStatus = IndicatorColor.GetStartStatus(0);
+                    Data.StopStatus = IndicatorColor.GetStartStatus(1);
+                }
+                else
+                {
+                    Data.StartStatus = IndicatorColor.GetStartStatus(1);
+                    Data.StopStatus = IndicatorColor.GetStartStatus(0);
+                }
             }
+            else { Data.TestingStatus = IndicatorColor.GetStatusFromTestTiristor(buff[22]); }
         }
 
         //standart request - zapros_cur_voltage, stop_Tiristor_module, reset_avaria_tir, avarinii_stop
@@ -385,7 +390,7 @@ namespace TiristorModule
             return frameout;
         }
 
-        private static ushort[] ParseTestTirResponse(byte[] data)//output as a table
+        private static ushort[] ParseTestTirResponse(byte[] data)
         {
             ushort[] frame = new ushort[18];
             if (data[23] == CalculateCRC8(data))
@@ -405,7 +410,7 @@ namespace TiristorModule
             }
         }
 
-        private static ushort[] ParseCurrentVoltageResponse(byte[] data)//status_crash(0-suc-s/list of errors)
+        private static ushort[] ParseCurrentVoltageResponse(byte[] data)
         {
             ushort[] frame = new ushort[12];
             int j = 4;
@@ -464,7 +469,7 @@ namespace TiristorModule
             else return CreateTestTiristorModuleRequest(SlaveAddress);
         }
         
-        private static void GetStatusFromCurrentVoltage(ushort statusCrash) 
+        private static void GetStatusFromCurrentVoltage(ushort statusCrash)
         {
             //массив эл. управления
             //перебор 
@@ -478,16 +483,21 @@ namespace TiristorModule
                     break;
                 case 1:
 
-                    break;
-
-               
-
+                    break;              
             }
         }
 
-        private static string GetStatusFromTestTiristor(ushort statusTest)
+        private static string GetWorkingStatus(ushort statusByte)
         {
-            return TestingStatus[statusTest];
+            if (statusByte % 16 == 0 && statusByte != 0)
+            {
+                int i = Convert.ToInt32(Math.Sqrt(Convert.ToDouble(statusByte)) - 4);
+                return WorkingStatus[1];
+            }
+            else
+            {
+                return "Дежурный р-м";
+            }
         }
 
         private static byte CalculateCRC8(byte[] array)

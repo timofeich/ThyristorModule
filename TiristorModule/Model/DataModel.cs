@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Windows.Media;
 
 namespace TiristorModule
 {
@@ -34,8 +35,9 @@ namespace TiristorModule
 
         private ushort temperatureOfTiristor;
         private string workingStatus;
-        protected string testingStatus;
-
+        private Brush testingStatus;
+        private Brush startStatus;
+        private Brush stopStatus;
         private bool isRequestSingle;
         
         #endregion
@@ -185,7 +187,7 @@ namespace TiristorModule
             }
         }
    
-        public string TestingStatus
+        public Brush TestingStatus
         {
             get { return testingStatus; }
             set
@@ -194,6 +196,32 @@ namespace TiristorModule
                 {
                     testingStatus = value;
                     OnPropertyChanged("TestingStatus");
+                }
+            }
+        }
+
+        public Brush StartStatus
+        {
+            get { return startStatus; }
+            set
+            {
+                if (startStatus != value)
+                {
+                    startStatus = value;
+                    OnPropertyChanged("StartStatus");
+                }
+            }
+        }
+
+        public Brush StopStatus
+        {
+            get { return stopStatus; }
+            set
+            {
+                if (stopStatus != value)
+                {
+                    stopStatus = value;
+                    OnPropertyChanged("StopStatus");
                 }
             }
         }

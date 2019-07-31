@@ -1,0 +1,18 @@
+﻿<Window x:Class="TiristorModule.View.TestThyristorWindowView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TiristorModule.View"
+        mc:Ignorable="d"
+        Title="Тест тиристорного модуля" Height="353.571" Width="629.135">
+    <Grid>
+        <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding TestData.TestData}" HorizontalAlignment="Left" Height="300" Margin="10,10,0,0" VerticalAlignment="Top" Width="601">
+        <DataGrid.Columns>
+                <DataGridTextColumn Header="ApBn" Binding="{Binding ApBn}"/>
+                <DataGridTextColumn Header="BpAn" Binding="{Binding TestData.BpAn}"/>
+                <DataGridTextColumn Header="CpAn" Binding="{Binding TestData.CpAn}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Window>
