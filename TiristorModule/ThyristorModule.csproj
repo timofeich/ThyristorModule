@@ -66,7 +66,6 @@
     </ApplicationDefinition>
     <Compile Include="Indicators\IndicatorColor.cs" />
     <Compile Include="Model\DataModel.cs" />
-    <Compile Include="Model\TestData.cs" />
     <Compile Include="Model\TestThyristorModel.cs" />
     <Compile Include="ViewModel\Command.cs" />
     <Compile Include="ViewModel\ConnectSettingsViewModel.cs" />

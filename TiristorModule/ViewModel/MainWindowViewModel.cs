@@ -162,7 +162,12 @@ namespace TiristorModule
         private void TestTerristorModuleClick()
         {
             //ChooseRequestMode(AddressTestTiristorModuleCommand, testRequest);
-            TestThyristorWindowShow();
+            ushort[] buff = new ushort[18];
+            for(int i = 0; i < buff.Length; i++)
+            {
+                buff[i] = (ushort)i;   
+            }
+            TestThyristorWindowShow(buff);
         }
 
         private void ResetAvatiaTirristorClick()
@@ -175,9 +180,9 @@ namespace TiristorModule
             ChooseRequestMode(AddressResetAvariaTiristorCommand, standartRequest);
         }
 
-        private void TestThyristorWindowShow()
+        private static void TestThyristorWindowShow(ushort[] buff)
         {
-            var vm = new TestThyristorWindowViewModel();
+            var vm = new TestThyristorWindowViewModel(buff);
             var connectSettingView = new TestThyristorWindowView
             {
                 DataContext = vm
@@ -240,12 +245,12 @@ namespace TiristorModule
             {
                 if (AddressCommand == AddressRequestFotCurrentVoltageCommand)
                 {
-                    OutputRequestData(AddressCommand, RequestType);
+                    OutputResponceData(AddressCommand, RequestType);
                     Thread.Sleep(20);
                 }
                 else
                 {
-                    OutputRequestData(AddressCommand, RequestType);
+                    OutputResponceData(AddressCommand, RequestType);
                     AddressCommand = AddressRequestFotCurrentVoltageCommand;
                 }
 
@@ -267,12 +272,12 @@ namespace TiristorModule
                     {
                         if (AddressCommand == AddressRequestFotCurrentVoltageCommand)
                         {
-                            OutputRequestData(AddressCommand, RequestType);
+                            OutputResponceData(AddressCommand, RequestType);
                             Thread.Sleep(20);
                         }
                         else
                         {
-                            OutputRequestData(AddressCommand, RequestType);
+                            OutputResponceData(AddressCommand, RequestType);
                             AddressCommand = AddressRequestFotCurrentVoltageCommand;
                         }
                     }
@@ -284,12 +289,26 @@ namespace TiristorModule
             }
         }
 
-        public static void OutputRequestData(byte AddressCommand, int RequestType)
+        public static void OutputResponceData(byte AddressCommand, int RequestType)
         {
-            OutputDataFromArrayToModel(ReadHoldingResponcesFromBuffer(AddressCommand, RequestType), AddressCommand);
+            if (AddressCommand == AddressTestTiristorModuleCommand)
+            {
+                OutputDataFromArrayToTestModel(ReadHoldingResponcesFromBuffer(AddressCommand, RequestType), AddressCommand);
+            }
+            else
+            {
+                OutputDataFromArrayToDataModel(ReadHoldingResponcesFromBuffer(AddressCommand, RequestType), AddressCommand);
+            }
+            
         }
 
-        private static void OutputDataFromArrayToModel(ushort[] buff, byte AdressCommand)//wich status will open thyristor module
+        private static void OutputDataFromArrayToTestModel(ushort[] buff, byte AddressCommand)//wich status will open thyristor module
+        {
+            Data.TestingStatus = IndicatorColor.GetStatusFromTestTiristor(buff[18]);
+            TestThyristorWindowShow(buff);            
+        }
+
+        private static void OutputDataFromArrayToDataModel(ushort[] buff, byte AddressCommand)//wich status will open thyristor module
         {
             Data.VoltageA = buff[0];
             Data.VoltageB = buff[1];
@@ -301,21 +320,18 @@ namespace TiristorModule
             Data.AmperageB2 = buff[7];
             Data.AmperageC2 = buff[8];
             Data.TemperatureOfTiristor = buff[9];
-            if(AdressCommand != AddressTestTiristorModuleCommand)
+            Data.WorkingStatus = GetWorkingStatus(buff[10]);
+            if (buff[10] == 128 || buff[10] == 1)
             {
-                Data.WorkingStatus = GetWorkingStatus(buff[10]);
-                if (buff[10] == 128 || buff[10] == 1)
-                {
-                    Data.StartStatus = IndicatorColor.GetStartStatus(0);
-                    Data.StopStatus = IndicatorColor.GetStartStatus(1);
-                }
-                else
-                {
-                    Data.StartStatus = IndicatorColor.GetStartStatus(1);
-                    Data.StopStatus = IndicatorColor.GetStartStatus(0);
-                }
+                Data.StartStatus = IndicatorColor.GetStartStatus(0);
+                Data.StopStatus = IndicatorColor.GetStartStatus(1);
             }
-            else { Data.TestingStatus = IndicatorColor.GetStatusFromTestTiristor(buff[22]); }
+            else
+            {
+                Data.StartStatus = IndicatorColor.GetStartStatus(1);
+                Data.StopStatus = IndicatorColor.GetStartStatus(0);
+            }
+
         }
 
         //standart request - zapros_cur_voltage, stop_Tiristor_module, reset_avaria_tir, avarinii_stop
@@ -392,15 +408,14 @@ namespace TiristorModule
 
         private static ushort[] ParseTestTirResponse(byte[] data)
         {
-            ushort[] frame = new ushort[18];
-            if (data[23] == CalculateCRC8(data))
+            ushort[] frame = new ushort[19];
+            if (data[24] == CalculateCRC8(data))
             {
-                for (int i = 0; i < 17; i++)
+                for (int i = 0; i < 20; i++)
                 {
                     frame[i] = data[i + 4];
                 }
 
-                frame[17] = data[22];
                 return frame;
             }
             else
