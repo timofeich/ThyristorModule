@@ -1,44 +1,44 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using TiristorModule.Model;
 
 namespace TiristorModule.ViewModel
 {
-    public class TestThyristorWindowViewModel
+    public class TestThyristorWindowViewModel : INotifyPropertyChanged
     {
+        private bool _firstColumnChecked;
+        private List<TestData> _items;
         public event EventHandler OnRequestClose;
-
-        public ObservableCollection<TestData> Testdata { get; set; } = new ObservableCollection<TestData>();
 
         public TestThyristorWindowViewModel()
         {
-            var tmp = GetAllTestData();
-            foreach (var item in tmp)
-            {
-                Testdata.Add(item);
-            }
+            _items = new List<TestData>
+         {
+            new TestData(1, 2, 3),
+            new TestData(4, 5, 6),
+         };
         }
 
-        private ObservableCollection<TestData> GetAllTestData()
+        public List<TestData> TestDatas
         {
-            ObservableCollection<TestData> result = new ObservableCollection<TestData>();
-
-            for (int i = 0; i < 3; i++)
+            get { return _items; }
+            set
             {
-                result.Add(
-                    new TestData
-                    {
-                        ApBn = 10,
-                        BpAn = 20,
-                        CpAn = 30,
-                        ApCn = 40,
-                        BpCn = 50,
-                        CpBn = 60
-
-                    });
+                _items = value;
+                OnPropertyChanged(nameof(TestDatas));
             }
-
-            return result;
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void OnPropertyChanged(string propertyName)
+        {
+
+            var handler = PropertyChanged;
+            handler?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
     }
 }

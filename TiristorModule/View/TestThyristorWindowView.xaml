@@ -7,11 +7,11 @@
         mc:Ignorable="d"
         Title="Тест тиристорного модуля" Height="353.571" Width="629.135">
     <Grid>
-        <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding TestData.TestData}" HorizontalAlignment="Left" Height="300" Margin="10,10,0,0" VerticalAlignment="Top" Width="601">
+        <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding TestDatas}" HorizontalAlignment="Left" Height="300" Margin="10,10,0,0" VerticalAlignment="Top" Width="601">
         <DataGrid.Columns>
                 <DataGridTextColumn Header="ApBn" Binding="{Binding ApBn}"/>
-                <DataGridTextColumn Header="BpAn" Binding="{Binding TestData.BpAn}"/>
-                <DataGridTextColumn Header="CpAn" Binding="{Binding TestData.CpAn}"/>
+                <DataGridTextColumn Header="BpAn" Binding="{Binding BpAn}"/>
+                <DataGridTextColumn Header="CpAn" Binding="{Binding CpAn}"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>
