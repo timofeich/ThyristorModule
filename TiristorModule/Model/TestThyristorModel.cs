@@ -11,7 +11,8 @@
         private ushort CpBn { get; set; }
         private ushort OpredelenieFazz { get; set; }
 
-        public TestThyristorModel(string fazaName, ushort apBn, ushort bpAn, ushort cpAn, ushort apCn, ushort bpCn, ushort cpBn, ushort opredelenieFazz)
+        public TestThyristorModel(string fazaName, ushort apBn, ushort bpAn, ushort cpAn, ushort apCn, 
+            ushort bpCn, ushort cpBn, ushort opredelenieFazz)
         {
             FazaName = fazaName;
             ApBn = apBn;

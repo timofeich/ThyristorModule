@@ -9,10 +9,7 @@ using TiristorModule.View;
 using System.Linq;
 using TiristorModule.Properties;
 using TiristorModule.Indicators;
-using System.Windows.Media;
 using TiristorModule.Model;
-using System.Collections.ObjectModel;
-using System.Collections;
 
 namespace TiristorModule
 {
@@ -26,6 +23,7 @@ namespace TiristorModule
 
         #region Fields
         private static byte SlaveAddress = Settings.Default.AddressSlave;
+
         private static byte MasterAddress = Settings.Default.AddressMaster;
 
         private const byte AddressStartTiristorModuleCommand = 0x87;

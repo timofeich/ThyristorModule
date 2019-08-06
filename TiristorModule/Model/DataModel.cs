@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Windows.Media;
 
 namespace TiristorModule
 {
@@ -18,7 +16,7 @@ namespace TiristorModule
             }
         }
         #endregion
-
+        
         #region Fields
         private ushort voltageA;
         private ushort voltageB;
@@ -35,8 +33,6 @@ namespace TiristorModule
 
         private ushort temperatureOfTiristor;
         private string workingStatus;
-        private Brush startStatus;
-        private Brush stopStatus;
 
         private bool isRequestSingle;
 
