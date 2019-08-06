@@ -1,22 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TiristorModule.Model
+﻿namespace TiristorModule.Model
 {
     public class TestThyristorModel
     {
-        public string FazaName { get; set; }
-        public ushort ApBn { get; set; }
-        public ushort BpAn { get; set; }
-        public ushort CpAn { get; set; }
-        public ushort ApCn { get; set; }
-        public ushort BpCn { get; set; }
-        public ushort CpBn { get; set; }
-        public ushort OpredelenieFazz { get; set; }
+        private string FazaName { get; set; }
+        private ushort ApBn { get; set; }
+        private ushort BpAn { get; set; }
+        private ushort CpAn { get; set; }
+        private ushort ApCn { get; set; }
+        private ushort BpCn { get; set; }
+        private ushort CpBn { get; set; }
+        private ushort OpredelenieFazz { get; set; }
 
         public TestThyristorModel(string fazaName, ushort apBn, ushort bpAn, ushort cpAn, ushort apCn, ushort bpCn, ushort cpBn, ushort opredelenieFazz)
         {

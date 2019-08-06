@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A831D6AD-6157-4985-B5BD-C0B1B5477284}</ProjectGuid>
+    <ProjectGuid>{FBD93D1C-8BCF-458B-9C97-7F068D19EB0E}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>TiristorModule</RootNamespace>
-    <AssemblyName>TiristorModule</AssemblyName>
+    <RootNamespace>LedControl</RootNamespace>
+    <AssemblyName>LedControl</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -35,19 +35,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Itenso.Configuration, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UserSettingsApplied.1.2.0\lib\net20\Release\Itenso.Configuration.dll</HintPath>
-    </Reference>
-    <Reference Include="Itenso.Configuration.Windows, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UserSettingsApplied.1.2.0\lib\net20\Release\Itenso.Configuration.Windows.dll</HintPath>
-    </Reference>
-    <Reference Include="Itenso.Configuration.WindowsForms, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UserSettingsApplied.1.2.0\lib\net20\Release\Itenso.Configuration.WindowsForms.dll</HintPath>
-    </Reference>
-    <Reference Include="LedControl, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\LedControl\LedControl\bin\Debug\LedControl.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -68,32 +55,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Indicators\ColorToSCBrushConverter.cs" />
-    <Compile Include="Indicators\IndicatorColor.cs" />
-    <Compile Include="Model\DataModel.cs" />
-    <Compile Include="Model\LedIndicatorModel.cs" />
-    <Compile Include="Model\TestThyristorModel.cs" />
-    <Compile Include="ViewModel\Command.cs" />
-    <Compile Include="ViewModel\SettingsViewModels\ConnectSettingsViewModel.cs" />
-    <Compile Include="ViewModel\SerialPortSettings.cs" />
-    <Compile Include="ViewModel\SettingsViewModels\StartThyristorSettingsViewModel.cs" />
-    <Compile Include="ViewModel\SettingsViewModels\TestThyristorSettingsViewModel.cs" />
-    <Compile Include="ViewModel\BytesManipulating.cs" />
-    <Compile Include="ViewModel\TestThyristorWindowViewModel.cs" />
-    <Compile Include="View\StartThyristorSettingsView.xaml.cs">
-      <DependentUpon>StartThyristorSettingsView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\TestThyristorSettingsView.xaml.cs">
-      <DependentUpon>TestThyristorSettingsView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\TestThyristorWindowView.xaml.cs">
-      <DependentUpon>TestThyristorWindowView.xaml</DependentUpon>
-    </Compile>
-    <Page Include="View\ConnectSettingsView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\MainWindowView.xaml">
+    <Page Include="LedControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -101,26 +63,11 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ViewModel\MainWindowViewModel.cs" />
-    <Compile Include="View\ConnectSettingsView.xaml.cs">
-      <DependentUpon>ConnectSettingsView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\MainWindowView.xaml.cs">
-      <DependentUpon>MainWindowView.xaml</DependentUpon>
+    <Compile Include="Converters\WidthToBorderThickConverter.cs" />
+    <Compile Include="LedControl.xaml.cs">
+      <DependentUpon>LedControl.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="View\StartThyristorSettingsView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\TestThyristorSettingsView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\TestThyristorWindowView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -140,16 +87,13 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

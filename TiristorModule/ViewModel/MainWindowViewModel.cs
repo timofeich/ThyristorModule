@@ -9,6 +9,10 @@ using TiristorModule.View;
 using System.Linq;
 using TiristorModule.Properties;
 using TiristorModule.Indicators;
+using System.Windows.Media;
+using TiristorModule.Model;
+using System.Collections.ObjectModel;
+using System.Collections;
 
 namespace TiristorModule
 {
@@ -50,6 +54,9 @@ namespace TiristorModule
         private static ushort[] BuffResponce;
 
         private static Dictionary<int, string> WorkingStatus = new Dictionary<int, string>(4);
+        private static Dictionary<int, string> LedIndicators = new Dictionary<int, string>(4);
+        public static Dictionary<int, bool?> LedIndicatorsList  = new Dictionary<int, bool?>(6);
+
 
         private static int standartRequest = 0;
         private static int startRequest = 1;
@@ -60,6 +67,7 @@ namespace TiristorModule
 
         #region Properties
         public static DataModel Data { get; set; }
+        public static LedIndicatorModel LedIndicatorData { get; set; }
 
         #endregion
 
@@ -95,8 +103,6 @@ namespace TiristorModule
             CycleModeCommand = new Command(arg => SetRequestMode());
 
             InitializeWorkingStatusData();
-            IndicatorColor.InitializeTestingStatusData();
-            IndicatorColor.InitializeStartData();
 
             Data = new DataModel
             {
@@ -111,9 +117,14 @@ namespace TiristorModule
                 VoltageC = 0,
                 TemperatureOfTiristor = 0,
                 WorkingStatus = null,
-                TestingStatus = null,
                 IsRequestSingle = false,
             };
+
+            LedIndicatorData = new LedIndicatorModel
+            {
+
+            };
+               
         }
 
         ~MainViewModel()
@@ -161,13 +172,7 @@ namespace TiristorModule
 
         private void TestTerristorModuleClick()
         {
-            //ChooseRequestMode(AddressTestTiristorModuleCommand, testRequest);
-            ushort[] buff = new ushort[18];
-            for(int i = 0; i < buff.Length; i++)
-            {
-                buff[i] = (ushort)i;   
-            }
-            TestThyristorWindowShow(buff);
+            ChooseRequestMode(AddressTestTiristorModuleCommand, testRequest);
         }
 
         private void ResetAvatiaTirristorClick()
@@ -298,13 +303,12 @@ namespace TiristorModule
             else
             {
                 OutputDataFromArrayToDataModel(ReadHoldingResponcesFromBuffer(AddressCommand, RequestType), AddressCommand);
-            }
-            
+            }           
         }
 
         private static void OutputDataFromArrayToTestModel(ushort[] buff, byte AddressCommand)//wich status will open thyristor module
         {
-            Data.TestingStatus = IndicatorColor.GetStatusFromTestTiristor(buff[18]);
+            LedIndicatorData.TestingStatus = IndicatorColor.GetTestingStatusLEDColor(buff[18]);
             TestThyristorWindowShow(buff);            
         }
 
@@ -323,15 +327,15 @@ namespace TiristorModule
             Data.WorkingStatus = GetWorkingStatus(buff[10]);
             if (buff[10] == 128 || buff[10] == 1)
             {
-                Data.StartStatus = IndicatorColor.GetStartStatus(0);
-                Data.StopStatus = IndicatorColor.GetStartStatus(1);
+                LedIndicatorData.StartStatus = IndicatorColor.GetTestingStatusLEDColor(1);
+                LedIndicatorData.StopStatus = IndicatorColor.GetTestingStatusLEDColor(0);
             }
             else
             {
-                Data.StartStatus = IndicatorColor.GetStartStatus(1);
-                Data.StopStatus = IndicatorColor.GetStartStatus(0);
+                LedIndicatorData.StartStatus = IndicatorColor.GetTestingStatusLEDColor(0);
+                LedIndicatorData.StopStatus = IndicatorColor.GetTestingStatusLEDColor(1);
             }
-
+            GetStatusFromCurrentVoltage(buff[11]);
         }
 
         //standart request - zapros_cur_voltage, stop_Tiristor_module, reset_avaria_tir, avarinii_stop
@@ -484,21 +488,81 @@ namespace TiristorModule
             else return CreateTestTiristorModuleRequest(SlaveAddress);
         }
         
-        private static void GetStatusFromCurrentVoltage(ushort statusCrash)
-        {
-            //массив эл. управления
-            //перебор 
-            //логика вывода ошибок
-            //    int i = Convert.ToInt32(Math.Sqrt(Convert.ToDouble(statusCrash)));
-
+        private static void GetStatusFromCurrentVoltage(ushort statusCrash)//try loop and list
+        {         
             switch (statusCrash)
             {
                 case 0:
-
+                    LedIndicatorData.A1_kz = true;
+                    LedIndicatorData.B1_kz = true;
+                    LedIndicatorData.C1_kz = true;
+                    LedIndicatorData.A2_kz = true;
+                    LedIndicatorData.B2_kz = true;
+                    LedIndicatorData.C2_kz = true;
                     break;
-                case 1:
 
-                    break;              
+                case 1:
+                    LedIndicatorData.A1_kz = false;
+                    LedIndicatorData.B1_kz = true;
+                    LedIndicatorData.C1_kz = true;
+                    LedIndicatorData.A2_kz = true;
+                    LedIndicatorData.B2_kz = true;
+                    LedIndicatorData.C2_kz = true;
+                    break;
+
+                case 2:
+                    LedIndicatorData.A1_kz = true;
+                    LedIndicatorData.B1_kz = false;
+                    LedIndicatorData.C1_kz = true;
+                    LedIndicatorData.A2_kz = true;
+                    LedIndicatorData.B2_kz = true;
+                    LedIndicatorData.C2_kz = true;
+                    break;
+
+                case 4:
+                    LedIndicatorData.A1_kz = true;
+                    LedIndicatorData.B1_kz = true;
+                    LedIndicatorData.C1_kz = false;
+                    LedIndicatorData.A2_kz = true;
+                    LedIndicatorData.B2_kz = true;
+                    LedIndicatorData.C2_kz = true;
+                    break;
+
+                case 8:
+                    LedIndicatorData.A1_kz = true;
+                    LedIndicatorData.B1_kz = true;
+                    LedIndicatorData.C1_kz = true;
+                    LedIndicatorData.A2_kz = false;
+                    LedIndicatorData.B2_kz = true;
+                    LedIndicatorData.C2_kz = true;
+                    break;
+
+                case 16:
+                    LedIndicatorData.A1_kz = true;
+                    LedIndicatorData.B1_kz = true;
+                    LedIndicatorData.C1_kz = true;
+                    LedIndicatorData.A2_kz = true;
+                    LedIndicatorData.B2_kz = false;
+                    LedIndicatorData.C2_kz = true;
+                    break;
+
+                case 32:
+                    LedIndicatorData.A1_kz = true;
+                    LedIndicatorData.B1_kz = true;
+                    LedIndicatorData.C1_kz = true;
+                    LedIndicatorData.A2_kz = true;
+                    LedIndicatorData.B2_kz = true;
+                    LedIndicatorData.C2_kz = false;
+                    break;
+
+                case 64:
+                    LedIndicatorData.A1_kz = false;
+                    LedIndicatorData.B1_kz = false;
+                    LedIndicatorData.C1_kz = false;
+                    LedIndicatorData.A2_kz = false;
+                    LedIndicatorData.B2_kz = false;
+                    LedIndicatorData.C2_kz = false;
+                    break;
             }
         }
 

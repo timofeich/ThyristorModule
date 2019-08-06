@@ -35,11 +35,11 @@ namespace TiristorModule
 
         private ushort temperatureOfTiristor;
         private string workingStatus;
-        private Brush testingStatus;
         private Brush startStatus;
         private Brush stopStatus;
+
         private bool isRequestSingle;
-        
+
         #endregion
 
         #region Properties
@@ -183,45 +183,6 @@ namespace TiristorModule
                 {
                     workingStatus = value;
                     OnPropertyChanged("WorkingStatus");
-                }
-            }
-        }
-   
-        public Brush TestingStatus
-        {
-            get { return testingStatus; }
-            set
-            {
-                if (testingStatus != value)
-                {
-                    testingStatus = value;
-                    OnPropertyChanged("TestingStatus");
-                }
-            }
-        }
-
-        public Brush StartStatus
-        {
-            get { return startStatus; }
-            set
-            {
-                if (startStatus != value)
-                {
-                    startStatus = value;
-                    OnPropertyChanged("StartStatus");
-                }
-            }
-        }
-
-        public Brush StopStatus
-        {
-            get { return stopStatus; }
-            set
-            {
-                if (stopStatus != value)
-                {
-                    stopStatus = value;
-                    OnPropertyChanged("StopStatus");
                 }
             }
         }
