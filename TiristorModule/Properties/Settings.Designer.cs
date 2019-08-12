@@ -348,5 +348,17 @@ namespace TiristorModule.Properties {
                 this["Parities"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("300")]
+        public int RequestInterval {
+            get {
+                return ((int)(this["RequestInterval"]));
+            }
+            set {
+                this["RequestInterval"] = value;
+            }
+        }
     }
 }

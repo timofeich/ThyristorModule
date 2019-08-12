@@ -6,14 +6,37 @@
         xmlns:p="clr-namespace:TiristorModule.Properties"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
-        Title="Параметры связи" Height="301.5" Width="432.5" Background="LightGray">
+        Title="Параметры связи" Height="330" Width="559" Background="LightGray">
+
+    <Window.Resources>
+        <ControlTemplate x:Key="validationFailed">
+            <StackPanel Orientation="Horizontal">
+                <Border BorderBrush="Red" BorderThickness="2">
+                    <AdornedElementPlaceholder />
+                </Border>
+                <TextBlock Foreground="Red" FontSize="14" FontWeight="Bold">!</TextBlock>
+            </StackPanel>
+        </ControlTemplate>
+
+        <Style TargetType="TextBox">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="True">
+                    <Setter Property="ToolTip"
+                Value="{Binding RelativeSource={RelativeSource Self},
+                    Path=(Validation.Errors)[0].ErrorContent}" />
+                    <Setter Property="Foreground" Value="Red" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
     <Grid Margin="0,0,2,0">
-        <GroupBox Header="UART" Background="White" Margin="20,10,192,61">
-            <Grid Margin="0,0,-2,0">
+        <GroupBox FontSize="14" Header="UART" Background="White" Margin="20,10,0,0" HorizontalAlignment="Left" Width="307" Height="200" VerticalAlignment="Top">
+            <Grid Margin="10,10,-2,0">
 
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" MinWidth="135" />
+                    <ColumnDefinition Width="auto" MinWidth="162" />
                 </Grid.ColumnDefinitions>
 
                 <Grid.RowDefinitions>
@@ -22,28 +45,27 @@
                     <RowDefinition/>
                     <RowDefinition/>
                     <RowDefinition/>
-                    <RowDefinition/>
+
                 </Grid.RowDefinitions>
 
                 <TextBlock Grid.Row="0" FontSize="14"><Run Text="Имя порта:"/></TextBlock>
                 <ComboBox HorizontalAlignment="Left" IsEditable="True" ItemsSource ="{Binding Source={x:Static p:Settings.Default}, Path=PortNames, Mode=OneWay}" 
-                          SelectedItem="{Binding Source={x:Static p:Settings.Default}, Path=PortName}" VerticalAlignment="Top" Width="94" Height="20" Grid.Column="1" Margin="0,0,-16,0">
-                </ComboBox>
+                          SelectedItem="{Binding Source={x:Static p:Settings.Default}, Path=PortName}" VerticalAlignment="Top" Width="125" Height="25" Grid.Column="1"/>
 
-                <TextBlock Grid.Row="1" FontSize="14" Margin="0,1,0,0"><Run Text="Стоп. бит:"/></TextBlock>
-                <ComboBox ItemsSource="{Binding Source={x:Static p:Settings.Default}, Path=StopBits, Mode=OneWay}" 
-                           SelectedItem="{Binding Source={x:Static p:Settings.Default}, Path=StopBit}" IsEditable="True" HorizontalAlignment="Left" VerticalAlignment="Top" Width="94" Height="20" Grid.Column="1" Margin="0,1,-15,0" Grid.Row="1"/>
+                <TextBlock Grid.Row="1" FontSize="14" Margin="0,1,0,0"><Run Text="Стоповый бит:"/></TextBlock>
+                <ComboBox FontSize="14" ItemsSource="{Binding Source={x:Static p:Settings.Default}, Path=StopBits, Mode=OneWay}" 
+                           SelectedItem="{Binding Source={x:Static p:Settings.Default}, Path=StopBit}" IsEditable="True" HorizontalAlignment="Left" VerticalAlignment="Top" Width="125" Height="25" Grid.Column="1" Grid.Row="1"/>
 
-                <TextBlock Grid.Row="2" FontSize="14"><Run Text="Ск-ть передачи:"/></TextBlock>
-                <ComboBox ItemsSource="{Binding Source={x:Static p:Settings.Default}, Path=BaudRates, Mode=OneWay}" 
-                           SelectedItem="{Binding Source={x:Static p:Settings.Default}, Path=BaudRate}" IsEditable="True" HorizontalAlignment="Left" VerticalAlignment="Top" Width="94" Height="20" Grid.Column="1" Grid.Row="2" Margin="0,0,-14,0"/>
+                <TextBlock Grid.Row="2" FontSize="14"><Run Text="Скорость передачи:"/></TextBlock>
+                <ComboBox FontSize="14" ItemsSource="{Binding Source={x:Static p:Settings.Default}, Path=BaudRates, Mode=OneWay}" 
+                           SelectedItem="{Binding Source={x:Static p:Settings.Default}, Path=BaudRate}" IsEditable="True" HorizontalAlignment="Left" VerticalAlignment="Top" Width="125" Height="26" Grid.Column="1" Grid.Row="2"/>
 
                 <TextBlock Grid.Row="3" FontSize="14" Margin="0,1,0,0"><Run Text="Бит четности:"/></TextBlock>
                 <ComboBox ItemsSource="{Binding Source={x:Static p:Settings.Default}, Path=Parities, Mode=OneWay}" 
-                          SelectedItem="{Binding Source={x:Static p:Settings.Default}, Path=Parity}" IsEditable="True" HorizontalAlignment="Left" VerticalAlignment="Top" Width="94" Height="20" Grid.Column="1" Grid.Row="3" Margin="0,1,-13,0"/>
+                          SelectedItem="{Binding Source={x:Static p:Settings.Default}, Path=Parity}" IsEditable="True" HorizontalAlignment="Left" VerticalAlignment="Top" Width="125" Height="24" Grid.Column="1" Grid.Row="3" Margin="0,1,0,0"/>
 
                 <TextBlock Grid.Row="4" FontSize="14" Margin="0,1,0,0"><Run Text="Биты данных:"/></TextBlock>
-                <ComboBox IsEditable="True"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="94" Height="20" Grid.Column="1" Grid.Row="4" Margin="0,1,-12,0"
+                <ComboBox IsEditable="True"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="125" Height="24" Grid.Column="1" Grid.Row="4" Margin="0,1,0,0"
                     ItemsSource = "{Binding Source={x:Static p:Settings.Default}, Path=DataBits, Mode=OneWay}"
                           SelectedItem="{Binding Source={x:Static p:Settings.Default}, Path=DataBit}">
                 </ComboBox>
@@ -51,8 +73,8 @@
 
             </Grid>
         </GroupBox>
-        <GroupBox Header="Адреса" Background="White" HorizontalAlignment="Left" Height="200" Margin="235,10,0,0" VerticalAlignment="Top" Width="168">
-            <Grid Margin="0,0,-2,124">
+        <GroupBox Header="Адреса" FontSize="14" Background="White" HorizontalAlignment="Left" Height="200" Margin="332,10,0,0" VerticalAlignment="Top" Width="198">
+            <Grid Margin="10,10,-2,87">
 
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
@@ -63,16 +85,24 @@
                     <RowDefinition/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-                <TextBlock FontSize="14" Margin="0,0,0,26" Grid.RowSpan="2"><Run Text="Адрес Master:"/></TextBlock>
-                <TextBlock FontSize="14" Margin="0,26,0,0" Grid.RowSpan="2"><Run Text="Адрес Slave:"/></TextBlock>
-                <TextBox HorizontalAlignment="Left"  Text="{Binding Source={x:Static p:Settings.Default}, Path=AddressMaster, Mode=TwoWay, StringFormat={}0x{0:X}}" Height="17" TextWrapping="Wrap" VerticalAlignment="Top" Width="30" Grid.Column="1" Margin="0,1,0,0" SpellCheck.IsEnabled="True"/>
-                <TextBox HorizontalAlignment="Left"  Text="{Binding Source={x:Static p:Settings.Default}, Path=AddressSlave, Mode=TwoWay, StringFormat={}0x{0:X}}" Height="17" TextWrapping="Wrap" VerticalAlignment="Top" Width="31" Grid.Column="1" Grid.Row="1" Margin="0,1,0,0"/>
+                <TextBlock FontSize="14"><Run Text="Адрес Master:"/></TextBlock>
+                <TextBlock FontSize="14" Margin="0,0,0,-2" Grid.Row="1"><Run Text="Адрес Slave:"/></TextBlock>
+                <TextBox FontSize="14" HorizontalAlignment="Left"  Text="{Binding Source={x:Static p:Settings.Default}, Path=AddressMaster, 
+                    Mode=TwoWay, 
+                    StringFormat={}{0:X}}" 
+                          Height="22" TextWrapping="Wrap" VerticalAlignment="Top"
+                         Width="43" Grid.Column="1" Margin="0,1,-8,0">
+
+                </TextBox>
+                <TextBox FontSize="14" HorizontalAlignment="Left"  Text="{Binding Source={x:Static p:Settings.Default}, Path=AddressSlave, Mode=TwoWay, StringFormat={}{0:X}}" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="43" Grid.Column="1" Grid.Row="1" Margin="0,1,-5,0"/>
+                <TextBlock FontSize="14" Margin="0,39,0,-34" Grid.Row="1"><Run Text="Интервал:"/></TextBlock>
+                <TextBox FontSize="14" HorizontalAlignment="Left"  Text="{Binding RequestInterval, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="43" Grid.Column="1" Grid.Row="1" Margin="0,38,-3,-22"/>
             </Grid>
         </GroupBox>
 
-        <Grid HorizontalAlignment="Left" Background="White" Height="45" Margin="132,216,0,0" VerticalAlignment="Top" Width="200">
-            <Button Content="ОК" Command="{Binding SaveConnectSettingsCommand}"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Height="25" Margin="19,10,0,0"/>
-            <Button Content="Отмена" Command="{Binding CancelConnectSettingsCommand}" HorizontalAlignment="Left" Margin="105,10,0,0" VerticalAlignment="Top" Width="75" Height="25"/>
+        <Grid HorizontalAlignment="Left" Background="White"  Margin="168,224,0,0" VerticalAlignment="Top" Width="240" Height="60">
+            <Button Content="ОК" FontSize="14"  Command="{Binding SaveConnectSettingsCommand}"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Height="40" Margin="10,10,0,0"/>
+            <Button Content="Отмена" FontSize="14" Command="{Binding CancelConnectSettingsCommand}" HorizontalAlignment="Left" Margin="130,10,0,0" VerticalAlignment="Top" Width="100" Height="40"/>
         </Grid>
 
     </Grid>

@@ -6,21 +6,21 @@
         xmlns:p="clr-namespace:TiristorModule.Properties"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
-        Title="Параметры - Старт тир. модуля" Height="290.333" Width="390.5" Background="LightGray">
+        Title="Стартовые параметры тиристорного модуля" Height="340.333" Width="452.5" Background="LightGray">
     <Grid>
-        <GroupBox Header="Данные для разгона" Background="White" HorizontalAlignment="Left" Height="93" Margin="10,0,0,0" VerticalAlignment="Top" Width="362">
+        <GroupBox FontSize="14" Header="Данные для разгона" Background="White" HorizontalAlignment="Left" Height="93" Margin="10,0,0,0" VerticalAlignment="Top" Width="424">
             <Grid Margin="-4,0,-4,-3">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
+                    <ColumnDefinition Width="37*"/>
+                    <ColumnDefinition Width="37*"/>
+                    <ColumnDefinition Width="37*"/>
+                    <ColumnDefinition Width="37*"/>
+                    <ColumnDefinition Width="37*"/>
+                    <ColumnDefinition Width="37*"/>
+                    <ColumnDefinition Width="37*"/>
+                    <ColumnDefinition Width="35*"/>
+                    <ColumnDefinition Width="40*"/>
                 </Grid.ColumnDefinitions>
 
                 <Grid.RowDefinitions>
@@ -36,7 +36,7 @@
                 <TextBox Grid.Column="6" Text="{Binding Source={x:Static p:Settings.Default}, Path=Time[5], Mode=TwoWay}" HorizontalAlignment="Left" Height="20" Margin="1,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="26"/>
                 <TextBox Grid.Column="7" Text="{Binding Source={x:Static p:Settings.Default}, Path=Time[6], Mode=TwoWay}" HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="26"/>
                 <TextBox Grid.Column="8" Text="{Binding Source={x:Static p:Settings.Default}, Path=Time[7], Mode=TwoWay}" HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="27"/>
-                <TextBox Grid.Column="9" Text="{Binding Source={x:Static p:Settings.Default}, Path=Time[8], Mode=TwoWay}" HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="27"/>
+                <TextBox Grid.Column="9" Text="{Binding Source={x:Static p:Settings.Default}, Path=Time[8], Mode=TwoWay}" HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="34"/>
                 <TextBlock TextWrapping="Wrap" Text="Мощность %:" Margin="0,10,0,0" Grid.Row="1"/>
                 <TextBox Grid.Column="1" Text="{Binding Source={x:Static p:Settings.Default}, Path=Capacity[0], Mode=TwoWay, ValidatesOnDataErrors=True}" HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="25" Grid.Row="1"/>
                 <TextBox Grid.Column="2" Text="{Binding Source={x:Static p:Settings.Default}, Path=Capacity[1], Mode=TwoWay}" HorizontalAlignment="Left" Height="20" Margin="1,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="26" Grid.Row="1"/>
@@ -46,16 +46,16 @@
                 <TextBox Grid.Column="6" Text="{Binding Source={x:Static p:Settings.Default}, Path=Capacity[5], Mode=TwoWay}" HorizontalAlignment="Left" Height="20" Margin="1,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="26" Grid.Row="1"/>
                 <TextBox Grid.Column="7" Text="{Binding Source={x:Static p:Settings.Default}, Path=Capacity[6], Mode=TwoWay}" HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="26" Grid.Row="1"/>
                 <TextBox Grid.Column="8" Text="{Binding Source={x:Static p:Settings.Default}, Path=Capacity[7], Mode=TwoWay}" HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="27" Grid.Row="1"/>
-                <TextBox Grid.Column="9" Text="{Binding Source={x:Static p:Settings.Default}, Path=Capacity[8], Mode=TwoWay}" HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="27" Grid.Row="1"/>
+                <TextBox Grid.Column="9" Text="{Binding Source={x:Static p:Settings.Default}, Path=Capacity[8], Mode=TwoWay}" HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="34" Grid.Row="1"/>
             </Grid>
         </GroupBox>
-        <GroupBox Header="Параметры Kz1" Background="White" HorizontalAlignment="Left" Height="95" Margin="10,98,0,0" VerticalAlignment="Top" Width="170">
+        <GroupBox Header="Параметры Kz1" FontSize="14" Background="White" HorizontalAlignment="Left" Height="123" Margin="11,98,0,0" VerticalAlignment="Top" Width="197">
             <Grid Margin="0,0,-2,3">
 
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="41*"/>
-                    <ColumnDefinition Width="33*"/>
+                    <ColumnDefinition Width="auto" MinWidth="84"/>
+                    <ColumnDefinition Width="44*"/>
+                    <ColumnDefinition Width="59*"/>
                 </Grid.ColumnDefinitions>
 
                 <Grid.RowDefinitions>
@@ -64,37 +64,37 @@
                 </Grid.RowDefinitions>
                 <TextBlock TextWrapping="Wrap" Text="Ток Kz1 =" Margin="17,10,0,1"/>
                 <TextBox HorizontalAlignment="Left" Text="{Binding Source={x:Static p:Settings.Default}, Path=CurrentKz1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Height="20" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="41" Grid.Column="1">
-                
+
                 </TextBox>
-                <TextBlock TextWrapping="Wrap" Text="Время Kz1 =" Margin="0,4,0,0" Height="23" VerticalAlignment="Top" HorizontalAlignment="Left" Width="74" Grid.Row="1"/>
-                <TextBox HorizontalAlignment="Left"  Text="{Binding Source={x:Static p:Settings.Default}, Path=VremiaKzMs1, Mode=TwoWay}" Height="20" Margin="0,4,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="41" Grid.Column="1" Grid.Row="1"/>
+                <TextBlock TextWrapping="Wrap" Text="Время Kz1 =" Margin="0,4,0,0" Height="23" VerticalAlignment="Top" HorizontalAlignment="Left" Width="82" Grid.Row="1"/>
+                <TextBox HorizontalAlignment="Left"  Text="{Binding Source={x:Static p:Settings.Default}, Path=VremiaKzMs1, Mode=TwoWay }" Height="20" Margin="0,4,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="41" Grid.Column="1" Grid.Row="1"/>
                 <TextBlock Grid.Column="2" HorizontalAlignment="Left" Margin="1,4,0,0" TextWrapping="Wrap" Text="мс" VerticalAlignment="Top" Height="20" Width="22" Grid.Row="1"/>
 
             </Grid>
         </GroupBox>
-        <GroupBox Header="Параметры Kz2" Background="White" HorizontalAlignment="Left" Height="95" Margin="203,98,0,0" VerticalAlignment="Top" Width="170">
-            <Grid HorizontalAlignment="Left" Height="73" Margin="0,1,-2,-2" VerticalAlignment="Top" Width="150">
+        <GroupBox FontSize="14" Header="Параметры Kz2" Background="White" HorizontalAlignment="Left" Height="123" Margin="230,98,0,0" VerticalAlignment="Top" Width="204">
+            <Grid HorizontalAlignment="Left" Height="99" Margin="0,1,-2,-3" VerticalAlignment="Top" Width="181">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto" MinWidth="73"/>
-                    <ColumnDefinition Width="43*"/>
-                    <ColumnDefinition Width="34*"/>
+                    <ColumnDefinition Width="auto" MinWidth="91"/>
+                    <ColumnDefinition Width="7*"/>
+                    <ColumnDefinition Width="8*"/>
                 </Grid.ColumnDefinitions>
 
                 <Grid.RowDefinitions>
                     <RowDefinition/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-                <TextBlock TextWrapping="Wrap" Text="Ток Kz2 =" Margin="14,10,0,0" Height="23" VerticalAlignment="Top" HorizontalAlignment="Left" Width="59"/>
+                <TextBlock TextWrapping="Wrap" Text="Ток Kz2 =" Margin="17,10,0,0" Height="23" VerticalAlignment="Top" HorizontalAlignment="Left" Width="64"/>
                 <TextBox HorizontalAlignment="Left" Height="20" Text="{Binding Source={x:Static p:Settings.Default}, Path=CurrentKz1, Mode=TwoWay}" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="41" Grid.Column="1"/>
-                <TextBlock TextWrapping="Wrap" Margin="0,4,0,0" Height="29" VerticalAlignment="Top" HorizontalAlignment="Left" Width="73" Grid.Row="1"><Run Text="Время"/><Run Text=" "/><Run Text="Kz2 ="/></TextBlock>
+                <TextBlock TextWrapping="Wrap" Margin="0,4,0,0" Height="35" VerticalAlignment="Top" HorizontalAlignment="Left" Width="86" Grid.Row="1"><Run Text="Время"/><Run Text=" "/><Run Text="Kz2 ="/></TextBlock>
                 <TextBox HorizontalAlignment="Left"  Text="{Binding Source={x:Static p:Settings.Default}, Path=VremiaKzMs2, Mode=TwoWay}" Height="20" Margin="0,4,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="41" Grid.Column="1" Grid.Row="1"/>
-                <TextBlock Grid.Column="2" HorizontalAlignment="Left" Margin="0,4,0,0" Grid.Row="1" TextWrapping="Wrap" Text="мс" VerticalAlignment="Top"/>
+                <TextBlock Grid.Column="2" HorizontalAlignment="Left" Margin="0,4,0,0" Grid.Row="1" TextWrapping="Wrap" Text="мс" VerticalAlignment="Top" Height="19" Width="22"/>
 
             </Grid>
         </GroupBox>
-        <Grid HorizontalAlignment="Left" Background="White" Height="44" Margin="95,202,0,0" VerticalAlignment="Top" Width="200">
-            <Button Content="ОК" Command="{Binding SaveStartTiristorSettingsCommand}"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Height="25" Margin="17,10,0,0"/>
-            <Button Content="Отмена" Command="{Binding CancelStartTiristorSettingsCommand}" HorizontalAlignment="Left" Margin="103,10,0,0" VerticalAlignment="Top" Width="75" Height="25"/>
+        <Grid HorizontalAlignment="Left" Background="White" Margin="104,237,0,0" VerticalAlignment="Top" Width="240"  Height="60">
+            <Button Content="ОК" FontSize="14" Command="{Binding SaveStartTiristorSettingsCommand}"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Height="40" Margin="17,10,0,0"/>
+            <Button Content="Отмена" FontSize="14" Command="{Binding CancelStartTiristorSettingsCommand}" HorizontalAlignment="Left" Margin="131,10,0,0" VerticalAlignment="Top" Width="100" Height="40"/>
         </Grid>
 
     </Grid>

@@ -15,15 +15,14 @@ namespace TiristorModule
 {
     class MainViewModel
     {
-        private static SerialPort serialPort1 = new SerialPort(Settings.Default.PortName,
+        public static SerialPort serialPort1 = new SerialPort(Settings.Default.PortName,
             Convert.ToInt32(Settings.Default.BaudRate),
             SerialPortSettings.SetPortParity(Settings.Default.Parity),
             Convert.ToInt32(Settings.Default.DataBit),
             SerialPortSettings.SetStopBits(Settings.Default.StopBit));
-
+       
         #region Fields
         private static byte SlaveAddress = Settings.Default.AddressSlave;
-
         private static byte MasterAddress = Settings.Default.AddressMaster;
 
         private const byte AddressStartTiristorModuleCommand = 0x87;
@@ -48,6 +47,8 @@ namespace TiristorModule
         private static int NominalTok1sk = Settings.Default.NominalTok1sk / 10;
         private static byte NumberOfTest = Settings.Default.NumberOfTest;
 
+        private static int RequestInterval = Settings.Default.RequestInterval;
+
         private static byte[] BuffTir = new byte[18];
         private static ushort[] BuffResponce;
 
@@ -62,11 +63,11 @@ namespace TiristorModule
 
         private static bool IsCurrentVoltageRequestCyclical = true;
         #endregion
-
+     
         #region Properties
         public static DataModel Data { get; set; }
         public static LedIndicatorModel LedIndicatorData { get; set; }
-
+      
         #endregion
 
         #region Commands
@@ -115,14 +116,13 @@ namespace TiristorModule
                 VoltageC = 0,
                 TemperatureOfTiristor = 0,
                 WorkingStatus = null,
-                IsRequestSingle = false,
+                IsRequestSingle = false
             };
 
             LedIndicatorData = new LedIndicatorModel
             {
 
             };
-               
         }
 
         ~MainViewModel()
@@ -150,31 +150,37 @@ namespace TiristorModule
         
         private void StartTerristorModuleClick()
         {
+            IsCurrentVoltageRequestCyclical = true;
             ChooseRequestMode(AddressStartTiristorModuleCommand, startRequest);
         }
         
         private void StopTerristorModuleClick()
         {
+            IsCurrentVoltageRequestCyclical = true;
             ChooseRequestMode(AddressStopTiristorModuleCommand, standartRequest);
         }
 
         private void CurrentVoltageClick()
         {
+            IsCurrentVoltageRequestCyclical = true;
             ChooseRequestMode(AddressRequestFotCurrentVoltageCommand, standartRequest);
         }
 
         private void AlarmStopClick()
         {
+            IsCurrentVoltageRequestCyclical = true;
             ChooseRequestMode(AddressAlarmStopCommand, standartRequest);
         }
 
         private void TestTerristorModuleClick()
         {
+            IsCurrentVoltageRequestCyclical = true;
             ChooseRequestMode(AddressTestTiristorModuleCommand, testRequest);
         }
 
         private void ResetAvatiaTirristorClick()
         {
+            IsCurrentVoltageRequestCyclical = true;
             ChooseRequestMode(AddressResetAvariaTiristorCommand, standartRequest);
         }
 
@@ -276,7 +282,6 @@ namespace TiristorModule
                         if (AddressCommand == AddressRequestFotCurrentVoltageCommand)
                         {
                             OutputResponceData(AddressCommand, RequestType);
-                            Thread.Sleep(20);
                         }
                         else
                         {
@@ -296,44 +301,61 @@ namespace TiristorModule
         {
             if (AddressCommand == AddressTestTiristorModuleCommand)
             {
-                OutputDataFromArrayToTestModel(ReadHoldingResponcesFromBuffer(AddressCommand, RequestType), AddressCommand);
+                ushort[] buffer = ReadHoldingResponcesFromBuffer(AddressCommand, RequestType);
+                OutputDataFromArrayToTestModel(buffer, AddressCommand);
             }
             else
             {
-                OutputDataFromArrayToDataModel(ReadHoldingResponcesFromBuffer(AddressCommand, RequestType), AddressCommand);
+                ushort[] buffer = ReadHoldingResponcesFromBuffer(AddressCommand, RequestType);
+                OutputDataFromArrayToDataModel(buffer, AddressCommand);
             }           
         }
 
         private static void OutputDataFromArrayToTestModel(ushort[] buff, byte AddressCommand)//wich status will open thyristor module
         {
-            LedIndicatorData.TestingStatus = IndicatorColor.GetTestingStatusLEDColor(buff[18]);
-            TestThyristorWindowShow(buff);            
+            try
+            {
+                LedIndicatorData.TestingStatus = IndicatorColor.GetTestingStatusLEDColor(buff[18]);//исключение на ноль
+                TestThyristorWindowShow(buff);
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("Невозможно отобразить тестовые данные." + "\n" + "Пришёл неверный статус.");
+            }
         }
 
         private static void OutputDataFromArrayToDataModel(ushort[] buff, byte AddressCommand)//wich status will open thyristor module
         {
-            Data.VoltageA = buff[0];
-            Data.VoltageB = buff[1];
-            Data.VoltageC = buff[2];
-            Data.AmperageA1 = buff[3];
-            Data.AmperageB1 = buff[4];
-            Data.AmperageC1 = buff[5];
-            Data.AmperageA2 = buff[6];
-            Data.AmperageB2 = buff[7];
-            Data.AmperageC2 = buff[8];
-            Data.TemperatureOfTiristor = buff[9];
-            Data.WorkingStatus = GetWorkingStatus(buff[10]);
-            if (buff[10] == 128 || buff[10] == 1)
+            try
             {
-                LedIndicatorData.StartStatus = IndicatorColor.GetTestingStatusLEDColor(1);
-                LedIndicatorData.StopStatus = IndicatorColor.GetTestingStatusLEDColor(0);
+                Data.VoltageA = buff[0];
+                Data.VoltageB = buff[1];
+                Data.VoltageC = buff[2];
+                Data.AmperageA1 = buff[3];
+                Data.AmperageB1 = buff[4];
+                Data.AmperageC1 = buff[5];
+                Data.AmperageA2 = buff[6];
+                Data.AmperageB2 = buff[7];
+                Data.AmperageC2 = buff[8];
+                Data.TemperatureOfTiristor = buff[9];
+                Data.WorkingStatus = GetWorkingStatus(buff[10]);
+                if (buff[10] == 128 || buff[10] == 1)
+                {
+                    LedIndicatorData.StartStatus = IndicatorColor.GetTestingStatusLEDColor(1);
+                    LedIndicatorData.StopStatus = IndicatorColor.GetTestingStatusLEDColor(0);
+                }
+                else
+                {
+                    LedIndicatorData.StartStatus = IndicatorColor.GetTestingStatusLEDColor(0);
+                    LedIndicatorData.StopStatus = IndicatorColor.GetTestingStatusLEDColor(1);
+                }
+                GetStatusFromCurrentVoltage(buff[11]);
             }
-            else
+            catch(Exception ex)
             {
-                LedIndicatorData.StartStatus = IndicatorColor.GetTestingStatusLEDColor(0);
-                LedIndicatorData.StopStatus = IndicatorColor.GetTestingStatusLEDColor(1);
+                IsCurrentVoltageRequestCyclical = false;
+                MessageBox.Show("Нулевой ответ от модуля тиристора.");
             }
-            GetStatusFromCurrentVoltage(buff[11]);
         }
 
         //standart request - zapros_cur_voltage, stop_Tiristor_module, reset_avaria_tir, avarinii_stop
@@ -458,13 +480,14 @@ namespace TiristorModule
         {
             ushort[] result;
             if (serialPort1.IsOpen)
-            {                 
-                serialPort1.Write(GetFrameDependentOnTypeOfRequest(requestType, commandNumber), 0, 
+            {
+                serialPort1.Write(GetFrameDependentOnTypeOfRequest(requestType, commandNumber), 0,
                     GetFrameDependentOnTypeOfRequest(requestType, commandNumber).Length);
-                
-                Thread.Sleep(300); // Delay 300ms
+
+                Thread.Sleep(RequestInterval); 
                 if (serialPort1.BytesToRead >= 20)
                 {
+                    int i = serialPort1.BytesToRead;// для отладки
                     byte[] bufferReceiver = new byte[serialPort1.BytesToRead];
                     serialPort1.Read(bufferReceiver, 0, serialPort1.BytesToRead);
                     serialPort1.DiscardInBuffer();

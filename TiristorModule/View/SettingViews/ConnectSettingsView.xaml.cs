@@ -8,5 +8,10 @@ namespace TiristorModule.View
         {
             InitializeComponent();
         }
+
+        private void TextBox_Error(object sender, System.Windows.Controls.ValidationErrorEventArgs e)
+        {
+
+        }
     }
 }

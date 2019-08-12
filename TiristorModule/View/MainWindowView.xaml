@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:TiristorModule"
         xmlns:uc="clr-namespace:LedControl;assembly=LedControl"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="582.5"
+        Title="Главное окно" Height="450" Width="582.5"
         WindowStartupLocation="CenterScreen" Background="LightGray">
 
     <Grid Margin="0,0,2,0">
@@ -62,16 +62,13 @@
                     <RowDefinition/>
                 </Grid.RowDefinitions>
 
-                <TextBlock  Grid.Row="0" Grid.Column="0" FontSize="14"><Run Text="I"/>
-                    <Run BaselineAlignment="Subscript" FontSize="8pt" Text="A1"/><Run Text="="/></TextBlock>
+                <TextBlock  Grid.Row="0" Grid.Column="0" FontSize="14" Margin="0,0,8,0"><Run Text="I"/><Run BaselineAlignment="Subscript" FontSize="8pt" Text="A1"/><Run Text="="/></TextBlock>
                 <TextBlock x:Name="AmperageA1" Text="{Binding Data.AmperageA1, Mode=OneWay}" Grid.Row="0" Grid.Column="1" FontSize="14" HorizontalAlignment="Left" Margin="1,0,0,0"/>
 
-                <TextBlock Grid.Row="1" Grid.Column="0" FontSize="14"><Run Text="I"/>
-                    <Run BaselineAlignment="Subscript" FontSize="8pt" Text="B1"/><Run Text="="/></TextBlock>
+                <TextBlock Grid.Row="1" Grid.Column="0" FontSize="14"><Run Text="I"/><Run BaselineAlignment="Subscript" FontSize="8pt" Text="B1"/><Run Text="="/></TextBlock>
                 <TextBlock Text="{Binding Data.AmperageB1, Mode=OneWay}" Grid.Row="1" Grid.Column="1" FontSize="14" HorizontalAlignment="Left" Margin="1,0,0,0"/>
 
-                <TextBlock  Grid.Row="2" Grid.Column="0" FontSize="14"><Run Text="I"/>
-                    <Run BaselineAlignment="Subscript" FontSize="8pt" Text="C1"/><Run Text="="/></TextBlock>
+                <TextBlock  Grid.Row="2" Grid.Column="0" FontSize="14"><Run Text="I"/><Run BaselineAlignment="Subscript" FontSize="8pt" Text="C1"/><Run Text="="/></TextBlock>
                 <TextBlock Text="{Binding Data.AmperageC1, Mode=OneWay}" Grid.Row="2" Grid.Column="1" FontSize="14" HorizontalAlignment="Left" Margin="1,0,0,0"/>
             </Grid>
         </GroupBox>
@@ -90,8 +87,7 @@
                     <RowDefinition/>
                 </Grid.RowDefinitions>
 
-                <TextBlock Grid.Row="0" Grid.Column="0" FontSize="14"><Run Text="U"/>
-                    <Run BaselineAlignment="Subscript" FontSize="8pt" Text="A"/><Run Text="="/></TextBlock>
+                <TextBlock Grid.Row="0" Grid.Column="0" FontSize="14"><Run Text="U"/><Run BaselineAlignment="Subscript" FontSize="8pt" Text="A"/><Run Text="="/></TextBlock>
                 <TextBlock x:Name="VoltageATextBlock" Text="{Binding Data.VoltageA, Mode=OneWay}" Grid.Row="0" Grid.Column="1" 
                        FontSize="14" HorizontalAlignment="Left" Width="auto"/>
 
@@ -130,7 +126,7 @@
             </Grid>
         </GroupBox>
 
-        <GroupBox Header="Параметры" Background="White" Height="226" Margin="310,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="90">
+        <GroupBox Header="Статус аварии" Background="White" Height="226" Margin="310,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="90">
             <Grid HorizontalAlignment="Left" Height="208" Margin="-4,0,-4,-4" VerticalAlignment="Top" Width="86">
 
                 <Grid.ColumnDefinitions>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Input;
+using TiristorModule.Properties;
 
 namespace TiristorModule.ViewModel
 {
@@ -18,6 +19,12 @@ namespace TiristorModule.ViewModel
 
         private void OkStartTiristorButtonClick()
         {
+            MainViewModel.serialPort1 = new System.IO.Ports.SerialPort(Settings.Default.PortName,
+            Convert.ToInt32(Settings.Default.BaudRate),
+            SerialPortSettings.SetPortParity(Settings.Default.Parity),
+            Convert.ToInt32(Settings.Default.DataBit),
+            SerialPortSettings.SetStopBits(Settings.Default.StopBit));
+
             Properties.Settings.Default.Save();
             OnRequestClose(this, new EventArgs());
         }
