@@ -4,9 +4,34 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:p="clr-namespace:TiristorModule.Properties"
+        xmlns:local="clr-namespace:TiristorModule.Validation"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         Title="Стартовые параметры тиристорного модуля" Height="340.333" Width="452.5" Background="LightGray">
+    
+    <Window.Resources>
+        <ControlTemplate x:Key="validationFailed">
+            <StackPanel Orientation="Horizontal">
+                <Border BorderBrush="Red" BorderThickness="1">
+                    <AdornedElementPlaceholder />
+                </Border>
+                <TextBlock Margin="3,0,0,0" Foreground="Red" FontSize="18" FontWeight="Bold">!</TextBlock>
+            </StackPanel>
+        </ControlTemplate>
+
+        <Style TargetType="TextBox">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="True">
+                    <Setter Property="ToolTip"
+                Value="{Binding RelativeSource={RelativeSource Self},
+                    Path=(Validation.Errors)[0].ErrorContent}" />
+                    <Setter Property="Foreground" Value="Red" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+    </Window.Resources>
+    
     <Grid>
         <GroupBox FontSize="14" Header="Данные для разгона" Background="White" HorizontalAlignment="Left" Height="93" Margin="10,0,0,0" VerticalAlignment="Top" Width="424">
             <Grid Margin="-4,0,-4,-3">
@@ -28,27 +53,129 @@
                     <RowDefinition/>
                 </Grid.RowDefinitions>
                 <TextBlock TextWrapping="Wrap" Text="Время:" Margin="21,10,0,0"/>
-                <TextBox Grid.Column="1" Text="{Binding Source={x:Static p:Settings.Default}, Path=Time[0], Mode=TwoWay}" HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="25"/>
-                <TextBox Grid.Column="2" Text="{Binding Source={x:Static p:Settings.Default}, Path=Time[1], Mode=TwoWay}" HorizontalAlignment="Left" Height="20" Margin="1,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="25"/>
-                <TextBox Grid.Column="3" Text="{Binding Source={x:Static p:Settings.Default}, Path=Time[2], Mode=TwoWay}" HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="26"/>
-                <TextBox Grid.Column="4" Text="{Binding Source={x:Static p:Settings.Default}, Path=Time[3], Mode=TwoWay}" HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="27"/>
-                <TextBox Grid.Column="5" Text="{Binding Source={x:Static p:Settings.Default}, Path=Time[4], Mode=TwoWay}" HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="27"/>
-                <TextBox Grid.Column="6" Text="{Binding Source={x:Static p:Settings.Default}, Path=Time[5], Mode=TwoWay}" HorizontalAlignment="Left" Height="20" Margin="1,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="26"/>
-                <TextBox Grid.Column="7" Text="{Binding Source={x:Static p:Settings.Default}, Path=Time[6], Mode=TwoWay}" HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="26"/>
-                <TextBox Grid.Column="8" Text="{Binding Source={x:Static p:Settings.Default}, Path=Time[7], Mode=TwoWay}" HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="27"/>
+                <TextBox Grid.Column="1" Text="{Binding Source={x:Static p:Settings.Default}, Path=Time[0], Mode=TwoWay}" HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="30"/>
+                <TextBox Grid.Column="2" Text="{Binding Source={x:Static p:Settings.Default}, Path=Time[1], Mode=TwoWay}" HorizontalAlignment="Left" Height="20" Margin="1,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="31"/>
+                <TextBox Grid.Column="3" Text="{Binding Source={x:Static p:Settings.Default}, Path=Time[2], Mode=TwoWay}" HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="32"/>
+                <TextBox Grid.Column="4" Text="{Binding Source={x:Static p:Settings.Default}, Path=Time[3], Mode=TwoWay}" HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="32"/>
+                <TextBox Grid.Column="5" Text="{Binding Source={x:Static p:Settings.Default}, Path=Time[4], Mode=TwoWay}" HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="33"/>
+                <TextBox Grid.Column="6" Text="{Binding Source={x:Static p:Settings.Default}, Path=Time[5], Mode=TwoWay}" HorizontalAlignment="Left" Height="20" Margin="1,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="31"/>
+                <TextBox Grid.Column="7" Text="{Binding Source={x:Static p:Settings.Default}, Path=Time[6], Mode=TwoWay}" HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="32"/>
+                <TextBox Grid.Column="8" Text="{Binding Source={x:Static p:Settings.Default}, Path=Time[7], Mode=TwoWay}" HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="30"/>
                 <TextBox Grid.Column="9" Text="{Binding Source={x:Static p:Settings.Default}, Path=Time[8], Mode=TwoWay}" HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="34"/>
                 <TextBlock TextWrapping="Wrap" Text="Мощность %:" Margin="0,10,0,0" Grid.Row="1"/>
-                <TextBox Grid.Column="1" Text="{Binding Source={x:Static p:Settings.Default}, Path=Capacity[0], Mode=TwoWay, ValidatesOnDataErrors=True}" HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="25" Grid.Row="1"/>
-                <TextBox Grid.Column="2" Text="{Binding Source={x:Static p:Settings.Default}, Path=Capacity[1], Mode=TwoWay}" HorizontalAlignment="Left" Height="20" Margin="1,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="26" Grid.Row="1"/>
-                <TextBox Grid.Column="3" Text="{Binding Source={x:Static p:Settings.Default}, Path=Capacity[2], Mode=TwoWay}" HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="27" Grid.Row="1"/>
-                <TextBox Grid.Column="4" Text="{Binding Source={x:Static p:Settings.Default}, Path=Capacity[3], Mode=TwoWay}" HorizontalAlignment="Left" Height="20" Margin="1,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="26" Grid.Row="1"/>
-                <TextBox Grid.Column="5" Text="{Binding Source={x:Static p:Settings.Default}, Path=Capacity[4], Mode=TwoWay}" HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="27" Grid.Row="1"/>
-                <TextBox Grid.Column="6" Text="{Binding Source={x:Static p:Settings.Default}, Path=Capacity[5], Mode=TwoWay}" HorizontalAlignment="Left" Height="20" Margin="1,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="26" Grid.Row="1"/>
-                <TextBox Grid.Column="7" Text="{Binding Source={x:Static p:Settings.Default}, Path=Capacity[6], Mode=TwoWay}" HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="26" Grid.Row="1"/>
-                <TextBox Grid.Column="8" Text="{Binding Source={x:Static p:Settings.Default}, Path=Capacity[7], Mode=TwoWay}" HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="27" Grid.Row="1"/>
-                <TextBox Grid.Column="9" Text="{Binding Source={x:Static p:Settings.Default}, Path=Capacity[8], Mode=TwoWay}" HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="34" Grid.Row="1"/>
+               
+                <TextBox x:Name="Capacity0" Grid.Column="1" Validation.ErrorTemplate="{StaticResource validationFailed}" MaxLength="3" HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="30" Grid.Row="1">
+                    <TextBox.Text>
+                        <Binding Source="{x:Static p:Settings.Default}" Path="Capacity[0]" Mode="TwoWay" 
+                                 NotifyOnValidationError="True" UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                <local:CapacityRule/>
+
+                                <ExceptionValidationRule/>
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
+                
+                <TextBox x:Name="Capacity1" Grid.Column="2" Validation.ErrorTemplate="{StaticResource validationFailed}" MaxLength="3" HorizontalAlignment="Left" Height="20" Margin="1,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="31" Grid.Row="1">
+                    <TextBox.Text>
+                        <Binding Source="{x:Static p:Settings.Default}" Path="Capacity[1]" Mode="TwoWay" 
+                                 NotifyOnValidationError="True" UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                <local:CapacityRule/>
+                                <ExceptionValidationRule/>
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
+
+                <TextBox x:Name="Capacity2" Grid.Column="3" Validation.ErrorTemplate="{StaticResource validationFailed}" MaxLength="3" HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="32" Grid.Row="1">
+                    <TextBox.Text>
+                        <Binding Source="{x:Static p:Settings.Default}" Path="Capacity[2]" Mode="TwoWay" 
+                                 NotifyOnValidationError="True" UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                <local:CapacityRule/>
+                                <ExceptionValidationRule/>
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
+
+                <TextBox x:Name="Capacity3" Grid.Column="4" Validation.ErrorTemplate="{StaticResource validationFailed}" MaxLength="3" HorizontalAlignment="Left" Height="20" Margin="1,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="31" Grid.Row="1">
+                    <TextBox.Text>
+                        <Binding Source="{x:Static p:Settings.Default}" Path="Capacity[3]" Mode="TwoWay" 
+                                 NotifyOnValidationError="True" UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                <local:CapacityRule/>
+                                <ExceptionValidationRule/>
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
+
+                <TextBox x:Name="Capacity4" Grid.Column="5" Validation.ErrorTemplate="{StaticResource validationFailed}" MaxLength="3" HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="33" Grid.Row="1">
+                    <TextBox.Text>
+                        <Binding Source="{x:Static p:Settings.Default}" Path="Capacity[4]" Mode="TwoWay" 
+                                 NotifyOnValidationError="True" UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                <local:CapacityRule/>
+                                <ExceptionValidationRule/>
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
+
+                <TextBox x:Name="Capacity5" Grid.Column="6" Validation.ErrorTemplate="{StaticResource validationFailed}" MaxLength="3" HorizontalAlignment="Left" Height="20" Margin="1,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="31" Grid.Row="1">
+                    <TextBox.Text>
+                        <Binding Source="{x:Static p:Settings.Default}" Path="Capacity[5]" Mode="TwoWay" 
+                                 NotifyOnValidationError="True" UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                <local:CapacityRule/>
+                                <ExceptionValidationRule/>
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
+
+                <TextBox x:Name="Capacity6" Grid.Column="7" Validation.ErrorTemplate="{StaticResource validationFailed}" MaxLength="3" HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="32" Grid.Row="1">
+                    <TextBox.Text>
+                        <Binding Source="{x:Static p:Settings.Default}" Path="Capacity[6]" Mode="TwoWay" 
+                                 NotifyOnValidationError="True" UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                <local:CapacityRule/>
+                                <ExceptionValidationRule/>
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
+
+                <TextBox x:Name="Capacity7" Grid.Column="8" Validation.ErrorTemplate="{StaticResource validationFailed}" MaxLength="3" HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="30" Grid.Row="1">
+                    <TextBox.Text>
+                        <Binding Source="{x:Static p:Settings.Default}" Path="Capacity[7]" Mode="TwoWay" 
+                                 NotifyOnValidationError="True" UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                <local:CapacityRule/>
+                                <ExceptionValidationRule/>
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
+
+                <TextBox x:Name="Capacity8" Grid.Column="9" Validation.ErrorTemplate="{StaticResource validationFailed}" MaxLength="3" HorizontalAlignment="Left" Height="20" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="34" Grid.Row="1">
+                    <TextBox.Text>
+                        <Binding Source="{x:Static p:Settings.Default}" Path="Capacity[8]" Mode="TwoWay" 
+                                 NotifyOnValidationError="True" UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                <local:CapacityRule/>
+                                <ExceptionValidationRule/>
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
+            
             </Grid>
         </GroupBox>
+        
         <GroupBox Header="Параметры Kz1" FontSize="14" Background="White" HorizontalAlignment="Left" Height="123" Margin="11,98,0,0" VerticalAlignment="Top" Width="197">
             <Grid Margin="0,0,-2,3">
 

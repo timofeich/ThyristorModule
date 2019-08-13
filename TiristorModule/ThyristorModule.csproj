@@ -87,6 +87,7 @@
     <Compile Include="Model\LedIndicatorModel.cs" />
     <Compile Include="Model\TestThyristorModel.cs" />
     <Compile Include="Validation\AddressRule.cs" />
+    <Compile Include="Validation\CapacityRule.cs" />
     <Compile Include="Validation\RequestIntervalRule.cs" />
     <Compile Include="ViewModel\Command.cs" />
     <Compile Include="ViewModel\SettingViewModels\ConnectSettingsViewModel.cs" />
