@@ -22,8 +22,8 @@ namespace TiristorModule
             SerialPortSettings.SetStopBits(Settings.Default.StopBit));
        
         #region Fields
-        private static byte SlaveAddress = Settings.Default.AddressSlave;
-        private static byte MasterAddress = Settings.Default.AddressMaster;
+        private static byte SlaveAddress = byte.Parse(Settings.Default.AddressSlave, System.Globalization.NumberStyles.HexNumber);
+        private static byte MasterAddress = byte.Parse(Settings.Default.AddressMaster, System.Globalization.NumberStyles.HexNumber);
 
         private const byte AddressStartTiristorModuleCommand = 0x87;
         private const byte AddressStopTiristorModuleCommand = 0x88;

@@ -24,7 +24,7 @@ namespace TiristorModule.Validation
             if ((requestInterval < Min) || (requestInterval > Max))
             {
                 return new ValidationResult(false,
-                  "Интервал м-ду запросами не входит в диапазон " + Min + " до " + Max + ".");
+                  "Значение времени разгона не входит в диапазон " + Min + " до " + Max + ".");
             }
             else
             {

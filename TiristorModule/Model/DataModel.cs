@@ -34,15 +34,13 @@ namespace TiristorModule.Model
 
         private ushort temperatureOfTiristor;
         private string workingStatus;
+        private string masterAddress;
 
         private bool isRequestSingle;
 
         #endregion
 
         #region Properties
-
-
-
         public ushort VoltageA
         {
             get { return voltageA; }
@@ -198,6 +196,20 @@ namespace TiristorModule.Model
                 }
             }
         }
+
+        public string MasterAddress
+        {
+            get { return masterAddress; }
+            set
+            {
+                if (masterAddress != value)
+                {
+                    masterAddress = value;
+                    OnPropertyChanged("MasterAddress");
+                }
+            }
+        }
+
         #endregion
     }
 }

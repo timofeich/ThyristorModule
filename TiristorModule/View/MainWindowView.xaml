@@ -46,7 +46,7 @@
             </Grid>
         </Grid>
 
-        <GroupBox Header="I1, вх" Background="White" Height="145" Margin="113,10,0,0" 
+        <GroupBox Header="I1, вх" FontSize="14" Background="White" Height="145" Margin="113,10,0,0" 
                   VerticalAlignment="Top" HorizontalAlignment="Left" Width="90">
 
             <Grid Margin="10,10,0,-4">
@@ -73,7 +73,7 @@
             </Grid>
         </GroupBox>
 
-        <GroupBox Header="U, вх" Background="White" Height="145" Margin="18,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="90">
+        <GroupBox Header="U, вх" FontSize="14"  Background="White" Height="145" Margin="18,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="90">
             <Grid Margin="10,10,2,-5">
 
                 <Grid.ColumnDefinitions>
@@ -101,7 +101,7 @@
             </Grid>
         </GroupBox>
 
-        <GroupBox Header="I2, вх" Background="White" Height="145" Margin="208,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="97">
+        <GroupBox Header="I2, вх" FontSize="14" Background="White" Height="145" Margin="208,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="97">
             <Grid HorizontalAlignment="Left" Height="117" Margin="10,10,0,-4" VerticalAlignment="Top" Width="70">
 
                 <Grid.ColumnDefinitions>

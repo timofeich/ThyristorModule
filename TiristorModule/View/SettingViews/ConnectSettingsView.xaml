@@ -4,7 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:p="clr-namespace:TiristorModule.Properties"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:TiristorModule.Validation"
+        xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         Title="Параметры связи" Height="330" Width="559" Background="LightGray">
@@ -92,11 +94,11 @@
                 <TextBlock FontSize="14"><Run Text="Адрес Master:"/></TextBlock>
                 <TextBlock FontSize="14" Margin="0,0,0,-2" Grid.Row="1"><Run Text="Адрес Slave:"/></TextBlock>
                 
-                <TextBox FontSize="14" HorizontalAlignment="Left" Height="22" TextWrapping="Wrap" VerticalAlignment="Top"
-                         Width="43" Grid.Column="1" Margin="0,1,-8,0" Validation.ErrorTemplate="{StaticResource validationFailed}">
+                <TextBox FontSize="14" CharacterCasing="Upper" MaxLength="2" HorizontalAlignment="Left" Height="22" TextWrapping="Wrap" VerticalAlignment="Top"
+                         Width="43" Grid.Column="1" Margin="0,1,-8,0" Validation.ErrorTemplate="{StaticResource validationFailed}" >
                     <TextBox.Text>
                         <Binding Source="{x:Static p:Settings.Default}" Path="AddressMaster" Mode="TwoWay"  
-                                 NotifyOnValidationError="True" UpdateSourceTrigger="PropertyChanged">
+                                 NotifyOnValidationError="True" UpdateSourceTrigger="PropertyChanged" Delay="500" StringFormat="{}{0:X2}" >
                         <Binding.ValidationRules>
                                 <local:AddressRule/>
                                 <ExceptionValidationRule/>
@@ -104,11 +106,10 @@
                     </Binding>
                     </TextBox.Text>
                 </TextBox>
-
-                <TextBox FontSize="14" HorizontalAlignment="Left" Validation.ErrorTemplate="{StaticResource validationFailed}"  Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="43" Grid.Column="1" Grid.Row="1" Margin="0,1,-5,0">
+                 <TextBox FontSize="14" CharacterCasing="Upper" MaxLength="2" HorizontalAlignment="Left" Validation.ErrorTemplate="{StaticResource validationFailed}"  Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="43" Grid.Column="1" Grid.Row="1" Margin="0,1,-5,0">
                     <TextBox.Text>
                         <Binding Source="{x:Static p:Settings.Default}" Path="AddressSlave" Mode="TwoWay"  
-                                 NotifyOnValidationError="True" UpdateSourceTrigger="PropertyChanged">
+                                 NotifyOnValidationError="True" UpdateSourceTrigger="LostFocus" StringFormat="{}{0:X2}">
                             <Binding.ValidationRules>
                                 <local:AddressRule/>
                                 <ExceptionValidationRule/>

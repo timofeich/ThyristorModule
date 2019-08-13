@@ -1,11 +1,16 @@
-﻿using System.Windows.Controls;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace TiristorModule.Validation
 {
-    public class KZTimeRule : ValidationRule
+    public class NominalAmperageRule : ValidationRule
     {
-        public int Min { get; set; } = 0;
-        public int Max { get; set; } = int.MaxValue;
+        public byte Min { get; set; } = 0;
+        public byte Max { get; set; } = byte.MaxValue;
 
         public override ValidationResult Validate(object value, System.Globalization.CultureInfo ci)
         {
@@ -24,7 +29,7 @@ namespace TiristorModule.Validation
             if ((requestInterval < Min) || (requestInterval > Max))
             {
                 return new ValidationResult(false,
-                  "Значение времени токов KZ не входит в диапазон " + Min + " до " + Max + ".");
+                  "Значение номинального тока не входит в диапазон " + Min + " до " + Max + ".");
             }
             else
             {

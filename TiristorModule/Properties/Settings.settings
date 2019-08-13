@@ -23,11 +23,11 @@
     <Setting Name="VremiaKzMs2" Type="System.Byte" Scope="User">
       <Value Profile="(Default)">10</Value>
     </Setting>
-    <Setting Name="AddressMaster" Type="System.Byte" Scope="User">
-      <Value Profile="(Default)">255</Value>
+    <Setting Name="AddressMaster" Type="System.String" Scope="User">
+      <Value Profile="(Default)">FF</Value>
     </Setting>
-    <Setting Name="AddressSlave" Type="System.Byte" Scope="User">
-      <Value Profile="(Default)">103</Value>
+    <Setting Name="AddressSlave" Type="System.String" Scope="User">
+      <Value Profile="(Default)">67</Value>
     </Setting>
     <Setting Name="Time" Type="System.Collections.Specialized.StringCollection" Scope="User">
       <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;

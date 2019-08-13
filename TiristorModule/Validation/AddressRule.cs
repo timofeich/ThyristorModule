@@ -1,10 +1,11 @@
-﻿using System.Windows.Controls;
+﻿using System;
+using System.Windows.Controls;
 
 namespace TiristorModule.Validation
 {
     public class AddressRule : ValidationRule
     {
-        public byte Min { get; set; } = 0x00;
+        public byte Min { get; set; } = 0;
         public byte Max { get; set; } = byte.MaxValue;
 
         public override ValidationResult Validate(object value, System.Globalization.CultureInfo ci)
@@ -13,7 +14,7 @@ namespace TiristorModule.Validation
 
             try
             {
-                requestInterval = int.Parse((string)value);
+               requestInterval = byte.Parse((string)value, System.Globalization.NumberStyles.HexNumber);
             }
 
             catch

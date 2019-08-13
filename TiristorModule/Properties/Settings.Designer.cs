@@ -109,10 +109,10 @@ namespace TiristorModule.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("255")]
-        public byte AddressMaster {
+        [global::System.Configuration.DefaultSettingValueAttribute("FF")]
+        public string AddressMaster {
             get {
-                return ((byte)(this["AddressMaster"]));
+                return ((string)(this["AddressMaster"]));
             }
             set {
                 this["AddressMaster"] = value;
@@ -121,10 +121,10 @@ namespace TiristorModule.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("103")]
-        public byte AddressSlave {
+        [global::System.Configuration.DefaultSettingValueAttribute("67")]
+        public string AddressSlave {
             get {
-                return ((byte)(this["AddressSlave"]));
+                return ((string)(this["AddressSlave"]));
             }
             set {
                 this["AddressSlave"] = value;
