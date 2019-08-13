@@ -52,6 +52,7 @@
                     <RowDefinition/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
+                
                 <TextBlock TextWrapping="Wrap" Text="Время:" Margin="21,10,0,0"/>
                 
                 <TextBox x:Name="Time0" Grid.Column="1" Validation.ErrorTemplate="{StaticResource validationFailed}" HorizontalAlignment="Left" Height="22" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="30">
@@ -150,7 +151,18 @@
                     </TextBox.Text>
                 </TextBox>
                 
-                <TextBox x:Name="Time8" Grid.Column="9" Validation.ErrorTemplate="{StaticResource validationFailed}" Text="{Binding Source={x:Static p:Settings.Default}, Path=Time[8], Mode=TwoWay}" HorizontalAlignment="Left" Height="22" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="34"/>
+                <TextBox x:Name="Time8" Grid.Column="9" Validation.ErrorTemplate="{StaticResource validationFailed}"  HorizontalAlignment="Left" Height="22" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="34">
+                    <TextBox.Text>
+                        <Binding Source="{x:Static p:Settings.Default}" Path="Time[8]" Mode="TwoWay" 
+                                 NotifyOnValidationError="True" UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                <local:TimeRule/>
+                                <ExceptionValidationRule/>
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
+                
                 <TextBlock TextWrapping="Wrap" Text="Мощность %:" Margin="0,10,0,0" Grid.Row="1"/>
                
                 <TextBox x:Name="Capacity0" Grid.Column="1" Validation.ErrorTemplate="{StaticResource validationFailed}" MaxLength="3" HorizontalAlignment="Left" Height="22" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="30" Grid.Row="1">
@@ -279,11 +291,20 @@
                     <RowDefinition/>
                 </Grid.RowDefinitions>
                 <TextBlock TextWrapping="Wrap" Text="Ток Kz1 =" Margin="17,10,0,1"/>
-                <TextBox HorizontalAlignment="Left" Text="{Binding Source={x:Static p:Settings.Default}, Path=CurrentKz1, Mode=TwoWay, ValidatesOnExceptions=true, NotifyOnValidationError=true, UpdateSourceTrigger=PropertyChanged}"  Height="22" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="41" Grid.Column="1">
-
+                <TextBox x:Name="Kz1Amperage" HorizontalAlignment="Left" Validation.ErrorTemplate="{StaticResource validationFailed}"  Height="22" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="41" Grid.Column="1">
+                    <TextBox.Text>
+                        <Binding Source="{x:Static p:Settings.Default}" Path="CurrentKz1" Mode="TwoWay" 
+                                 NotifyOnValidationError="True" UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                <local:KZApmerageRule/>
+                                <ExceptionValidationRule/>
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
                 </TextBox>
+
                 <TextBlock TextWrapping="Wrap" Text="Время Kz1 =" Margin="0,4,0,0" Height="23" VerticalAlignment="Top" HorizontalAlignment="Left" Width="82" Grid.Row="1"/>
-                <TextBox HorizontalAlignment="Left"  Text="{Binding Source={x:Static p:Settings.Default}, Path=VremiaKzMs1, Mode=TwoWay }" Height="20" Margin="0,4,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="41" Grid.Column="1" Grid.Row="1"/>
+                <TextBox HorizontalAlignment="Left"  Text="{Binding Source={x:Static p:Settings.Default}, Path=VremiaKzMs1, Mode=TwoWay }" Height="23" Margin="0,4,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="41" Grid.Column="1" Grid.Row="1"/>
                 <TextBlock Grid.Column="2" HorizontalAlignment="Left" Margin="1,4,0,0" TextWrapping="Wrap" Text="мс" VerticalAlignment="Top" Height="20" Width="22" Grid.Row="1"/>
 
             </Grid>
@@ -300,10 +321,23 @@
                     <RowDefinition/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
+                
                 <TextBlock TextWrapping="Wrap" Text="Ток Kz2 =" Margin="17,10,0,0" Height="23" VerticalAlignment="Top" HorizontalAlignment="Left" Width="64"/>
-                <TextBox HorizontalAlignment="Left" Height="22" Text="{Binding Source={x:Static p:Settings.Default}, Path=CurrentKz1, Mode=TwoWay}" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="41" Grid.Column="1"/>
+                
+                <TextBox x:Name="Kz2Amperage" HorizontalAlignment="Left" Height="22" Validation.ErrorTemplate="{StaticResource validationFailed}" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="41" Grid.Column="1">
+                    <TextBox.Text>
+                        <Binding Source="{x:Static p:Settings.Default}" Path="CurrentKz2" Mode="TwoWay" 
+                                 NotifyOnValidationError="True" UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                <local:KZApmerageRule/>
+                                <ExceptionValidationRule/>
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
+                
                 <TextBlock TextWrapping="Wrap" Margin="0,4,0,0" Height="35" VerticalAlignment="Top" HorizontalAlignment="Left" Width="86" Grid.Row="1"><Run Text="Время"/><Run Text=" "/><Run Text="Kz2 ="/></TextBlock>
-                <TextBox HorizontalAlignment="Left"  Text="{Binding Source={x:Static p:Settings.Default}, Path=VremiaKzMs2, Mode=TwoWay}" Height="20" Margin="0,4,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="41" Grid.Column="1" Grid.Row="1"/>
+                <TextBox HorizontalAlignment="Left"  Text="{Binding Source={x:Static p:Settings.Default}, Path=VremiaKzMs2, Mode=TwoWay}" Height="22" Margin="0,4,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="41" Grid.Column="1" Grid.Row="1"/>
                 <TextBlock Grid.Column="2" HorizontalAlignment="Left" Margin="0,4,0,0" Grid.Row="1" TextWrapping="Wrap" Text="мс" VerticalAlignment="Top" Height="19" Width="22"/>
 
             </Grid>
