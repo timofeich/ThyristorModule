@@ -19,7 +19,7 @@ namespace TiristorModule.ViewModel
 
         private void OkStartTiristorButtonClick()
         {
-            MainViewModel.serialPort1 = new System.IO.Ports.SerialPort(Settings.Default.PortName,
+            MainWindowViewModel.serialPort1 = new System.IO.Ports.SerialPort(Settings.Default.PortName,
             Convert.ToInt32(Settings.Default.BaudRate),
             SerialPortSettings.SetPortParity(Settings.Default.Parity),
             Convert.ToInt32(Settings.Default.DataBit),

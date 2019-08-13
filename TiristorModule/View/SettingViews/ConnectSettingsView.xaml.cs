@@ -1,4 +1,8 @@
-﻿using System.Windows;
+﻿using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using TiristorModule.Model;
 
 namespace TiristorModule.View
 {
@@ -7,11 +11,6 @@ namespace TiristorModule.View
         public ConnectSettingsView()
         {
             InitializeComponent();
-        }
-
-        private void TextBox_Error(object sender, System.Windows.Controls.ValidationErrorEventArgs e)
-        {
-
         }
     }
 }

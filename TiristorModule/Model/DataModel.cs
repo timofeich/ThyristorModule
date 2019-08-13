@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 
-namespace TiristorModule
+namespace TiristorModule.Model
 {
     class DataModel : INotifyPropertyChanged
     {
@@ -29,8 +29,6 @@ namespace TiristorModule
         private ushort amperageA2;
         private ushort amperageB2;
         private ushort amperageC2;
-
-        private byte masterAddress;
 
         public ObservableCollection<DataModel> DataModels { get; set; }
 
@@ -200,19 +198,6 @@ namespace TiristorModule
                 }
             }
         }
-
-        //public byte MasterAddress
-        //{
-        //    get { return masterAddress; }
-        //    set
-        //    {
-        //        if (masterAddress != value)
-        //        {
-        //            masterAddress = value;
-        //            OnPropertyChanged("MasterAddress");
-        //        }
-        //    }
-        //}
         #endregion
     }
 }

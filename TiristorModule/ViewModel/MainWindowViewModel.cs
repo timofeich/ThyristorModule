@@ -13,7 +13,7 @@ using TiristorModule.Model;
 
 namespace TiristorModule
 {
-    class MainViewModel
+    class MainWindowViewModel
     {
         public static SerialPort serialPort1 = new SerialPort(Settings.Default.PortName,
             Convert.ToInt32(Settings.Default.BaudRate),
@@ -67,7 +67,6 @@ namespace TiristorModule
         #region Properties
         public static DataModel Data { get; set; }
         public static LedIndicatorModel LedIndicatorData { get; set; }
-      
         #endregion
 
         #region Commands
@@ -86,7 +85,7 @@ namespace TiristorModule
 
         #endregion
 
-        public MainViewModel()
+        public MainWindowViewModel()
         {
             CurrentVoltageCommand = new Command(arg => CurrentVoltageClick());
             AlarmStopCommand = new Command(arg => AlarmStopClick());
@@ -105,27 +104,16 @@ namespace TiristorModule
 
             Data = new DataModel
             {
-                AmperageA1 = 0,
-                AmperageB1 = 0,
-                AmperageC1 = 0,
-                AmperageA2 = 0,
-                AmperageB2 = 0,
-                AmperageC2 = 0,
-                VoltageA = 0,
-                VoltageB = 0,
-                VoltageC = 0,
-                TemperatureOfTiristor = 0,
-                WorkingStatus = null,
-                IsRequestSingle = false
+                WorkingStatus = null
             };
 
             LedIndicatorData = new LedIndicatorModel
             {
 
-            };
+            };      
         }
 
-        ~MainViewModel()
+        ~MainWindowViewModel()
         {
             SerialPortSettings.CloseSerialPortConnection(serialPort1);
         }
@@ -318,7 +306,7 @@ namespace TiristorModule
                 LedIndicatorData.TestingStatus = IndicatorColor.GetTestingStatusLEDColor(buff[18]);//исключение на ноль
                 TestThyristorWindowShow(buff);
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 MessageBox.Show("Невозможно отобразить тестовые данные." + "\n" + "Пришёл неверный статус.");
             }
@@ -351,7 +339,7 @@ namespace TiristorModule
                 }
                 GetStatusFromCurrentVoltage(buff[11]);
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 IsCurrentVoltageRequestCyclical = false;
                 MessageBox.Show("Нулевой ответ от модуля тиристора.");
@@ -484,7 +472,7 @@ namespace TiristorModule
                 serialPort1.Write(GetFrameDependentOnTypeOfRequest(requestType, commandNumber), 0,
                     GetFrameDependentOnTypeOfRequest(requestType, commandNumber).Length);
 
-                Thread.Sleep(RequestInterval); 
+                //Thread.Sleep(RequestInterval); 
                 if (serialPort1.BytesToRead >= 20)
                 {
                     int i = serialPort1.BytesToRead;// для отладки

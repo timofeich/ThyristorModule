@@ -63,7 +63,7 @@
                     <RowDefinition/>
                 </Grid.RowDefinitions>
                 <TextBlock TextWrapping="Wrap" Text="Ток Kz1 =" Margin="17,10,0,1"/>
-                <TextBox HorizontalAlignment="Left" Text="{Binding Source={x:Static p:Settings.Default}, Path=CurrentKz1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Height="20" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="41" Grid.Column="1">
+                <TextBox HorizontalAlignment="Left" Text="{Binding Source={x:Static p:Settings.Default}, Path=CurrentKz1, Mode=TwoWay, ValidatesOnExceptions=true, NotifyOnValidationError=true, UpdateSourceTrigger=PropertyChanged}"  Height="20" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="41" Grid.Column="1">
 
                 </TextBox>
                 <TextBlock TextWrapping="Wrap" Text="Время Kz1 =" Margin="0,4,0,0" Height="23" VerticalAlignment="Top" HorizontalAlignment="Left" Width="82" Grid.Row="1"/>

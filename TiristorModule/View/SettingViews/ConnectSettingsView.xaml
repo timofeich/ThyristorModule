@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:p="clr-namespace:TiristorModule.Properties"
+        xmlns:local="clr-namespace:TiristorModule.Validation"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         Title="Параметры связи" Height="330" Width="559" Background="LightGray">
@@ -11,10 +12,10 @@
     <Window.Resources>
         <ControlTemplate x:Key="validationFailed">
             <StackPanel Orientation="Horizontal">
-                <Border BorderBrush="Red" BorderThickness="2">
+                <Border BorderBrush="Red" BorderThickness="1">
                     <AdornedElementPlaceholder />
                 </Border>
-                <TextBlock Foreground="Red" FontSize="14" FontWeight="Bold">!</TextBlock>
+                <TextBlock Margin="3,0,0,0" Foreground="Red" FontSize="18" FontWeight="Bold">!</TextBlock>
             </StackPanel>
         </ControlTemplate>
 
@@ -28,7 +29,9 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+
     </Window.Resources>
+
 
     <Grid Margin="0,0,2,0">
         <GroupBox FontSize="14" Header="UART" Background="White" Margin="20,10,0,0" HorizontalAlignment="Left" Width="307" Height="200" VerticalAlignment="Top">
@@ -74,7 +77,7 @@
             </Grid>
         </GroupBox>
         <GroupBox Header="Адреса" FontSize="14" Background="White" HorizontalAlignment="Left" Height="200" Margin="332,10,0,0" VerticalAlignment="Top" Width="198">
-            <Grid Margin="10,10,-2,87">
+            <Grid Margin="10,10,-2,54">
 
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
@@ -84,19 +87,41 @@
                 <Grid.RowDefinitions>
                     <RowDefinition/>
                     <RowDefinition/>
+                    <RowDefinition/>
                 </Grid.RowDefinitions>
                 <TextBlock FontSize="14"><Run Text="Адрес Master:"/></TextBlock>
                 <TextBlock FontSize="14" Margin="0,0,0,-2" Grid.Row="1"><Run Text="Адрес Slave:"/></TextBlock>
-                <TextBox FontSize="14" HorizontalAlignment="Left"  Text="{Binding Source={x:Static p:Settings.Default}, Path=AddressMaster, 
-                    Mode=TwoWay, 
-                    StringFormat={}{0:X}}" 
-                          Height="22" TextWrapping="Wrap" VerticalAlignment="Top"
-                         Width="43" Grid.Column="1" Margin="0,1,-8,0">
-
+                
+                <TextBox FontSize="14" HorizontalAlignment="Left" Height="22" TextWrapping="Wrap" VerticalAlignment="Top"
+                         Width="43" Grid.Column="1" Margin="0,1,-8,0" Validation.ErrorTemplate="{StaticResource validationFailed}">
+                    <TextBox.Text>
+                        <Binding Source="{x:Static p:Settings.Default}" Path="AddressMaster" Mode="TwoWay"  
+                                 NotifyOnValidationError="True" UpdateSourceTrigger="PropertyChanged">
+                        <Binding.ValidationRules>
+                                <local:AddressRule/>
+                                <ExceptionValidationRule/>
+                        </Binding.ValidationRules>
+                    </Binding>
+                    </TextBox.Text>
                 </TextBox>
+                
                 <TextBox FontSize="14" HorizontalAlignment="Left"  Text="{Binding Source={x:Static p:Settings.Default}, Path=AddressSlave, Mode=TwoWay, StringFormat={}{0:X}}" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="43" Grid.Column="1" Grid.Row="1" Margin="0,1,-5,0"/>
-                <TextBlock FontSize="14" Margin="0,39,0,-34" Grid.Row="1"><Run Text="Интервал:"/></TextBlock>
-                <TextBox FontSize="14" HorizontalAlignment="Left"  Text="{Binding RequestInterval, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="43" Grid.Column="1" Grid.Row="1" Margin="0,38,-3,-22"/>
+                <TextBlock FontSize="14" Margin="0,1,0,3" Grid.Row="2"><Run Text="Интервал:"/></TextBlock>
+
+                <TextBox FontSize="14" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" 
+                         Width="43" Grid.Column="1" Grid.Row="2" Margin="0,3,0,0" Validation.ErrorTemplate="{StaticResource validationFailed}">
+                    <TextBox.Text>
+                        <Binding Source="{x:Static p:Settings.Default}" Path="RequestInterval" Mode="TwoWay" 
+                                 NotifyOnValidationError="True" UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                <local:RequestIntervalRule Min="1" Max="1000"/>
+                                
+                                <ExceptionValidationRule/>
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
+
             </Grid>
         </GroupBox>
 

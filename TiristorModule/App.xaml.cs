@@ -19,7 +19,7 @@ namespace TiristorModule
         {
             var mw = new MainWindowView
             {
-                DataContext = new MainViewModel()
+                DataContext = new MainWindowViewModel()
             };
 
             mw.Show();

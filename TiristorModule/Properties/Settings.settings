@@ -125,7 +125,7 @@
       <Value Profile="(Default)">1</Value>
     </Setting>
     <Setting Name="BaudRate" Type="System.String" Scope="User">
-      <Value Profile="(Default)">9600</Value>
+      <Value Profile="(Default)">57600</Value>
     </Setting>
     <Setting Name="Parity" Type="System.String" Scope="User">
       <Value Profile="(Default)">Нет проверки</Value>

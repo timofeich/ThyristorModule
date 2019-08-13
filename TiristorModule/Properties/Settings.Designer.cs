@@ -298,7 +298,7 @@ namespace TiristorModule.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("9600")]
+        [global::System.Configuration.DefaultSettingValueAttribute("57600")]
         public string BaudRate {
             get {
                 return ((string)(this["BaudRate"]));
