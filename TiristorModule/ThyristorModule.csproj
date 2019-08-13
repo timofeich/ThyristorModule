@@ -88,7 +88,10 @@
     <Compile Include="Model\TestThyristorModel.cs" />
     <Compile Include="Validation\AddressRule.cs" />
     <Compile Include="Validation\CapacityRule.cs" />
+    <Compile Include="Validation\KZApmerageRule.cs" />
+    <Compile Include="Validation\KZTimeRule.cs" />
     <Compile Include="Validation\RequestIntervalRule.cs" />
+    <Compile Include="Validation\TimeRule.cs" />
     <Compile Include="ViewModel\Command.cs" />
     <Compile Include="ViewModel\SettingViewModels\ConnectSettingsViewModel.cs" />
     <Compile Include="ViewModel\SerialPortSettings.cs" />
