@@ -14,7 +14,7 @@ namespace TiristorModule.Validation
 
         public override ValidationResult Validate(object value, System.Globalization.CultureInfo ci)
         {
-            int requestInterval = 0;
+             int requestInterval = 0;
 
             try
             {
