@@ -20,7 +20,7 @@ namespace TiristorModule
             SerialPortSettings.SetPortParity(Settings.Default.Parity),
             Convert.ToInt32(Settings.Default.DataBit),
             SerialPortSettings.SetStopBits(Settings.Default.StopBit));
-       
+
         #region Fields
         private static byte SlaveAddress = byte.Parse(Settings.Default.AddressSlave, System.Globalization.NumberStyles.HexNumber);
         private static byte MasterAddress = byte.Parse(Settings.Default.AddressMaster, System.Globalization.NumberStyles.HexNumber);
@@ -49,12 +49,9 @@ namespace TiristorModule
 
         private static int RequestInterval = Settings.Default.RequestInterval;
 
-        private static byte[] BuffTir = new byte[18];
-        private static ushort[] BuffResponce;
-
         private static Dictionary<int, string> WorkingStatus = new Dictionary<int, string>(4);
         private static Dictionary<int, string> LedIndicators = new Dictionary<int, string>(4);
-        public static Dictionary<int, bool?> LedIndicatorsList  = new Dictionary<int, bool?>(6);
+        public static Dictionary<int, bool?> LedIndicatorsList = new Dictionary<int, bool?>(6);
 
 
         private static int standartRequest = 0;
@@ -63,7 +60,7 @@ namespace TiristorModule
 
         private static bool IsCurrentVoltageRequestCyclical = true;
         #endregion
-     
+
         #region Properties
         public static DataModel Data { get; set; }
         public static LedIndicatorModel LedIndicatorData { get; set; }
@@ -110,14 +107,14 @@ namespace TiristorModule
             LedIndicatorData = new LedIndicatorModel
             {
 
-            };      
+            };
         }
 
         ~MainWindowViewModel()
         {
             SerialPortSettings.CloseSerialPortConnection(serialPort1);
         }
-       
+
         private static void InitializeWorkingStatusData()
         {
             WorkingStatus.Add(0, "Crach_ostanov");
@@ -135,13 +132,13 @@ namespace TiristorModule
         }
 
         #region ClickHandler
-        
+
         private void StartTerristorModuleClick()
         {
             IsCurrentVoltageRequestCyclical = true;
             ChooseRequestMode(AddressStartTiristorModuleCommand, startRequest);
         }
-        
+
         private void StopTerristorModuleClick()
         {
             IsCurrentVoltageRequestCyclical = true;
@@ -250,18 +247,17 @@ namespace TiristorModule
                     OutputResponceData(AddressCommand, RequestType);
                     AddressCommand = AddressRequestFotCurrentVoltageCommand;
                 }
-
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Ошибка: " + ex);
+                MessageBox.Show(ex.Message, "Ошибка!");
             }
         }
 
         public static void StartCycleRequest(byte AddressCommand, int RequestType)
         {
             try
-            {               
+            {
                 SerialPortSettings.OpenSerialPortConnection(serialPort1);
                 ThreadPool.QueueUserWorkItem(new WaitCallback((obj) =>
                 {
@@ -281,7 +277,7 @@ namespace TiristorModule
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Ошибка: " + ex);
+                MessageBox.Show(ex.Message, "Ошибка!");
             }
         }
 
@@ -296,19 +292,19 @@ namespace TiristorModule
             {
                 ushort[] buffer = ReadHoldingResponcesFromBuffer(AddressCommand, RequestType);
                 OutputDataFromArrayToDataModel(buffer, AddressCommand);
-            }           
+            }
         }
 
         private static void OutputDataFromArrayToTestModel(ushort[] buff, byte AddressCommand)//wich status will open thyristor module
         {
             try
             {
-                LedIndicatorData.TestingStatus = IndicatorColor.GetTestingStatusLEDColor(buff[18]);//исключение на ноль
+                LedIndicatorData.TestingStatus = IndicatorColor.GetTestingStatusLEDColor(buff[23]);//исключение на ноль
                 TestThyristorWindowShow(buff);
             }
-            catch(Exception)
+            catch (Exception)
             {
-                MessageBox.Show("Невозможно отобразить тестовые данные." + "\n" + "Пришёл неверный статус.");
+                MessageBox.Show("Невозможно отобразить тестовые данные." + "\n" + "Пришёл неверный статус.", "Ошибка!");
             }
         }
 
@@ -316,18 +312,18 @@ namespace TiristorModule
         {
             try
             {
-                Data.VoltageA = buff[0];
-                Data.VoltageB = buff[1];
-                Data.VoltageC = buff[2];
-                Data.AmperageA1 = buff[3];
-                Data.AmperageB1 = buff[4];
-                Data.AmperageC1 = buff[5];
-                Data.AmperageA2 = buff[6];
-                Data.AmperageB2 = buff[7];
-                Data.AmperageC2 = buff[8];
-                Data.TemperatureOfTiristor = buff[9];
-                Data.WorkingStatus = GetWorkingStatus(buff[10]);
-                if (buff[10] == 128 || buff[10] == 1)
+                Data.VoltageA = buff[4];
+                Data.VoltageB = buff[5];
+                Data.VoltageC = buff[6];
+                Data.AmperageA1 = buff[7];
+                Data.AmperageB1 = buff[8];
+                Data.AmperageC1 = buff[9];
+                Data.AmperageA2 = buff[10];
+                Data.AmperageB2 = buff[11];
+                Data.AmperageC2 = buff[12];
+                Data.TemperatureOfTiristor = buff[13];
+                Data.WorkingStatus = GetWorkingStatus(buff[14]);
+                if (buff[14] == 128 || buff[14] == 1)
                 {
                     LedIndicatorData.StartStatus = IndicatorColor.GetTestingStatusLEDColor(1);
                     LedIndicatorData.StopStatus = IndicatorColor.GetTestingStatusLEDColor(0);
@@ -337,12 +333,12 @@ namespace TiristorModule
                     LedIndicatorData.StartStatus = IndicatorColor.GetTestingStatusLEDColor(0);
                     LedIndicatorData.StopStatus = IndicatorColor.GetTestingStatusLEDColor(1);
                 }
-                GetStatusFromCurrentVoltage(buff[11]);
+                GetStatusFromCurrentVoltage(buff[15]);
             }
-            catch(Exception)
+            catch (Exception)
             {
                 IsCurrentVoltageRequestCyclical = false;
-                MessageBox.Show("Нулевой ответ от модуля тиристора.");
+                MessageBox.Show("Нулевой ответ от модуля тиристора.", "Ошибка!");
             }
         }
 
@@ -418,61 +414,28 @@ namespace TiristorModule
             return frameout;
         }
 
-        private static ushort[] ParseTestTirResponse(byte[] data)
+        private static ushort[] ParseTestTirResponse(byte[] data)//ConvertResponceIntoUshort
         {
-            ushort[] frame = new ushort[19];
-            if (data[24] == CalculateCRC8(data))
-            {
-                for (int i = 0; i < 20; i++)
-                {
-                    frame[i] = data[i + 4];
-                }
-
-                return frame;
-            }
-            else
-            {
-                frame[2] = 0;
-                return frame;
-            }
+            if (data[24] == CalculateCRC8(data)) return BytesManipulating.ConvertByteArrayIntoUshortArray(data);
+            else throw new ArgumentException("Нарушена целостность пакета.");
         }
 
         private static ushort[] ParseCurrentVoltageResponse(byte[] data)
         {
-            ushort[] frame = new ushort[12];
-            int j = 4;
-            if (data[24] == CalculateCRC8(data))
-            {
-                for (int i = 0; i <= 8; i++)
-                {
-                    frame[i] = Word.FromBytes(data[j + 1], data[j]);
-                    j += 2;
-                }
-
-                for (int i = 9; i < frame.Length; i++)
-                {
-                    frame[i] = data[i + 13];
-                }
-
-                return frame;
-            }
-            else
-            {
-                frame[2] = 0;
-                return frame;
-            }
-
+            if (data[25] == CalculateCRC8(data)) return BytesManipulating.ConvertByteArrayIntoUshortArray(data);
+            else throw new ArgumentException("Нарушена целостность пакета.");
         }
 
         public static ushort[] ReadHoldingResponcesFromBuffer(byte commandNumber, int requestType)
         {
-            ushort[] result;
+            ushort[] BuffResponce = null;
             if (serialPort1.IsOpen)
             {
                 serialPort1.Write(GetFrameDependentOnTypeOfRequest(requestType, commandNumber), 0,
                     GetFrameDependentOnTypeOfRequest(requestType, commandNumber).Length);
 
-                //Thread.Sleep(RequestInterval); 
+                Thread.Sleep(RequestInterval);
+
                 if (serialPort1.BytesToRead >= 20)
                 {
                     int i = serialPort1.BytesToRead;// для отладки
@@ -480,11 +443,14 @@ namespace TiristorModule
                     serialPort1.Read(bufferReceiver, 0, serialPort1.BytesToRead);
                     serialPort1.DiscardInBuffer();
 
-                    if (bufferReceiver[2] == 21) result = ParseTestTirResponse(bufferReceiver);
-                    else result = ParseCurrentVoltageResponse(bufferReceiver);
-
-                    if (result[2] == 0) MessageBox.Show("Нарушена целостность ответа.");
-                    else BuffResponce = result;
+                    if (bufferReceiver[3] == 0x91 && bufferReceiver[0] == MasterAddress && bufferReceiver[1] == SlaveAddress)//уведомить пользователя о неверном адресе
+                        BuffResponce = ParseTestTirResponse(bufferReceiver);
+                    else if (bufferReceiver[3] == 0x90 && bufferReceiver[0] == MasterAddress && bufferReceiver[1] == SlaveAddress)
+                        BuffResponce = ParseCurrentVoltageResponse(bufferReceiver);
+                }
+                else
+                {
+                    MessageBox.Show("Модуль тиристора ответа не дал.", "Ошибка!");//чекнуть при отладке
                 }
             }
             return BuffResponce;
@@ -496,9 +462,9 @@ namespace TiristorModule
             else if (requestType == startRequest) return CreateStartTiristorModuleRequest(SlaveAddress, true);
             else return CreateTestTiristorModuleRequest(SlaveAddress);
         }
-        
+
         private static void GetStatusFromCurrentVoltage(ushort statusCrash)//try loop and list
-        {         
+        {
             switch (statusCrash)
             {
                 case 0:
@@ -580,7 +546,7 @@ namespace TiristorModule
             if (statusByte % 16 == 0 && statusByte != 0)
             {
                 int i = Convert.ToInt32(Math.Sqrt(Convert.ToDouble(statusByte)) - 4);
-                return WorkingStatus[1];
+                return WorkingStatus[i];
             }
             else
             {
@@ -601,7 +567,6 @@ namespace TiristorModule
                     crc = (crc & 0x80) != 0 ? (byte)((crc << 1) ^ 0x31) : (byte)(crc << 1);
                 }
             }
-
             return crc;
         }
         #endregion

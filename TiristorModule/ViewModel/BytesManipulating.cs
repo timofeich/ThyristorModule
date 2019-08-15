@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace TiristorModule
 {
-    public class Word
+    public class BytesManipulating
     {
         public static ushort FromByteArray(byte[] bytes)
         {
@@ -37,5 +37,13 @@ namespace TiristorModule
         {
             return arr.Where((el, ind) => (el % 2 == 0 && ind % 2 != 0)).ToArray();
         }
+
+        public static ushort[] ConvertByteArrayIntoUshortArray(byte[] data)
+        {
+            ushort[] frame = new ushort[data.Length];
+            return frame = data.Select(i => (ushort)i).ToArray();
+        }
     }
+
+    
 }

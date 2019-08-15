@@ -25,9 +25,9 @@ namespace TiristorModule.ViewModel
             TestDatas = new ObservableCollection<TestThyristorModel>();
             InitializeFazzNameData();
 
-            for(int i = 0; i < 3; i++)
-            TestDatas.Add(new TestThyristorModel(FazaName[i], buff[i], buff[i + 3], buff[i + 6], buff[i + 9], 
-                buff[i + 12], buff[i + 15], buff[17]));
+            for(int i = 4; i < 7; i++)
+            TestDatas.Add(new TestThyristorModel(FazaName[i - 4], buff[i], buff[i + 3], buff[i + 6], buff[i + 9], 
+                buff[i + 12], buff[i + 15], buff[23]));
         }
 
         private static void InitializeFazzNameData()
