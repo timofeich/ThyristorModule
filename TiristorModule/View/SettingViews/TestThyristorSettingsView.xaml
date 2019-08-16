@@ -33,7 +33,7 @@
     </Window.Resources>
 
     <Grid>
-        <Grid Background="White" Margin="30,10,30,92">
+        <Grid Background="White" Margin="30,10,30,92" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto" MinWidth="117"/>
                 <ColumnDefinition/>
@@ -67,7 +67,7 @@
                 </TextBox.Text>
             </TextBox>
 
-            <TextBox x:Name="NominalTok1sk" Grid.Column="1" FontSize="14" Validation.ErrorTemplate="{StaticResource validationFailed}" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="33" Grid.Row="1" Margin="0,9,0,0">
+            <TextBox x:Name="NominalTok1sk" Grid.Column="1" FontSize="14" Validation.ErrorTemplate="{StaticResource validationFailed}" HorizontalAlignment="Left" Height="24" TextWrapping="Wrap" VerticalAlignment="Top" Width="33" Grid.Row="1" Margin="0,8,0,0">
                 <TextBox.Text>
                     <Binding Source="{x:Static p:Settings.Default}" Path="NominalTok1sk" Mode="TwoWay" 
                                  NotifyOnValidationError="True" UpdateSourceTrigger="PropertyChanged">
@@ -114,7 +114,7 @@
                     </Binding>
                 </TextBox.Text>
             </TextBox>
-            <TextBlock FontSize="16" Grid.Column="1" HorizontalAlignment="Left" Margin="34,8,0,0" Grid.Row="1" TextWrapping="Wrap" Text="/10" VerticalAlignment="Top" Height="21" Width="27"/>
+            <TextBlock FontSize="16" Grid.Column="1" HorizontalAlignment="Left" Margin="35,7,0,0" Grid.Row="1" TextWrapping="Wrap" Text="/10" VerticalAlignment="Top" Height="21" Width="27"/>
         </Grid>
 
         <Grid Background="White" Margin="0,0,30,20" HorizontalAlignment="Right" Width="211" Height="56" VerticalAlignment="Bottom">

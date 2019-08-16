@@ -223,14 +223,8 @@ namespace TiristorModule
 
         public static void ChooseRequestMode(byte AddressCommand, int RequestType)
         {
-            if (Data.IsRequestSingle)
-            {
-                StartSingleRequest(AddressCommand, RequestType);
-            }
-            else
-            {
-                StartCycleRequest(AddressCommand, RequestType);
-            }
+            if (Data.IsRequestSingle) StartSingleRequest(AddressCommand, RequestType);
+            else StartCycleRequest(AddressCommand, RequestType);
         }
 
         public static void StartSingleRequest(byte AddressCommand, int RequestType)
@@ -262,10 +256,7 @@ namespace TiristorModule
                 {
                     while (IsCurrentVoltageRequestCyclical)
                     {
-                        if (AddressCommand == AddressCurrentVoltageCommand)
-                        {
-                            OutputResponceData(AddressCommand, RequestType);
-                        }
+                        if (AddressCommand == AddressCurrentVoltageCommand) OutputResponceData(AddressCommand, RequestType);
                         else
                         {
                             OutputResponceData(AddressCommand, RequestType);
@@ -447,15 +438,9 @@ namespace TiristorModule
                         BuffResponce = ParseTestTirResponse(bufferReceiver);
                     else if (bufferReceiver[3] == 0x90 && bufferReceiver[0] == MasterAddress && bufferReceiver[1] == SlaveAddress)
                         BuffResponce = ParseCurrentVoltageResponse(bufferReceiver);
-                    if (BuffResponce == null)
-                    {
-                        MessageBox.Show("Модуль тиристора отправил нулевой ответ.", "Ошибка!");
-                    }
+                    if (BuffResponce == null) MessageBox.Show("Модуль тиристора отправил нулевой ответ.", "Ошибка!");
                 }
-                else
-                {
-                    MessageBox.Show("Модуль тиристора ответа не дал.", "Ошибка!");//чекнуть при отладке
-                }                
+                else MessageBox.Show("Модуль тиристора ответа не дал.", "Ошибка!");//чекнуть при отладке           
             }
             return BuffResponce;
         }
@@ -552,10 +537,7 @@ namespace TiristorModule
                 int i = Convert.ToInt32(Math.Sqrt(Convert.ToDouble(statusByte)) - 4);
                 return WorkingStatus[i];
             }
-            else
-            {
-                return WorkingStatus[4];
-            }
+            else return WorkingStatus[4];
         }
 
         private static byte CalculateCRC8(byte[] array)

@@ -33,7 +33,7 @@
     </Window.Resources>
 
     <Grid>
-        <GroupBox FontSize="14" Header="Данные для разгона" Background="White" HorizontalAlignment="Left" Height="93" Margin="10,0,0,0" VerticalAlignment="Top" Width="452">
+        <GroupBox FontSize="14" Header="Данные для разгона" Background="White" HorizontalAlignment="Left" Height="99" Margin="10,0,0,0" VerticalAlignment="Top" Width="452">
             <Grid Margin="-4,0,-4,-3">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
@@ -277,13 +277,13 @@
             </Grid>
         </GroupBox>
 
-        <GroupBox Header="Параметры Kz1" FontSize="14" Background="White" HorizontalAlignment="Left" Height="123" Margin="11,98,0,0" VerticalAlignment="Top" Width="197">
+        <GroupBox Header="Параметры Kz1" FontSize="14" Background="White" HorizontalAlignment="Left" Height="123" Margin="40,104,0,0" VerticalAlignment="Top" Width="180">
             <Grid Margin="0,0,-2,3">
 
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto" MinWidth="84"/>
-                    <ColumnDefinition Width="44*"/>
-                    <ColumnDefinition Width="59*"/>
+                    <ColumnDefinition Width="88*"/>
+                    <ColumnDefinition Width="41*"/>
                 </Grid.ColumnDefinitions>
 
                 <Grid.RowDefinitions>
@@ -316,11 +316,11 @@
                     </TextBox.Text>
                 </TextBox>
 
-                <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="42,7,0,0" TextWrapping="Wrap" Text="мс" VerticalAlignment="Top" Height="20" Width="22" Grid.Row="1" Grid.ColumnSpan="2"/>
+                <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="42,7,0,0" TextWrapping="Wrap" Text="мс" VerticalAlignment="Top" Height="20" Width="22" Grid.Row="1"/>
 
             </Grid>
         </GroupBox>
-        <GroupBox FontSize="14" Header="Параметры Kz2" Background="White" HorizontalAlignment="Left" Height="123" Margin="258,98,0,0" VerticalAlignment="Top" Width="204">
+        <GroupBox FontSize="14" Header="Параметры Kz2" Background="White" HorizontalAlignment="Left" Height="123" Margin="250,104,0,0" VerticalAlignment="Top" Width="183">
             <Grid HorizontalAlignment="Left" Height="99" Margin="0,1,-2,-3" VerticalAlignment="Top" Width="181">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto" MinWidth="91"/>
@@ -364,7 +364,7 @@
 
             </Grid>
         </GroupBox>
-        <Grid HorizontalAlignment="Left" Background="White" Margin="120,239,0,0" VerticalAlignment="Top" Width="251"  Height="60">
+        <Grid HorizontalAlignment="Left" Background="White" Margin="110,239,0,0" VerticalAlignment="Top" Width="251"  Height="60">
             <Button Content="ОК" FontSize="14" Command="{Binding SaveStartTiristorSettingsCommand}"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Height="40" Margin="17,10,0,0"/>
             <Button Content="Отмена" FontSize="14" Command="{Binding CancelStartTiristorSettingsCommand}" HorizontalAlignment="Left" Margin="131,10,0,0" VerticalAlignment="Top" Width="100" Height="40"/>
         </Grid>
