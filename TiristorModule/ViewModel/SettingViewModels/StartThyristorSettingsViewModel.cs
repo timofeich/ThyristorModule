@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Input;
+using TiristorModule.Properties;
 
 namespace TiristorModule.ViewModel
 {
@@ -17,13 +18,13 @@ namespace TiristorModule.ViewModel
 
         private void OkStartTiristorButtonClick()
         {
-            Properties.Settings.Default.Save();
+            Settings.Default.Save();
             OnRequestClose(this, new EventArgs());
         }
 
         private void CancelStartTiristorButtonClick()
         {
-            Properties.Settings.Default.Reset();
+            Settings.Default.Reset();
             OnRequestClose(this, new EventArgs());
         }
     }

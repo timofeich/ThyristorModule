@@ -27,7 +27,7 @@ namespace TiristorModule
 
         private const byte AddressStartTiristorModuleCommand = 0x87;
         private const byte AddressStopTiristorModuleCommand = 0x88;
-        private const byte AddressRequestFotCurrentVoltageCommand = 0x90;
+        private const byte AddressCurrentVoltageCommand = 0x90;
         private const byte AddressTestTiristorModuleCommand = 0x91;
         private const byte AddressResetAvariaTiristorCommand = 0x92;
         private const byte AddressAlarmStopCommand = 0x87;
@@ -52,7 +52,6 @@ namespace TiristorModule
         private static Dictionary<int, string> WorkingStatus = new Dictionary<int, string>(4);
         private static Dictionary<int, string> LedIndicators = new Dictionary<int, string>(4);
         public static Dictionary<int, bool?> LedIndicatorsList = new Dictionary<int, bool?>(6);
-
 
         private static int standartRequest = 0;
         private static int startRequest = 1;
@@ -121,6 +120,7 @@ namespace TiristorModule
             WorkingStatus.Add(1, "Tormoz");
             WorkingStatus.Add(2, "Baipass");
             WorkingStatus.Add(3, "Razgon");
+            WorkingStatus.Add(4, "Дежурный режим" );
         }
 
         public static byte[] ConvertStringCollectionToByte(System.Collections.Specialized.StringCollection stringCollection)
@@ -148,7 +148,7 @@ namespace TiristorModule
         private void CurrentVoltageClick()
         {
             IsCurrentVoltageRequestCyclical = true;
-            ChooseRequestMode(AddressRequestFotCurrentVoltageCommand, standartRequest);
+            ChooseRequestMode(AddressCurrentVoltageCommand, standartRequest);
         }
 
         private void AlarmStopClick()
@@ -237,15 +237,14 @@ namespace TiristorModule
         {
             try
             {
-                if (AddressCommand == AddressRequestFotCurrentVoltageCommand)
+                if (AddressCommand == AddressCurrentVoltageCommand)
                 {
                     OutputResponceData(AddressCommand, RequestType);
-                    Thread.Sleep(20);
                 }
                 else
                 {
                     OutputResponceData(AddressCommand, RequestType);
-                    AddressCommand = AddressRequestFotCurrentVoltageCommand;
+                    AddressCommand = AddressCurrentVoltageCommand;
                 }
             }
             catch (Exception ex)
@@ -263,14 +262,14 @@ namespace TiristorModule
                 {
                     while (IsCurrentVoltageRequestCyclical)
                     {
-                        if (AddressCommand == AddressRequestFotCurrentVoltageCommand)
+                        if (AddressCommand == AddressCurrentVoltageCommand)
                         {
                             OutputResponceData(AddressCommand, RequestType);
                         }
                         else
                         {
                             OutputResponceData(AddressCommand, RequestType);
-                            AddressCommand = AddressRequestFotCurrentVoltageCommand;
+                            AddressCommand = AddressCurrentVoltageCommand;
                         }
                     }
                 }));
@@ -335,10 +334,10 @@ namespace TiristorModule
                 }
                 GetStatusFromCurrentVoltage(buff[15]);
             }
-            catch (Exception)
+            catch 
             {
                 IsCurrentVoltageRequestCyclical = false;
-                MessageBox.Show("Нулевой ответ от модуля тиристора.", "Ошибка!");
+                MessageBox.Show("Нет данных для вывода, отправка запросов остановлена.", "Ошибка!");
             }
         }
 
@@ -356,7 +355,7 @@ namespace TiristorModule
             return frameout;
         }
 
-        private static byte[] CreateStartTiristorModuleRequest(byte slaveAddress, bool plavniiPuskStart)
+        private static byte[] CreateStartTiristorModuleRequest(byte slaveAddress)
         {
             byte[] frame = new byte[31];
             byte[] frameout = new byte[32];
@@ -384,7 +383,7 @@ namespace TiristorModule
             frame[27] = VremiaKzMs2;
             frame[28] = 0;//kz_on_off_2
             frame[29] = AlarmTemperatureTiristor;
-            frame[30] = Convert.ToByte(plavniiPuskStart);//flag
+            frame[30] = Convert.ToByte(Data.IsPlavniiPusk);//flag
 
             Array.Copy(frame, frameout, frame.Length);
             frameout[frameout.Length - 1] = CalculateCRC8(frame);
@@ -414,7 +413,7 @@ namespace TiristorModule
             return frameout;
         }
 
-        private static ushort[] ParseTestTirResponse(byte[] data)//ConvertResponceIntoUshort
+        private static ushort[] ParseTestTirResponse(byte[] data)
         {
             if (data[24] == CalculateCRC8(data)) return BytesManipulating.ConvertByteArrayIntoUshortArray(data);
             else throw new ArgumentException("Нарушена целостность пакета.");
@@ -429,10 +428,11 @@ namespace TiristorModule
         public static ushort[] ReadHoldingResponcesFromBuffer(byte commandNumber, int requestType)
         {
             ushort[] BuffResponce = null;
+            byte[] writebuffer;
             if (serialPort1.IsOpen)
             {
-                serialPort1.Write(GetFrameDependentOnTypeOfRequest(requestType, commandNumber), 0,
-                    GetFrameDependentOnTypeOfRequest(requestType, commandNumber).Length);
+                writebuffer = GetFrameDependentOnTypeOfRequest(requestType, commandNumber);
+                serialPort1.Write(writebuffer, 0, writebuffer.Length);
 
                 Thread.Sleep(RequestInterval);
 
@@ -447,11 +447,15 @@ namespace TiristorModule
                         BuffResponce = ParseTestTirResponse(bufferReceiver);
                     else if (bufferReceiver[3] == 0x90 && bufferReceiver[0] == MasterAddress && bufferReceiver[1] == SlaveAddress)
                         BuffResponce = ParseCurrentVoltageResponse(bufferReceiver);
+                    if (BuffResponce == null)
+                    {
+                        MessageBox.Show("Модуль тиристора отправил нулевой ответ.", "Ошибка!");
+                    }
                 }
                 else
                 {
                     MessageBox.Show("Модуль тиристора ответа не дал.", "Ошибка!");//чекнуть при отладке
-                }
+                }                
             }
             return BuffResponce;
         }
@@ -459,7 +463,7 @@ namespace TiristorModule
         private static byte[] GetFrameDependentOnTypeOfRequest(int requestType, byte commandNumber)
         {
             if (requestType == standartRequest) return CreateStandartRequest(SlaveAddress, commandNumber);
-            else if (requestType == startRequest) return CreateStartTiristorModuleRequest(SlaveAddress, true);
+            else if (requestType == startRequest) return CreateStartTiristorModuleRequest(SlaveAddress);
             else return CreateTestTiristorModuleRequest(SlaveAddress);
         }
 
@@ -550,7 +554,7 @@ namespace TiristorModule
             }
             else
             {
-                return "Дежурный р-м";
+                return WorkingStatus[4];
             }
         }
 

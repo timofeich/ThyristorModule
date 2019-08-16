@@ -34,9 +34,9 @@ namespace TiristorModule.Model
 
         private ushort temperatureOfTiristor;
         private string workingStatus;
-        private string masterAddress;
 
         private bool isRequestSingle;
+        private bool isPlavniiPusk;
 
         #endregion
 
@@ -197,15 +197,15 @@ namespace TiristorModule.Model
             }
         }
 
-        public string MasterAddress
+        public bool IsPlavniiPusk
         {
-            get { return masterAddress; }
+            get { return isPlavniiPusk; }
             set
             {
-                if (masterAddress != value)
+                if (isPlavniiPusk != value)
                 {
-                    masterAddress = value;
-                    OnPropertyChanged("MasterAddress");
+                    isPlavniiPusk = value;
+                    OnPropertyChanged("isPlavniiPusk");
                 }
             }
         }

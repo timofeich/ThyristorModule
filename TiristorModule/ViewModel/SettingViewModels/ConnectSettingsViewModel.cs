@@ -25,13 +25,13 @@ namespace TiristorModule.ViewModel
             Convert.ToInt32(Settings.Default.DataBit),
             SerialPortSettings.SetStopBits(Settings.Default.StopBit));
 
-            Properties.Settings.Default.Save();
+            Settings.Default.Save();
             OnRequestClose(this, new EventArgs());
         }
 
         private void CancelStartTiristorButtonClick()
         {
-            Properties.Settings.Default.Reset();
+            Settings.Default.Reset();
             OnRequestClose(this, new EventArgs());
         }
     }

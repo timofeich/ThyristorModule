@@ -7,7 +7,7 @@
         xmlns:local="clr-namespace:TiristorModule.Validation"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
-        Title="Параметры - Тест тир. модуля" Height="332" Width="267.527" Background="LightGray">
+        Title="Параметры - Тест тир. модуля" Height="354.5" Width="278.86" Background="LightGray">
 
     <Window.Resources>
         <ControlTemplate x:Key="validationFailed">
@@ -33,25 +33,29 @@
     </Window.Resources>
 
     <Grid>
-        <Grid Background="White" Margin="10,10,10,93">
+        <Grid Background="White" Margin="30,10,30,92">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto" MinWidth="117"/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
+                <RowDefinition Height="52*"/>
+                <RowDefinition Height="48*"/>
+                <RowDefinition Height="48*"/>
+                <RowDefinition Height="34*"/>
+                <RowDefinition Height="43*"/>
             </Grid.RowDefinitions>
-            <TextBlock  TextWrapping="Wrap"  Text="Мощность % =" FontSize="14" Margin="52,10,0,7"/>
-            <TextBlock TextWrapping="Wrap" Text="Номинальный ток 1ск =" Margin="0,10,0,0" Grid.Row="1" FontSize="14" Height="26" VerticalAlignment="Top" HorizontalAlignment="Left" Width="155"/>
-            <TextBlock TextWrapping="Wrap" FontSize="14" Text="Количество тестов =" Margin="22,10,1,11" Grid.Row="2"/>
-            <TextBlock TextWrapping="Wrap" FontSize="14" Text="Ток Кz 1ск =" Margin="73,10,0,11" Grid.Row="3"/>
-            <TextBlock TextWrapping="Wrap" FontSize="14" Text="Ток Kz 2ск =" Margin="73,10,0,12" Grid.Row="4"/>
-            
-            <TextBox x:Name="Capacity" MaxLength="3" Grid.Column="1" FontSize="14" Validation.ErrorTemplate="{StaticResource validationFailed}" HorizontalAlignment="Left" Height="22" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="48">
+            <TextBlock  TextWrapping="Wrap"  Text="Мощность %" FontSize="14" Margin="0,17,5,0" HorizontalAlignment="Right" Width="84"/>
+            <TextBlock TextWrapping="Wrap" TextAlignment="Right" Margin="0,0,7,0" Grid.Row="1" FontSize="14" Height="39" VerticalAlignment="Top" HorizontalAlignment="Right" Width="100">
+                Номинальный <LineBreak/> ток 1ск
+            </TextBlock>
+            <TextBlock TextWrapping="Wrap" TextAlignment="Right" FontSize="14" Margin="0,0,10,1" Grid.Row="2" HorizontalAlignment="Right" Width="96">
+                Количество<LineBreak/> тестов
+            </TextBlock>
+            <TextBlock TextWrapping="Wrap" FontSize="14" Text="Ток Кz 1ск" Margin="0,0,10,0" Grid.Row="3" HorizontalAlignment="Right" Width="66"/>
+            <TextBlock TextWrapping="Wrap" FontSize="14" Text="Ток Kz 2ск" Margin="0,0,10,0" Grid.Row="4" HorizontalAlignment="Right" Width="66"/>
+
+            <TextBox x:Name="Capacity" MaxLength="3" Grid.Column="1" FontSize="14" Validation.ErrorTemplate="{StaticResource validationFailed}" HorizontalAlignment="Left" Height="25" Margin="0,17,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="48">
                 <TextBox.Text>
                     <Binding Source="{x:Static p:Settings.Default}" Path="PersentTestPower" Mode="TwoWay" 
                                  NotifyOnValidationError="True" UpdateSourceTrigger="PropertyChanged">
@@ -63,7 +67,7 @@
                 </TextBox.Text>
             </TextBox>
 
-            <TextBox x:Name="NominalTok1sk" Grid.Column="1" FontSize="14" Validation.ErrorTemplate="{StaticResource validationFailed}" HorizontalAlignment="Left" Height="22" TextWrapping="Wrap" VerticalAlignment="Top" Width="24" Grid.Row="1" Margin="0,10,0,0">
+            <TextBox x:Name="NominalTok1sk" Grid.Column="1" FontSize="14" Validation.ErrorTemplate="{StaticResource validationFailed}" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="33" Grid.Row="1" Margin="0,9,0,0">
                 <TextBox.Text>
                     <Binding Source="{x:Static p:Settings.Default}" Path="NominalTok1sk" Mode="TwoWay" 
                                  NotifyOnValidationError="True" UpdateSourceTrigger="PropertyChanged">
@@ -74,8 +78,8 @@
                     </Binding>
                 </TextBox.Text>
             </TextBox>
-            
-            <TextBox Grid.Column="1" FontSize="14" Validation.ErrorTemplate="{StaticResource validationFailed}" HorizontalAlignment="Left" Height="21" Margin="0,9,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="48" Grid.Row="2">
+
+            <TextBox Grid.Column="1" FontSize="14" Validation.ErrorTemplate="{StaticResource validationFailed}" HorizontalAlignment="Left" Height="23" Margin="0,8,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="48" Grid.Row="2">
                 <TextBox.Text>
                     <Binding Source="{x:Static p:Settings.Default}" Path="NumberOfTest" Mode="TwoWay" 
                                  NotifyOnValidationError="True" UpdateSourceTrigger="PropertyChanged">
@@ -87,7 +91,7 @@
                 </TextBox.Text>
             </TextBox>
 
-            <TextBox Grid.Column="1" FontSize="14" Validation.ErrorTemplate="{StaticResource validationFailed}" HorizontalAlignment="Left" Height="21" Margin="0,9,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="48" Grid.Row="3">
+            <TextBox Grid.Column="1" FontSize="14" Validation.ErrorTemplate="{StaticResource validationFailed}" HorizontalAlignment="Left" Height="21" TextWrapping="Wrap" VerticalAlignment="Top" Width="48" Grid.Row="3">
                 <TextBox.Text>
                     <Binding Source="{x:Static p:Settings.Default}" Path="CurrentKz1" Mode="TwoWay" 
                                  NotifyOnValidationError="True" UpdateSourceTrigger="PropertyChanged">
@@ -98,8 +102,8 @@
                     </Binding>
                 </TextBox.Text>
             </TextBox>
-           
-            <TextBox Grid.Column="1" FontSize="14" Validation.ErrorTemplate="{StaticResource validationFailed}" HorizontalAlignment="Left" Height="22" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="48" Grid.Row="4">
+
+            <TextBox Grid.Column="1" FontSize="14" Validation.ErrorTemplate="{StaticResource validationFailed}" HorizontalAlignment="Left" Height="22" TextWrapping="Wrap" VerticalAlignment="Top" Width="48" Grid.Row="4">
                 <TextBox.Text>
                     <Binding Source="{x:Static p:Settings.Default}" Path="CurrentKz2" Mode="TwoWay" 
                                  NotifyOnValidationError="True" UpdateSourceTrigger="PropertyChanged">
@@ -110,10 +114,10 @@
                     </Binding>
                 </TextBox.Text>
             </TextBox>
-            <TextBlock FontSize="14" Grid.Column="1" HorizontalAlignment="Left" Margin="25,10,0,0" Grid.Row="1" TextWrapping="Wrap" Text="/10" VerticalAlignment="Top"/>
+            <TextBlock FontSize="16" Grid.Column="1" HorizontalAlignment="Left" Margin="34,8,0,0" Grid.Row="1" TextWrapping="Wrap" Text="/10" VerticalAlignment="Top" Height="21" Width="27"/>
         </Grid>
 
-        <Grid Background="White" Margin="0,0,30,20" HorizontalAlignment="Right" Width="200" Height="56" VerticalAlignment="Bottom">
+        <Grid Background="White" Margin="0,0,30,20" HorizontalAlignment="Right" Width="211" Height="56" VerticalAlignment="Bottom">
             <Button FontSize="14" Content="ОК" Command="{Binding SaveTestTiristorSettingsCommand}"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Height="37" Margin="22,9,0,0"/>
             <Button FontSize="14" Content="Отмена" Command="{Binding CancelTestTiristorSettingsCommand}" HorizontalAlignment="Left" Margin="108,9,0,0" VerticalAlignment="Top" Width="75" Height="37"/>
         </Grid>

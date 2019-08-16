@@ -255,7 +255,9 @@
             </MenuItem>
         </Menu>
         <Grid HorizontalAlignment="Left" Height="51" Margin="405,185,0,0" VerticalAlignment="Top" Width="144">
-            <CheckBox Content="Режим один-х запросов" IsChecked="{Binding Path=Data.IsRequestSingle, Mode=TwoWay, TargetNullValue=false}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="132" Height="41" Margin="2,0,0,0"/>
+            <CheckBox Content="Режим один-х  запросов"  IsChecked="{Binding Path=Data.IsRequestSingle, Mode=TwoWay}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="144" Height="26" Margin="4,-1,-4,0"/>
+
+            <CheckBox Content="Плавный пуск старт" IsChecked="{Binding Data.IsPlavniiPusk, Mode=TwoWay}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="140" Height="26" Margin="4,25,0,0"/>
         </Grid>
     </Grid>
 </Window>
