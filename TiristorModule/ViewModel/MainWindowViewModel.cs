@@ -22,9 +22,6 @@ namespace TiristorModule
             SerialPortSettings.SetStopBits(Settings.Default.StopBit));
 
         #region Fields
-        private static byte SlaveAddress = byte.Parse(Settings.Default.AddressSlave, System.Globalization.NumberStyles.HexNumber);
-        private static byte MasterAddress = byte.Parse(Settings.Default.AddressMaster, System.Globalization.NumberStyles.HexNumber);
-
         private const byte AddressStartTiristorModuleCommand = 0x87;
         private const byte AddressStopTiristorModuleCommand = 0x88;
         private const byte AddressCurrentVoltageCommand = 0x90;
@@ -32,22 +29,7 @@ namespace TiristorModule
         private const byte AddressResetAvariaTiristorCommand = 0x92;
         private const byte AddressAlarmStopCommand = 0x87;
 
-        private static byte[] Times = ConvertStringCollectionToByte(Settings.Default.Time);
-        private static byte[] Capacities = ConvertStringCollectionToByte(Settings.Default.Capacity);
-
         private const byte AlarmTemperatureTiristor = 85;
-
-        private static byte VremiaKzMs1 = Settings.Default.VremiaKzMs1;
-        private static byte VremiaKzMs2 = Settings.Default.VremiaKzMs2;
-
-        private static ushort CurrentKz1_1 = Settings.Default.CurrentKz1;
-        private static ushort CurrentKz2_1 = Settings.Default.CurrentKz2;
-
-        private static byte PersentTestPower = Settings.Default.PersentTestPower;
-        private static int NominalTok1sk = Settings.Default.NominalTok1sk / 10;
-        private static byte NumberOfTest = Settings.Default.NumberOfTest;
-
-        private static int RequestInterval = Settings.Default.RequestInterval;
 
         private static Dictionary<int, string> WorkingStatus = new Dictionary<int, string>(4);
         private static Dictionary<int, string> LedIndicators = new Dictionary<int, string>(4);
@@ -63,6 +45,7 @@ namespace TiristorModule
         #region Properties
         public static DataModel Data { get; set; }
         public static LedIndicatorModel LedIndicatorData { get; set; }
+        public static SettingsModel SettingsModelData { get; set; }
         #endregion
 
         #region Commands
@@ -107,6 +90,11 @@ namespace TiristorModule
             {
 
             };
+
+            SettingsModelData = new SettingsModel
+            {
+
+            };
         }
 
         ~MainWindowViewModel()
@@ -131,42 +119,46 @@ namespace TiristorModule
             return stringArray.Select(byte.Parse).ToArray();
         }
 
+        private static byte GetAddress(string address)
+        {
+            return byte.Parse(address, System.Globalization.NumberStyles.HexNumber);
+        }
         #region ClickHandler
 
         private void StartTerristorModuleClick()
         {
-            IsCurrentVoltageRequestCyclical = true;
             ChooseRequestMode(AddressStartTiristorModuleCommand, startRequest);
+            IsCurrentVoltageRequestCyclical = true;
         }
 
         private void StopTerristorModuleClick()
         {
-            IsCurrentVoltageRequestCyclical = true;
             ChooseRequestMode(AddressStopTiristorModuleCommand, standartRequest);
+            IsCurrentVoltageRequestCyclical = true;
         }
 
         private void CurrentVoltageClick()
         {
-            IsCurrentVoltageRequestCyclical = true;
             ChooseRequestMode(AddressCurrentVoltageCommand, standartRequest);
+            IsCurrentVoltageRequestCyclical = true;
         }
 
         private void AlarmStopClick()
         {
-            IsCurrentVoltageRequestCyclical = true;
             ChooseRequestMode(AddressAlarmStopCommand, standartRequest);
+            IsCurrentVoltageRequestCyclical = true;
         }
 
         private void TestTerristorModuleClick()
         {
-            IsCurrentVoltageRequestCyclical = true;
             ChooseRequestMode(AddressTestTiristorModuleCommand, testRequest);
+            IsCurrentVoltageRequestCyclical = true;
         }
 
         private void ResetAvatiaTirristorClick()
         {
-            IsCurrentVoltageRequestCyclical = true;
             ChooseRequestMode(AddressResetAvariaTiristorCommand, standartRequest);
+            IsCurrentVoltageRequestCyclical = true;
         }
 
         private void SetRequestMode()
@@ -289,11 +281,12 @@ namespace TiristorModule
         {
             try
             {
+                IsCurrentVoltageRequestCyclical = false;
                 LedIndicatorData.TestingStatus = IndicatorColor.GetTestingStatusLEDColor(buff[23]);//исключение на ноль
                 TestThyristorWindowShow(buff);
             }
             catch (Exception)
-            {
+            {                
                 MessageBox.Show("Невозможно отобразить тестовые данные." + "\n" + "Пришёл неверный статус.", "Ошибка!");
             }
         }
@@ -350,31 +343,34 @@ namespace TiristorModule
         {
             byte[] frame = new byte[31];
             byte[] frameout = new byte[32];
+            byte[] times = ConvertStringCollectionToByte(SettingsModelData.Times);
+            byte[] capacities = ConvertStringCollectionToByte(SettingsModelData.Capacities);
+
 
             frame[0] = slaveAddress;
-            frame[1] = AddressStartTiristorModuleCommand;//adressCommand
+            frame[1] = AddressStartTiristorModuleCommand;
             frame[2] = 28;//quantityofbyte
 
-            for (int i = 0; i < Times.Length; i++)
+            for (int i = 0; i < times.Length; i++)
             {
-                frame[i + 3] = Times[i];
+                frame[i + 3] = times[i];
             }
 
-            for (int i = 0; i < Times.Length; i++)
+            for (int i = 0; i < times.Length; i++)
             {
-                frame[i + 12] = Capacities[i];
+                frame[i + 12] = capacities[i];
             }
 
-            frame[21] = Convert.ToByte(CurrentKz1_1 >> 8);
-            frame[22] = Convert.ToByte(CurrentKz1_1 ^ 0x100);
-            frame[23] = VremiaKzMs1;
+            frame[21] = Convert.ToByte(SettingsModelData.CurrentKz1 >> 8);
+            frame[22] = Convert.ToByte(SettingsModelData.CurrentKz1 ^ 0x100);
+            frame[23] = SettingsModelData.VremiaKzMs1;
             frame[24] = 0;//kz_on_off_1
-            frame[25] = Convert.ToByte(CurrentKz2_1 >> 8);
-            frame[26] = Convert.ToByte(CurrentKz2_1 ^ 0x100);
-            frame[27] = VremiaKzMs2;
+            frame[25] = Convert.ToByte(SettingsModelData.CurrentKz2 >> 8);
+            frame[26] = Convert.ToByte(SettingsModelData.CurrentKz2 ^ 0x100);
+            frame[27] = SettingsModelData.VremiaKzMs2;
             frame[28] = 0;//kz_on_off_2
             frame[29] = AlarmTemperatureTiristor;
-            frame[30] = Convert.ToByte(Data.IsPlavniiPusk);//flag
+            frame[30] = Convert.ToByte(Data.IsPlavniiPusk);
 
             Array.Copy(frame, frameout, frame.Length);
             frameout[frameout.Length - 1] = CalculateCRC8(frame);
@@ -390,13 +386,13 @@ namespace TiristorModule
             frame[0] = slaveAddress;
             frame[1] = AddressTestTiristorModuleCommand;//adressCommand
             frame[2] = 7;//quantityofbyte
-            frame[3] = PersentTestPower;
-            frame[4] = Convert.ToByte(NominalTok1sk);
-            frame[5] = NumberOfTest;
-            frame[6] = Convert.ToByte(CurrentKz1_1 >> 8);
-            frame[7] = Convert.ToByte(CurrentKz1_1 ^ 0x100);
-            frame[8] = Convert.ToByte(CurrentKz2_1 >> 8);
-            frame[9] = Convert.ToByte(CurrentKz2_1 ^ 0x100);
+            frame[3] = SettingsModelData.PersentTestPower;
+            frame[4] = Convert.ToByte(SettingsModelData.NominalTok1sk);
+            frame[5] = SettingsModelData.NumberOfTest;
+            frame[6] = Convert.ToByte(SettingsModelData.CurrentKz1 >> 8);
+            frame[7] = Convert.ToByte(SettingsModelData.CurrentKz1 ^ 0x100);
+            frame[8] = Convert.ToByte(SettingsModelData.CurrentKz2 >> 8);
+            frame[9] = Convert.ToByte(SettingsModelData.CurrentKz2 ^ 0x100);
 
             Array.Copy(frame, frameout, frame.Length);
             frameout[frameout.Length - 1] = CalculateCRC8(frame);
@@ -416,16 +412,18 @@ namespace TiristorModule
             else throw new ArgumentException("Нарушена целостность пакета.");
         }
 
-        public static ushort[] ReadHoldingResponcesFromBuffer(byte commandNumber, int requestType)
+        private static ushort[] ReadHoldingResponcesFromBuffer(byte commandNumber, int requestType)
         {
             ushort[] BuffResponce = null;
+            byte SlaveAddress = byte.Parse(Settings.Default.AddressSlave, System.Globalization.NumberStyles.HexNumber);
             byte[] writebuffer;
+
             if (serialPort1.IsOpen)
             {
                 writebuffer = GetFrameDependentOnTypeOfRequest(requestType, commandNumber);
                 serialPort1.Write(writebuffer, 0, writebuffer.Length);
 
-                Thread.Sleep(RequestInterval);
+                Thread.Sleep(SettingsModelData.RequestInterval);
 
                 if (serialPort1.BytesToRead >= 20)
                 {
@@ -434,9 +432,12 @@ namespace TiristorModule
                     serialPort1.Read(bufferReceiver, 0, serialPort1.BytesToRead);
                     serialPort1.DiscardInBuffer();
 
-                    if (bufferReceiver[3] == 0x91 && bufferReceiver[0] == MasterAddress && bufferReceiver[1] == SlaveAddress)//уведомить пользователя о неверном адресе
+                    if (bufferReceiver[3] == 0x91 && bufferReceiver[0] == GetAddress(SettingsModelData.AddressMaster) && 
+                                                     bufferReceiver[1] == GetAddress(SettingsModelData.AddressSlave))//уведомить пользователя о неверном адресе
                         BuffResponce = ParseTestTirResponse(bufferReceiver);
-                    else if (bufferReceiver[3] == 0x90 && bufferReceiver[0] == MasterAddress && bufferReceiver[1] == SlaveAddress)
+
+                    else if (bufferReceiver[3] == 0x90 && bufferReceiver[0] == GetAddress(SettingsModelData.AddressMaster) && 
+                                                          bufferReceiver[1] == GetAddress(SettingsModelData.AddressSlave))
                         BuffResponce = ParseCurrentVoltageResponse(bufferReceiver);
                     if (BuffResponce == null) MessageBox.Show("Модуль тиристора отправил нулевой ответ.", "Ошибка!");
                 }
@@ -447,9 +448,10 @@ namespace TiristorModule
 
         private static byte[] GetFrameDependentOnTypeOfRequest(int requestType, byte commandNumber)
         {
-            if (requestType == standartRequest) return CreateStandartRequest(SlaveAddress, commandNumber);
-            else if (requestType == startRequest) return CreateStartTiristorModuleRequest(SlaveAddress);
-            else return CreateTestTiristorModuleRequest(SlaveAddress);
+            byte addressSlave = GetAddress(SettingsModelData.AddressSlave);
+            if (requestType == standartRequest) return CreateStandartRequest(addressSlave, commandNumber);
+            else if (requestType == startRequest) return CreateStartTiristorModuleRequest(addressSlave);
+            else return CreateTestTiristorModuleRequest(addressSlave);
         }
 
         private static void GetStatusFromCurrentVoltage(ushort statusCrash)//try loop and list

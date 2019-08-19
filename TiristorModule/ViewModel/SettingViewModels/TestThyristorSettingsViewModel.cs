@@ -24,7 +24,7 @@ namespace TiristorModule.ViewModel
 
         private void CancelTestTiristorButtonClick()
         {
-            Settings.Default.Reset();
+            Settings.Default.Reload();
             OnRequestClose(this, new EventArgs());
         }        
     }
