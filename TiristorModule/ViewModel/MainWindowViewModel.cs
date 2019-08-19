@@ -10,6 +10,9 @@ using System.Linq;
 using TiristorModule.Properties;
 using TiristorModule.Indicators;
 using TiristorModule.Model;
+using log4net.Config;
+using log4net;
+using TiristorModule.Logging;
 
 namespace TiristorModule
 {
@@ -27,19 +30,18 @@ namespace TiristorModule
         private const byte AddressCurrentVoltageCommand = 0x90;
         private const byte AddressTestTiristorModuleCommand = 0x91;
         private const byte AddressResetAvariaTiristorCommand = 0x92;
-        private const byte AddressAlarmStopCommand = 0x87;
+        private const byte AddressAlarmStopCommand = 0x99;
 
         private const byte AlarmTemperatureTiristor = 85;
 
         private static Dictionary<int, string> WorkingStatus = new Dictionary<int, string>(4);
-        private static Dictionary<int, string> LedIndicators = new Dictionary<int, string>(4);
-        public static Dictionary<int, bool?> LedIndicatorsList = new Dictionary<int, bool?>(6);
 
         private static int standartRequest = 0;
         private static int startRequest = 1;
         private static int testRequest = 2;
 
         private static bool IsCurrentVoltageRequestCyclical = true;
+
         #endregion
 
         #region Properties
@@ -95,6 +97,13 @@ namespace TiristorModule
             {
 
             };
+
+            Logger.InitLogger();
+            Logger.Log.Info("Привет православные!");            
+            Logger.Log.Error("Ошибочка вышла!");
+
+
+
         }
 
         ~MainWindowViewModel()
@@ -151,8 +160,8 @@ namespace TiristorModule
 
         private void TestTerristorModuleClick()
         {
-            ChooseRequestMode(AddressTestTiristorModuleCommand, testRequest);
             IsCurrentVoltageRequestCyclical = true;
+            ChooseRequestMode(AddressTestTiristorModuleCommand, testRequest);
         }
 
         private void ResetAvatiaTirristorClick()
@@ -216,7 +225,10 @@ namespace TiristorModule
         public static void ChooseRequestMode(byte AddressCommand, int RequestType)
         {
             if (Data.IsRequestSingle) StartSingleRequest(AddressCommand, RequestType);
-            else StartCycleRequest(AddressCommand, RequestType);
+            else
+            {            
+                StartCycleRequest(AddressCommand, RequestType);
+            }
         }
 
         public static void StartSingleRequest(byte AddressCommand, int RequestType)
@@ -265,14 +277,14 @@ namespace TiristorModule
 
         public static void OutputResponceData(byte AddressCommand, int RequestType)
         {
+            ushort[] buffer = ReadHoldingResponcesFromBuffer(AddressCommand, RequestType);
+
             if (AddressCommand == AddressTestTiristorModuleCommand)
-            {
-                ushort[] buffer = ReadHoldingResponcesFromBuffer(AddressCommand, RequestType);
+            {                
                 OutputDataFromArrayToTestModel(buffer, AddressCommand);
             }
             else
             {
-                ushort[] buffer = ReadHoldingResponcesFromBuffer(AddressCommand, RequestType);
                 OutputDataFromArrayToDataModel(buffer, AddressCommand);
             }
         }
@@ -282,7 +294,7 @@ namespace TiristorModule
             try
             {
                 IsCurrentVoltageRequestCyclical = false;
-                LedIndicatorData.TestingStatus = IndicatorColor.GetTestingStatusLEDColor(buff[23]);//исключение на ноль
+                LedIndicatorData.TestingStatus = IndicatorColor.GetTestingStatusLEDColor(buff[23]);
                 TestThyristorWindowShow(buff);
             }
             catch (Exception)
@@ -334,7 +346,7 @@ namespace TiristorModule
             frame[1] = commandNumber;
             frame[2] = 0x00;
             Array.Copy(frame, frameout, frame.Length);
-            frameout[3] = CalculateCRC8(frame);//0x6e
+            frameout[3] = CalculateCRC8(frame);
 
             return frameout;
         }
@@ -421,13 +433,13 @@ namespace TiristorModule
             if (serialPort1.IsOpen)
             {
                 writebuffer = GetFrameDependentOnTypeOfRequest(requestType, commandNumber);
+                Logger.Log.Info("Запрос " + BitConverter.ToString(writebuffer));
                 serialPort1.Write(writebuffer, 0, writebuffer.Length);
 
                 Thread.Sleep(SettingsModelData.RequestInterval);
 
                 if (serialPort1.BytesToRead >= 20)
                 {
-                    int i = serialPort1.BytesToRead;// для отладки
                     byte[] bufferReceiver = new byte[serialPort1.BytesToRead];
                     serialPort1.Read(bufferReceiver, 0, serialPort1.BytesToRead);
                     serialPort1.DiscardInBuffer();
@@ -441,7 +453,7 @@ namespace TiristorModule
                         BuffResponce = ParseCurrentVoltageResponse(bufferReceiver);
                     if (BuffResponce == null) MessageBox.Show("Модуль тиристора отправил нулевой ответ.", "Ошибка!");
                 }
-                else MessageBox.Show("Модуль тиристора ответа не дал.", "Ошибка!");//чекнуть при отладке           
+                else MessageBox.Show("Модуль тиристора ответа не дал.", "Ошибка!");          
             }
             return BuffResponce;
         }
@@ -458,6 +470,7 @@ namespace TiristorModule
         {
             switch (statusCrash)
             {
+
                 case 0:
                     LedIndicatorData.A1_kz = true;
                     LedIndicatorData.B1_kz = true;

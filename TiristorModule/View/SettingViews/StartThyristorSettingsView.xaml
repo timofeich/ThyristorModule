@@ -60,7 +60,7 @@
                         <Binding Source="{x:Static p:Settings.Default}" Path="Time[0]" Mode="TwoWay" 
                                  NotifyOnValidationError="True" UpdateSourceTrigger="PropertyChanged">
                             <Binding.ValidationRules>
-                                <local:TimeRule/>
+                                <local:TimeRule Min="0"/>
                                 <ExceptionValidationRule/>
                             </Binding.ValidationRules>
                         </Binding>
