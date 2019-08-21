@@ -99,11 +99,6 @@ namespace TiristorModule
             };
 
             Logger.InitLogger();
-            Logger.Log.Info("Привет православные!");            
-            Logger.Log.Error("Ошибочка вышла!");
-
-
-
         }
 
         ~MainWindowViewModel()
@@ -137,37 +132,31 @@ namespace TiristorModule
         private void StartTerristorModuleClick()
         {
             ChooseRequestMode(AddressStartTiristorModuleCommand, startRequest);
-            IsCurrentVoltageRequestCyclical = true;
         }
 
         private void StopTerristorModuleClick()
         {
             ChooseRequestMode(AddressStopTiristorModuleCommand, standartRequest);
-            IsCurrentVoltageRequestCyclical = true;
         }
 
         private void CurrentVoltageClick()
         {
             ChooseRequestMode(AddressCurrentVoltageCommand, standartRequest);
-            IsCurrentVoltageRequestCyclical = true;
         }
 
         private void AlarmStopClick()
         {
             ChooseRequestMode(AddressAlarmStopCommand, standartRequest);
-            IsCurrentVoltageRequestCyclical = true;
         }
 
         private void TestTerristorModuleClick()
         {
-            IsCurrentVoltageRequestCyclical = true;
             ChooseRequestMode(AddressTestTiristorModuleCommand, testRequest);
         }
 
         private void ResetAvatiaTirristorClick()
         {
             ChooseRequestMode(AddressResetAvariaTiristorCommand, standartRequest);
-            IsCurrentVoltageRequestCyclical = true;
         }
 
         private void SetRequestMode()
@@ -228,6 +217,7 @@ namespace TiristorModule
             else
             {            
                 StartCycleRequest(AddressCommand, RequestType);
+                IsCurrentVoltageRequestCyclical = true;
             }
         }
 
@@ -247,6 +237,7 @@ namespace TiristorModule
             }
             catch (Exception ex)
             {
+                Logger.Log.Error(ex.Message);
                 MessageBox.Show(ex.Message, "Ошибка!");
             }
         }
@@ -258,7 +249,7 @@ namespace TiristorModule
                 SerialPortSettings.OpenSerialPortConnection(serialPort1);
                 ThreadPool.QueueUserWorkItem(new WaitCallback((obj) =>
                 {
-                    while (IsCurrentVoltageRequestCyclical)
+                    while (IsCurrentVoltageRequestCyclical && !Data.IsRequestSingle)
                     {
                         if (AddressCommand == AddressCurrentVoltageCommand) OutputResponceData(AddressCommand, RequestType);
                         else
@@ -271,6 +262,7 @@ namespace TiristorModule
             }
             catch (Exception ex)
             {
+                Logger.Log.Error(ex.Message);
                 MessageBox.Show(ex.Message, "Ошибка!");
             }
         }
@@ -298,7 +290,8 @@ namespace TiristorModule
                 TestThyristorWindowShow(buff);
             }
             catch (Exception)
-            {                
+            {
+                Logger.Log.Error("Невозможно отобразить тестовые данные." + "Пришёл неверный статус.");
                 MessageBox.Show("Невозможно отобразить тестовые данные." + "\n" + "Пришёл неверный статус.", "Ошибка!");
             }
         }
@@ -333,6 +326,7 @@ namespace TiristorModule
             catch 
             {
                 IsCurrentVoltageRequestCyclical = false;
+                Logger.Log.Error("Нет данных для вывода, отправка запросов остановлена.");
                 MessageBox.Show("Нет данных для вывода, отправка запросов остановлена.", "Ошибка!");
             }
         }
@@ -415,13 +409,23 @@ namespace TiristorModule
         private static ushort[] ParseTestTirResponse(byte[] data)
         {
             if (data[24] == CalculateCRC8(data)) return BytesManipulating.ConvertByteArrayIntoUshortArray(data);
-            else throw new ArgumentException("Нарушена целостность пакета.");
+            else
+            {
+                Logger.Log.Error("Нарушена целостность пакета.");
+                MessageBox.Show("Нарушена целостность пакета.");
+                return null;
+            }
         }
 
         private static ushort[] ParseCurrentVoltageResponse(byte[] data)
         {
             if (data[25] == CalculateCRC8(data)) return BytesManipulating.ConvertByteArrayIntoUshortArray(data);
-            else throw new ArgumentException("Нарушена целостность пакета.");
+            else
+            {
+                Logger.Log.Error("Нарушена целостность пакета.");
+                MessageBox.Show("Нарушена целостность пакета.");
+                return null;
+            }
         }
 
         private static ushort[] ReadHoldingResponcesFromBuffer(byte commandNumber, int requestType)
@@ -433,7 +437,7 @@ namespace TiristorModule
             if (serialPort1.IsOpen)
             {
                 writebuffer = GetFrameDependentOnTypeOfRequest(requestType, commandNumber);
-                Logger.Log.Info("Запрос " + BitConverter.ToString(writebuffer));
+                Logger.Log.Debug("Запрос " + BitConverter.ToString(writebuffer));
                 serialPort1.Write(writebuffer, 0, writebuffer.Length);
 
                 Thread.Sleep(SettingsModelData.RequestInterval);
@@ -443,17 +447,22 @@ namespace TiristorModule
                     byte[] bufferReceiver = new byte[serialPort1.BytesToRead];
                     serialPort1.Read(bufferReceiver, 0, serialPort1.BytesToRead);
                     serialPort1.DiscardInBuffer();
+                    Logger.Log.Debug("Ответ " + BitConverter.ToString(bufferReceiver));
 
-                    if (bufferReceiver[3] == 0x91 && bufferReceiver[0] == GetAddress(SettingsModelData.AddressMaster) && 
+                    if (bufferReceiver[3] == 0x91 && bufferReceiver[0] == GetAddress(SettingsModelData.AddressMaster) &&
                                                      bufferReceiver[1] == GetAddress(SettingsModelData.AddressSlave))//уведомить пользователя о неверном адресе
                         BuffResponce = ParseTestTirResponse(bufferReceiver);
 
-                    else if (bufferReceiver[3] == 0x90 && bufferReceiver[0] == GetAddress(SettingsModelData.AddressMaster) && 
+                    else if (bufferReceiver[3] == 0x90 && bufferReceiver[0] == GetAddress(SettingsModelData.AddressMaster) &&
                                                           bufferReceiver[1] == GetAddress(SettingsModelData.AddressSlave))
                         BuffResponce = ParseCurrentVoltageResponse(bufferReceiver);
                     if (BuffResponce == null) MessageBox.Show("Модуль тиристора отправил нулевой ответ.", "Ошибка!");
                 }
-                else MessageBox.Show("Модуль тиристора ответа не дал.", "Ошибка!");          
+                else
+                {
+                    Logger.Log.Debug("Ответ отсутствует ");
+                    MessageBox.Show("Модуль тиристора ответа не дал.", "Ошибка!");
+                }
             }
             return BuffResponce;
         }
