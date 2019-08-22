@@ -417,7 +417,7 @@ namespace TiristorModule
             }
         }
 
-        private static ushort[] ParseCurrentVoltageResponse(byte[] data)
+        private static ushort[] ParseCurrentVoltageResponse(byte[] data)//нет обработки byte * 256 + byte
         {
             if (data[25] == CalculateCRC8(data)) return BytesManipulating.ConvertByteArrayIntoUshortArray(data);
             else
@@ -447,7 +447,7 @@ namespace TiristorModule
                     byte[] bufferReceiver = new byte[serialPort1.BytesToRead];
                     serialPort1.Read(bufferReceiver, 0, serialPort1.BytesToRead);
                     serialPort1.DiscardInBuffer();
-                    Logger.Log.Debug("Ответ " + BitConverter.ToString(bufferReceiver));
+                    Logger.Log.Debug("Ответ " + BitConverter.ToString(bufferReceiver));//не правильный вывод будет ччекнуть
 
                     if (bufferReceiver[3] == 0x91 && bufferReceiver[0] == GetAddress(SettingsModelData.AddressMaster) &&
                                                      bufferReceiver[1] == GetAddress(SettingsModelData.AddressSlave))//уведомить пользователя о неверном адресе
