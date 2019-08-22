@@ -273,15 +273,15 @@ namespace TiristorModule
 
             if (AddressCommand == AddressTestTiristorModuleCommand)
             {                
-                OutputDataFromArrayToTestModel(buffer, AddressCommand);
+                OutputDataFromArrayToTestModel(buffer);
             }
             else
             {
-                OutputDataFromArrayToDataModel(buffer, AddressCommand);
+                OutputDataFromArrayToDataModel(buffer);
             }
         }
 
-        private static void OutputDataFromArrayToTestModel(ushort[] buff, byte AddressCommand)//wich status will open thyristor module
+        private static void OutputDataFromArrayToTestModel(ushort[] buff)//wich status will open thyristor module
         {
             try
             {
@@ -296,10 +296,10 @@ namespace TiristorModule
             }
         }
 
-        private static void OutputDataFromArrayToDataModel(ushort[] buff, byte AddressCommand)//wich status will open thyristor module
+        private static void OutputDataFromArrayToDataModel(ushort[] buff)//wich status will open thyristor module
         {
             try
-            {
+            {                
                 Data.VoltageA = buff[4];
                 Data.VoltageB = buff[5];
                 Data.VoltageC = buff[6];
@@ -322,6 +322,8 @@ namespace TiristorModule
                     LedIndicatorData.StopStatus = IndicatorColor.GetTestingStatusLEDColor(1);
                 }
                 GetStatusFromCurrentVoltage(buff[15]);
+                Logger.Log.Info(buff);
+
             }
             catch 
             {
@@ -417,9 +419,27 @@ namespace TiristorModule
             }
         }
 
-        private static ushort[] ParseCurrentVoltageResponse(byte[] data)//нет обработки byte * 256 + byte
-        {
-            if (data[25] == CalculateCRC8(data)) return BytesManipulating.ConvertByteArrayIntoUshortArray(data);
+        private static ushort[] ParseCurrentVoltageResponse(byte[] data)
+        {            
+            if (data[25] == CalculateCRC8(data))
+            {
+                ushort[] frame = new ushort[16];
+                int j = 4;
+
+                for (int i = 0; i <= frame.Length; i++)
+                {
+                    if (i < 4 && i >= 13)
+                    {
+                        frame[i] = data[i];
+                    }
+                    else 
+                    {
+                        frame[i] = BytesManipulating.FromBytes(data[j + 1], data[j]);
+                        j += 2;
+                    }
+                }
+                return frame;
+            } 
             else
             {
                 Logger.Log.Error("Нарушена целостность пакета.");
@@ -447,7 +467,7 @@ namespace TiristorModule
                     byte[] bufferReceiver = new byte[serialPort1.BytesToRead];
                     serialPort1.Read(bufferReceiver, 0, serialPort1.BytesToRead);
                     serialPort1.DiscardInBuffer();
-                    Logger.Log.Debug("Ответ " + BitConverter.ToString(bufferReceiver));//не правильный вывод будет ччекнуть
+                    Logger.Log.Debug("Ответ " + BitConverter.ToString(bufferReceiver));
 
                     if (bufferReceiver[3] == 0x91 && bufferReceiver[0] == GetAddress(SettingsModelData.AddressMaster) &&
                                                      bufferReceiver[1] == GetAddress(SettingsModelData.AddressSlave))//уведомить пользователя о неверном адресе
