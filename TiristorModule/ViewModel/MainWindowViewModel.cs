@@ -11,6 +11,7 @@ using TiristorModule.Properties;
 using TiristorModule.Indicators;
 using TiristorModule.Model;
 using TiristorModule.Logging;
+using TiristorModule.Request;
 
 namespace TiristorModule
 {
@@ -24,11 +25,7 @@ namespace TiristorModule
 
         #region Fields
         private const byte AddressStartTiristorModuleCommand = 0x87;
-        private const byte AddressStopTiristorModuleCommand = 0x88;
-        private const byte AddressCurrentVoltageCommand = 0x90;
         private const byte AddressTestTiristorModuleCommand = 0x91;
-        private const byte AddressResetAvariaTiristorCommand = 0x92;
-        private const byte AddressAlarmStopCommand = 0x99;
 
         private const byte AlarmTemperatureTiristor = 85;
 
@@ -95,6 +92,11 @@ namespace TiristorModule
             {
 
             };
+
+            StandartRequest CurrentVoltage = new StandartRequest(Convert.ToByte(SettingsModelData.AddressSlave), 0x90, 0x00);
+            StandartRequest StopThyristorModule = new StandartRequest(Convert.ToByte(SettingsModelData.AddressSlave), 0x88, 0x00);
+            StandartRequest ResetThyristorCrash = new StandartRequest(Convert.ToByte(SettingsModelData.AddressSlave), 0x92, 0x00);
+            StandartRequest AlarmStop = new StandartRequest(Convert.ToByte(SettingsModelData.AddressSlave), 0x99, 0x00);
 
             Logger.InitLogger();
         }
