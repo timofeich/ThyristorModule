@@ -78,25 +78,16 @@ namespace TiristorModule
 
             InitializeWorkingStatusData();
 
-            Data = new DataModel
-            {
-                WorkingStatus = null
-            };
+            Data = new DataModel { WorkingStatus = null };
 
-            LedIndicatorData = new LedIndicatorModel
-            {
+            LedIndicatorData = new LedIndicatorModel { };
 
-            };
+            SettingsModelData = new SettingsModel { };
 
-            SettingsModelData = new SettingsModel
-            {
-
-            };
-
-            StandartRequest CurrentVoltage = new StandartRequest(Convert.ToByte(SettingsModelData.AddressSlave), 0x90, 0x00);
-            StandartRequest StopThyristorModule = new StandartRequest(Convert.ToByte(SettingsModelData.AddressSlave), 0x88, 0x00);
-            StandartRequest ResetThyristorCrash = new StandartRequest(Convert.ToByte(SettingsModelData.AddressSlave), 0x92, 0x00);
-            StandartRequest AlarmStop = new StandartRequest(Convert.ToByte(SettingsModelData.AddressSlave), 0x99, 0x00);
+            StandartRequest CurrentVoltage = new StandartRequest(0x90, 0x00);
+            StandartRequest StopThyristorModule = new StandartRequest(0x88, 0x00);
+            StandartRequest ResetThyristorCrash = new StandartRequest(0x92, 0x00);
+            StandartRequest AlarmStop = new StandartRequest(0x99, 0x00);
 
             Logger.InitLogger();
         }
