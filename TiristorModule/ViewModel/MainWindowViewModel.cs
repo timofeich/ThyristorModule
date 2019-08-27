@@ -10,8 +10,6 @@ using System.Linq;
 using TiristorModule.Properties;
 using TiristorModule.Indicators;
 using TiristorModule.Model;
-using log4net.Config;
-using log4net;
 using TiristorModule.Logging;
 
 namespace TiristorModule
@@ -299,7 +297,7 @@ namespace TiristorModule
         private static void OutputDataFromArrayToDataModel(ushort[] buff)//wich status will open thyristor module
         {
             try
-            {                
+            {
                 Data.VoltageA = buff[4];
                 Data.VoltageB = buff[5];
                 Data.VoltageC = buff[6];
@@ -321,9 +319,10 @@ namespace TiristorModule
                     LedIndicatorData.StartStatus = IndicatorColor.GetTestingStatusLEDColor(0);
                     LedIndicatorData.StopStatus = IndicatorColor.GetTestingStatusLEDColor(1);
                 }
-                GetStatusFromCurrentVoltage(buff[15]);
-                Logger.Log.Info(buff);
 
+                GetStatusFromCurrentVoltage(buff[15]);
+
+                Logger.Log.Info(buff.Skip(4).Take(buff.Length - 2).ToArray());
             }
             catch 
             {
@@ -490,6 +489,7 @@ namespace TiristorModule
         private static byte[] GetFrameDependentOnTypeOfRequest(int requestType, byte commandNumber)
         {
             byte addressSlave = GetAddress(SettingsModelData.AddressSlave);
+
             if (requestType == standartRequest) return CreateStandartRequest(addressSlave, commandNumber);
             else if (requestType == startRequest) return CreateStartTiristorModuleRequest(addressSlave);
             else return CreateTestTiristorModuleRequest(addressSlave);
