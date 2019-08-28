@@ -82,6 +82,11 @@
     <Compile Include="Model\LedIndicatorModel.cs" />
     <Compile Include="Model\SettingsModel.cs" />
     <Compile Include="Model\TestThyristorModel.cs" />
+    <Compile Include="Request\StandartRequest.cs" />
+    <Compile Include="Request\StartRequest.cs" />
+    <Compile Include="Request\TestRequest.cs" />
+    <Compile Include="Response\CurrentVoltageResponse.cs" />
+    <Compile Include="Response\TestThyristorModuleResponse.cs" />
     <Compile Include="Validation\AddressRule.cs" />
     <Compile Include="Validation\CapacityRule.cs" />
     <Compile Include="Validation\KZApmerageRule.cs" />
@@ -167,9 +172,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Request\" />
-    <Folder Include="Response\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

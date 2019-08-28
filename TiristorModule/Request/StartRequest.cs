@@ -23,16 +23,13 @@ namespace TiristorModule.Request
             get { return CalculateCRC8(); }
         }
 
-        private StartRequest()
-        {
-            SettingsModelData = new SettingsModel { };
-            Data = new DataModel { };
-        }
-
         public StartRequest(byte CommandNumber, byte TotalBytes)
         {
             this.CommandNumber = CommandNumber;
             this.TotalBytes = TotalBytes;
+
+            SettingsModelData = new SettingsModel { };
+            Data = new DataModel { };
         }
 
         public byte[] GetRequestPackage()
