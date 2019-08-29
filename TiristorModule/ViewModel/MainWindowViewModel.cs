@@ -34,6 +34,8 @@ namespace TiristorModule
         CurrentVoltageResponse CurrentVoltageResponse = new CurrentVoltageResponse();
         TestThyristorModuleResponse TestThyristorModuleResponse = new TestThyristorModuleResponse();
 
+        private static Dictionary<int, string> WorkingStatus = new Dictionary<int, string>(4);
+
         #region Properties
         public static DataModel Data { get; set; }
         public static LedIndicatorModel LedIndicatorData { get; set; }
@@ -70,8 +72,11 @@ namespace TiristorModule
             TestTiristorSettingsCommand = new Command(arg => TestTiristorSettingsClick());
 
             Data = new DataModel { WorkingStatus = null };
+            LedIndicatorData = new LedIndicatorModel { };
 
             SettingsModelData = new SettingsModel { };
+
+            InitializeWorkingStatusData();
 
             Logger.InitLogger();
         }
@@ -199,27 +204,36 @@ namespace TiristorModule
         {
             //if (serialPort1.BytesToRead > 20)
             //{
-                //byte[] response = new byte[serialPort1.BytesToRead];
-                byte[] response = {0xFF, 0x67, 21, 0x91, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0x08};
-                //byte[] response = { };
-                //serialPort1.Read(response, 0, serialPort1.BytesToRead);
-                //serialPort1.DiscardInBuffer();
+            //byte[] response = new byte[serialPort1.BytesToRead];
 
-                //Logger.Log.Debug("Ответ " + BitConverter.ToString(response));
+            //byte[] response =   { 0xFF, 0x67, 21, 0x91, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 16, 1, 0xa3};
+            byte[] response = { 0xFF, 0x67, 21, 0x91, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0xa0 };
 
-                if (response.Length == TestThyristorModuleResponse.TestThyristorModuleResponseLength)
-                {
-                    TestThyristorModuleResponse = new TestThyristorModuleResponse(response);
-                    OutputDataFromArrayToTestModel(TestThyristorModuleResponse.ParseTestThyristorModuleResponse());
-                }
-                else if (response.Length == CurrentVoltageResponse.CurrentVoltageResponseLength)
-                {
-                    CurrentVoltageResponse = new CurrentVoltageResponse(response);
-                }
-                else
-                {
-                    MessageBox.Show("Модуль тиристора дал неполный ответ", "Ошибка!");
-                }
+
+            //byte[] response = { };
+            //serialPort1.Read(response, 0, serialPort1.BytesToRead);
+            //serialPort1.DiscardInBuffer();
+
+            //Logger.Log.Debug("Ответ " + BitConverter.ToString(response));
+
+            if (response.Length == TestThyristorModuleResponse.TestThyristorModuleResponseLength)
+            {
+                //TestThyristorModuleResponse = new TestThyristorModuleResponse(response);
+                //ushort[] buff = TestThyristorModuleResponse.ParseTestThyristorModuleResponse();
+                ushort[] response1 = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+                TestThyristorWindowShow(response1);
+            }
+            else if (response.Length == CurrentVoltageResponse.CurrentVoltageResponseLength)
+            {
+                CurrentVoltageResponse = new CurrentVoltageResponse(response);
+
+
+                OutputDataFromArrayToDataModel(CurrentVoltageResponse.ParseCurrentVoltageResponse());
+            }
+            else
+            {
+                MessageBox.Show("Модуль тиристора дал неполный ответ", "Ошибка!");
+            }
             //}
             //else
             //{
@@ -227,6 +241,140 @@ namespace TiristorModule
             //}
         }
 
+        private static void InitializeWorkingStatusData()
+        {
+            WorkingStatus.Add(0, "Crach_ostanov");
+            WorkingStatus.Add(1, "Tormoz");
+            WorkingStatus.Add(2, "Baipass");
+            WorkingStatus.Add(3, "Razgon");
+            WorkingStatus.Add(4, "Дежурный режим");
+        }
+
+        private static void OutputDataFromArrayToDataModel(ushort[] buff)//wich status will open thyristor module
+        {
+            try
+            {
+                Data.VoltageA = buff[4];
+                Data.VoltageB = buff[5];
+                Data.VoltageC = buff[6];
+                Data.AmperageA1 = buff[7];
+                Data.AmperageB1 = buff[8];
+                Data.AmperageC1 = buff[9];
+                Data.AmperageA2 = buff[10];
+                Data.AmperageB2 = buff[11];
+                Data.AmperageC2 = buff[12];
+                Data.TemperatureOfTiristor = buff[13];
+                Data.WorkingStatus = GetWorkingStatus(buff[14]);
+                if (buff[14] == 128 || buff[14] == 1)
+                {
+                   
+                    LedIndicatorData.StartStatus = IndicatorColor.GetTestingStatusLEDColor(1);//здесь искать
+                    LedIndicatorData.StopStatus = IndicatorColor.GetTestingStatusLEDColor(0);
+                }
+                else
+                {
+                    LedIndicatorData.StartStatus = IndicatorColor.GetTestingStatusLEDColor(0);
+                    LedIndicatorData.StopStatus = IndicatorColor.GetTestingStatusLEDColor(1);
+                }
+
+                GetStatusFromCurrentVoltage(buff[15]);
+
+                Logger.Log.Info(buff.Skip(4).Take(buff.Length - 2).ToArray());
+            }
+            catch(Exception ex)
+            {
+                Logger.Log.Error("Нет данных для вывода, отправка запросов остановлена.");
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private static string GetWorkingStatus(ushort statusByte)
+        {
+            if (statusByte % 16 == 0 && statusByte != 0)
+            {
+                int i = Convert.ToInt32(Math.Sqrt(Convert.ToDouble(statusByte)) - 4);
+                return WorkingStatus[i];
+            }
+            else return WorkingStatus[4];
+        }
+
+        private static void GetStatusFromCurrentVoltage(ushort statusCrash)//try loop and list
+        {
+            switch (statusCrash)
+            {
+                case 0:
+                    LedIndicatorData.A1_kz = true;
+                    LedIndicatorData.B1_kz = true;
+                    LedIndicatorData.C1_kz = true;
+                    LedIndicatorData.A2_kz = true;
+                    LedIndicatorData.B2_kz = true;
+                    LedIndicatorData.C2_kz = true;
+                    break;
+
+                case 1:
+                    LedIndicatorData.A1_kz = false;
+                    LedIndicatorData.B1_kz = true;
+                    LedIndicatorData.C1_kz = true;
+                    LedIndicatorData.A2_kz = true;
+                    LedIndicatorData.B2_kz = true;
+                    LedIndicatorData.C2_kz = true;
+                    break;
+
+                case 2:
+                    LedIndicatorData.A1_kz = true;
+                    LedIndicatorData.B1_kz = false;
+                    LedIndicatorData.C1_kz = true;
+                    LedIndicatorData.A2_kz = true;
+                    LedIndicatorData.B2_kz = true;
+                    LedIndicatorData.C2_kz = true;
+                    break;
+
+                case 4:
+                    LedIndicatorData.A1_kz = true;
+                    LedIndicatorData.B1_kz = true;
+                    LedIndicatorData.C1_kz = false;
+                    LedIndicatorData.A2_kz = true;
+                    LedIndicatorData.B2_kz = true;
+                    LedIndicatorData.C2_kz = true;
+                    break;
+
+                case 8:
+                    LedIndicatorData.A1_kz = true;
+                    LedIndicatorData.B1_kz = true;
+                    LedIndicatorData.C1_kz = true;
+                    LedIndicatorData.A2_kz = false;
+                    LedIndicatorData.B2_kz = true;
+                    LedIndicatorData.C2_kz = true;
+                    break;
+
+                case 16:
+                    LedIndicatorData.A1_kz = true;
+                    LedIndicatorData.B1_kz = true;
+                    LedIndicatorData.C1_kz = true;
+                    LedIndicatorData.A2_kz = true;
+                    LedIndicatorData.B2_kz = false;
+                    LedIndicatorData.C2_kz = true;
+                    break;
+
+                case 32:
+                    LedIndicatorData.A1_kz = true;
+                    LedIndicatorData.B1_kz = true;
+                    LedIndicatorData.C1_kz = true;
+                    LedIndicatorData.A2_kz = true;
+                    LedIndicatorData.B2_kz = true;
+                    LedIndicatorData.C2_kz = false;
+                    break;
+
+                case 64:
+                    LedIndicatorData.A1_kz = false;
+                    LedIndicatorData.B1_kz = false;
+                    LedIndicatorData.C1_kz = false;
+                    LedIndicatorData.A2_kz = false;
+                    LedIndicatorData.B2_kz = false;
+                    LedIndicatorData.C2_kz = false;
+                    break;
+            }
+        }
 
         public void OutputDataFromArrayToTestModel(ushort[] buff)//wich status will open thyristor module
         {

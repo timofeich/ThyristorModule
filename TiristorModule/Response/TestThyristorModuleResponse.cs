@@ -16,7 +16,6 @@ namespace TiristorModule.Response
     {
         public int TestThyristorModuleResponseLength = 25;
         byte[] Response;
-        private static LedIndicatorModel LedIndicatorData { get; set; }
 
         private byte CRC8
         {
@@ -25,7 +24,7 @@ namespace TiristorModule.Response
 
         public TestThyristorModuleResponse()
         {
-            LedIndicatorData = new LedIndicatorModel { };
+
         }
 
         public TestThyristorModuleResponse(byte[] Response)
@@ -68,7 +67,6 @@ namespace TiristorModule.Response
                     crc = (crc & 0x80) != 0 ? (byte)((crc << 1) ^ 0x31) : (byte)(crc << 1);
                 }
             }
-
             return crc;
         }
 
