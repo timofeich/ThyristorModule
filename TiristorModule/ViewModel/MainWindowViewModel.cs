@@ -409,7 +409,9 @@ namespace TiristorModule
 
         private static ushort[] ParseTestTirResponse(byte[] data)
         {
-            if (data[24] == CalculateCRC8(data)) return BytesManipulating.ConvertByteArrayIntoUshortArray(data);
+            byte[] dataForCRC = data.Take(data.Count() - 1).ToArray();
+
+            if (data[24] == CalculateCRC8(dataForCRC)) return BytesManipulating.ConvertByteArrayIntoUshortArray(data);
             else
             {
                 Logger.Log.Error("Нарушена целостность пакета.");
@@ -419,22 +421,29 @@ namespace TiristorModule
         }
 
         private static ushort[] ParseCurrentVoltageResponse(byte[] data)
-        {            
-            if (data[25] == CalculateCRC8(data))
+        {          
+            byte[] dataForCRC = data.Take(data.Count() - 1).ToArray(); 
+
+            if (data[25] == CalculateCRC8(dataForCRC))
             {
                 ushort[] frame = new ushort[16];
                 int j = 4;
 
-                for (int i = 0; i <= frame.Length; i++)
+                for (int i = 0; i < frame.Length; i++)
                 {
-                    if (i < 4 && i >= 13)
+                    if (i < 4)
                     {
                         frame[i] = data[i];
                     }
-                    else 
+                    else if (i < 13)
                     {
                         frame[i] = BytesManipulating.FromBytes(data[j + 1], data[j]);
                         j += 2;
+                    }
+                    else
+                    {
+                        frame[i] = data[j];
+                        j++;
                     }
                 }
                 return frame;
