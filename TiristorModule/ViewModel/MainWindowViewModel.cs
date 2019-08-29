@@ -91,7 +91,6 @@ namespace TiristorModule
         private void StartTerristorModuleClick()
         {
             CommunicateWithThyristorModule(StartThyristorModule.GetRequestPackage());
-
         }
 
         private void StopTerristorModuleClick()
@@ -222,6 +221,7 @@ namespace TiristorModule
                 //TestThyristorModuleResponse = new TestThyristorModuleResponse(response);
                 //ushort[] buff = TestThyristorModuleResponse.ParseTestThyristorModuleResponse();
                 ushort[] response1 = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+                LedIndicatorData.TestingStatus = IndicatorColor.GetTestingStatusLEDColor(response1[23]);
                 TestThyristorWindowShow(response1);
             }
             else if (response.Length == CurrentVoltageResponse.CurrentVoltageResponseLength)

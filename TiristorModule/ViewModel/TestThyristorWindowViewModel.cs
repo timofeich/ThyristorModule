@@ -7,42 +7,37 @@ using TiristorModule.Model;
 
 namespace TiristorModule.ViewModel
 {
-    public class TestThyristorWindowViewModel:INotifyPropertyChanged
+    public class TestThyristorWindowViewModel
     {
-        private ObservableCollection<TestThyristorModel> testThyristorModels;
         public event EventHandler OnRequestClose;
-        public event PropertyChangedEventHandler PropertyChanged;
-        public static Dictionary<int, string> FazaName = new Dictionary<int, string>(3);
-
-        public ObservableCollection<TestThyristorModel> TestDatas
-        {
-            get { return testThyristorModels; }
-            set { testThyristorModels = value; OnPropertyChanged(); }
-        }
+        private static Dictionary<int, string> FazaName = new Dictionary<int, string>(3);
+        public ObservableCollection<TestThyristorModel> TestThyristorModels { get; set; }
 
         public TestThyristorWindowViewModel(ushort[] buff)
         {
-            TestDatas = new ObservableCollection<TestThyristorModel>();
+            TestThyristorModels = new ObservableCollection<TestThyristorModel>();
+
             InitializeFazzNameData();
 
             for (int i = 4; i < 7; i++)
-            {
-                TestDatas.Add(new TestThyristorModel(FazaName[i - 4], buff[i], buff[i + 3], buff[i + 6], buff[i + 9],
-                    buff[i + 12], buff[i + 15], buff[23]));
-            }
+                TestThyristorModels.Add(new TestThyristorModel()
+                {
+                    FazaName = FazaName[i - 4],
+                    ApBn = buff[i],
+                    BpAn = buff[i + 3],
+                    CpAn = buff[i + 6],
+                    ApCn = buff[i + 9],
+                    BpCn = buff[i + 12],
+                    CpBn = buff[i + 15],
+                    OpredelenieFazz = buff[23]
+                });
         }
 
         private static void InitializeFazzNameData()
         {
-            FazaName.Add(0, "Фаза A:");
-            FazaName.Add(1, "Фаза B:");
-            FazaName.Add(2, "Фаза C:");
-        }
-
-        protected void OnPropertyChanged([CallerMemberName]string propertyName = "")
-        {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            FazaName.Add(0, "Фаза A");
+            FazaName.Add(1, "Фаза B");
+            FazaName.Add(2, "Фаза C");
         }
     }
 }

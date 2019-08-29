@@ -75,7 +75,5 @@ namespace TiristorModule.Response
             if (Response[Response.Length - 1] == CRC8) return true;
             else return false;
         }
-
-
     }
 }
