@@ -91,6 +91,7 @@ namespace TiristorModule
         private void StartTerristorModuleClick()
         {
             CommunicateWithThyristorModule(StartThyristorModule.GetRequestPackage());
+
         }
 
         private void StopTerristorModuleClick()
@@ -226,8 +227,6 @@ namespace TiristorModule
             else if (response.Length == CurrentVoltageResponse.CurrentVoltageResponseLength)
             {
                 CurrentVoltageResponse = new CurrentVoltageResponse(response);
-
-
                 OutputDataFromArrayToDataModel(CurrentVoltageResponse.ParseCurrentVoltageResponse());
             }
             else
@@ -376,18 +375,20 @@ namespace TiristorModule
             }
         }
 
-        public void OutputDataFromArrayToTestModel(ushort[] buff)//wich status will open thyristor module
+        public ushort[] OutputDataFromArrayToTestModel(ushort[] buff)//wich status will open thyristor module
         {
             try
             {
                 LedIndicatorData.TestingStatus = IndicatorColor.GetTestingStatusLEDColor(buff[23]);
-                TestThyristorWindowShow(buff);
+                return buff;
+                //TestThyristorWindowShow(buff);
             }
             catch (Exception ex)
             {
                 //Logger.Log.Error("Невозможно отобразить тестовые данные." + "Пришёл неверный статус.");
                 //MessageBox.Show("Невозможно отобразить тестовые данные." + "\n" + "Пришёл неверный статус.", "Ошибка!");
                 MessageBox.Show(ex.Message);
+                return null;
             }
         }
     }
