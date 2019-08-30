@@ -4,7 +4,7 @@ using System.ComponentModel;
 
 namespace TiristorModule.Model
 {
-    class DataModel : INotifyPropertyChanged
+    public class DataModel : INotifyPropertyChanged
     {
         #region Implement INotyfyPropertyChanged members
         public event PropertyChangedEventHandler PropertyChanged;

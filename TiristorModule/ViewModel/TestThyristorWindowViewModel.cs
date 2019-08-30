@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows;
+using TiristorModule.Indicators;
 using TiristorModule.Model;
 
 namespace TiristorModule.ViewModel
@@ -11,7 +13,14 @@ namespace TiristorModule.ViewModel
     {
         public event EventHandler OnRequestClose;
         private static Dictionary<int, string> FazaName = new Dictionary<int, string>(3);
+        public LedIndicatorModel LedIndicatorData = new LedIndicatorModel();
+      
         public ObservableCollection<TestThyristorModel> TestThyristorModels { get; set; }
+
+        public TestThyristorWindowViewModel()
+        {
+
+        }
 
         public TestThyristorWindowViewModel(ushort[] buff)
         {
@@ -31,6 +40,8 @@ namespace TiristorModule.ViewModel
                     CpBn = buff[i + 15],
                     OpredelenieFazz = buff[23]
                 });
+
+             DeleteFazzNameData();
         }
 
         private static void InitializeFazzNameData()
@@ -38,6 +49,29 @@ namespace TiristorModule.ViewModel
             FazaName.Add(0, "Фаза A");
             FazaName.Add(1, "Фаза B");
             FazaName.Add(2, "Фаза C");
+        }
+
+        private static void DeleteFazzNameData()
+        {
+            FazaName.Remove(0);
+            FazaName.Remove(1);
+            FazaName.Remove(2);
+        }
+
+        public ushort[] OutputDataFromArrayToTestModel(ushort[] buff)//wich status will open thyristor module
+        {
+            try
+            {
+                LedIndicatorData.TestingStatus = IndicatorColor.GetTestingStatusLEDColor(buff[23]);
+                return buff;
+            }
+            catch (Exception ex)
+            {
+                //Logger.Log.Error("Невозможно отобразить тестовые данные." + "Пришёл неверный статус.");
+                //MessageBox.Show("Невозможно отобразить тестовые данные." + "\n" + "Пришёл неверный статус.", "Ошибка!");
+                MessageBox.Show(ex.Message);
+                return null;
+            }
         }
     }
 }

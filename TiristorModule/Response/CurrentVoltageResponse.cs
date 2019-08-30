@@ -25,13 +25,9 @@ namespace TiristorModule.Response
 
         }
 
-        public CurrentVoltageResponse(byte[] Response)
+        public ushort[] ParseCurrentVoltageResponse(byte[] Response)
         {
             this.Response = Response;
-        }
-
-        public ushort[] ParseCurrentVoltageResponse()
-        {
             if (IsCRC8Correct())
             {
                 ushort[] frame = new ushort[16];
@@ -55,7 +51,7 @@ namespace TiristorModule.Response
                     }
                 }
                 return frame;
-            }
+            }            
             else
             {
                 MessageBox.Show("Нарушена целостность пакета.");
@@ -93,8 +89,10 @@ namespace TiristorModule.Response
         {
             if (Response[Response.Length - 1] == CRC8) return true;
             else return false;
-        }
+        }        
 
+
+       
         
     }
 }

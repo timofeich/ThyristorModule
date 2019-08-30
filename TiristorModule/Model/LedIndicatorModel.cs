@@ -4,7 +4,7 @@ using System.Windows.Media;
 
 namespace TiristorModule.Model
 {
-    class LedIndicatorModel : INotifyPropertyChanged
+    public class LedIndicatorModel : INotifyPropertyChanged
     {
         public List<Color> ColorList { get; } = new List<Color>() { Colors.Red, Colors.Green, Colors.Gray };
         private bool? a1_kz;

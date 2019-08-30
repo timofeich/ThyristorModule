@@ -8,6 +8,7 @@ namespace TiristorModule.Veiw
         public MainWindowView()
         {           
             InitializeComponent();
+            DataContext = new MainWindowViewModel();
         }
     }
 }
