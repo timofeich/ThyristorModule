@@ -116,6 +116,7 @@ namespace TiristorModule
         {
             return byte.Parse(address, System.Globalization.NumberStyles.HexNumber);
         }
+
         #region ClickHandler
 
         private void StartTerristorModuleClick()
@@ -261,7 +262,7 @@ namespace TiristorModule
 
         public static void OutputResponceData(byte AddressCommand, int RequestType)
         {
-            ushort[] buffer = ReadHoldingResponcesFromBuffer(AddressCommand, RequestType);
+            ushort[] buffer = CommunicationWithTestThyrristor(AddressCommand, RequestType);
 
             if (AddressCommand == AddressTestTiristorModuleCommand)
             {                
@@ -450,10 +451,10 @@ namespace TiristorModule
             }
         }
 
-        private static ushort[] ReadHoldingResponcesFromBuffer(byte commandNumber, int requestType)
+        private static ushort[] CommunicationWithTestThyrristor(byte commandNumber, int requestType)
         {
             ushort[] BuffResponce = null;
-            byte SlaveAddress = byte.Parse(Settings.Default.AddressSlave, System.Globalization.NumberStyles.HexNumber);
+            byte SlaveAddress = GetAddress(Settings.Default.AddressSlave);
             byte[] testResponse = { 0xFF, 0x67, 21, 0x91, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0xa0 };
             byte[] currResponse = { 0xFF, 0x67, 21, 0x91, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 16, 1, 0xa3 };
             byte[] writebuffer;
@@ -505,79 +506,48 @@ namespace TiristorModule
         {
             switch (statusCrash)
             {
-
                 case 0:
-                    LedIndicatorData.A1_kz = true;
-                    LedIndicatorData.B1_kz = true;
-                    LedIndicatorData.C1_kz = true;
-                    LedIndicatorData.A2_kz = true;
-                    LedIndicatorData.B2_kz = true;
-                    LedIndicatorData.C2_kz = true;
+                    CurrentVoltageStatus(true, true, true, true, true, true);
                     break;
 
                 case 1:
-                    LedIndicatorData.A1_kz = false;
-                    LedIndicatorData.B1_kz = true;
-                    LedIndicatorData.C1_kz = true;
-                    LedIndicatorData.A2_kz = true;
-                    LedIndicatorData.B2_kz = true;
-                    LedIndicatorData.C2_kz = true;
+                    CurrentVoltageStatus(false, true, true, true, true, true);
                     break;
 
                 case 2:
-                    LedIndicatorData.A1_kz = true;
-                    LedIndicatorData.B1_kz = false;
-                    LedIndicatorData.C1_kz = true;
-                    LedIndicatorData.A2_kz = true;
-                    LedIndicatorData.B2_kz = true;
-                    LedIndicatorData.C2_kz = true;
+                    CurrentVoltageStatus(true, false, true, true, true, true);
                     break;
 
                 case 4:
-                    LedIndicatorData.A1_kz = true;
-                    LedIndicatorData.B1_kz = true;
-                    LedIndicatorData.C1_kz = false;
-                    LedIndicatorData.A2_kz = true;
-                    LedIndicatorData.B2_kz = true;
-                    LedIndicatorData.C2_kz = true;
+                    CurrentVoltageStatus(true, true, false, true, true, true);
                     break;
 
                 case 8:
-                    LedIndicatorData.A1_kz = true;
-                    LedIndicatorData.B1_kz = true;
-                    LedIndicatorData.C1_kz = true;
-                    LedIndicatorData.A2_kz = false;
-                    LedIndicatorData.B2_kz = true;
-                    LedIndicatorData.C2_kz = true;
+                    CurrentVoltageStatus(true, true, true, false, true, true);
                     break;
 
                 case 16:
-                    LedIndicatorData.A1_kz = true;
-                    LedIndicatorData.B1_kz = true;
-                    LedIndicatorData.C1_kz = true;
-                    LedIndicatorData.A2_kz = true;
-                    LedIndicatorData.B2_kz = false;
-                    LedIndicatorData.C2_kz = true;
+                    CurrentVoltageStatus(true, true, true, true, false, true);
                     break;
 
                 case 32:
-                    LedIndicatorData.A1_kz = true;
-                    LedIndicatorData.B1_kz = true;
-                    LedIndicatorData.C1_kz = true;
-                    LedIndicatorData.A2_kz = true;
-                    LedIndicatorData.B2_kz = true;
-                    LedIndicatorData.C2_kz = false;
+                    CurrentVoltageStatus(true, true, true, true, true, false);
                     break;
 
                 case 64:
-                    LedIndicatorData.A1_kz = false;
-                    LedIndicatorData.B1_kz = false;
-                    LedIndicatorData.C1_kz = false;
-                    LedIndicatorData.A2_kz = false;
-                    LedIndicatorData.B2_kz = false;
-                    LedIndicatorData.C2_kz = false;
+                    CurrentVoltageStatus(false, false, false, false, false, false);
                     break;
             }
+        }
+
+        private static void CurrentVoltageStatus(params bool?[] flags)
+        {
+            LedIndicatorData.A1_kz = flags[0];
+            LedIndicatorData.B1_kz = flags[1];
+            LedIndicatorData.C1_kz = flags[2];
+            LedIndicatorData.A2_kz = flags[3];
+            LedIndicatorData.B2_kz = flags[4];
+            LedIndicatorData.C2_kz = flags[5];
         }
 
         private static string GetWorkingStatus(ushort statusByte)
