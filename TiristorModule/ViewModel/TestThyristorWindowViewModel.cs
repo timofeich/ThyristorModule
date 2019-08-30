@@ -8,14 +8,17 @@ namespace TiristorModule.ViewModel
     public class TestThyristorWindowViewModel
     {
         public event EventHandler OnRequestClose;
-        public static Dictionary<int, string> FazaName = new Dictionary<int, string>(3);
+        public static Dictionary<int, string> FazaName = new Dictionary<int, string>(3)
+        {
+            [0] = "Фаза A",
+            [1] = "Фаза B",
+            [2] = "Фаза C"
+        };
         public ObservableCollection<TestThyristorModel> TestThyristorModels { get; set; }
 
         public TestThyristorWindowViewModel(ushort[] buff)
         {
             TestThyristorModels = new ObservableCollection<TestThyristorModel>();
-            
-            InitializeFazzNameData();
 
             for (int i = 4; i < 7; i++)
                 TestThyristorModels.Add(new TestThyristorModel()
@@ -29,13 +32,6 @@ namespace TiristorModule.ViewModel
                     CpBn = buff[i + 15],
                     OpredelenieFazz = buff[23]
                 });           
-        }
-
-        private static void InitializeFazzNameData()
-        {
-            FazaName.Add(0, "Фаза A");
-            FazaName.Add(1, "Фаза B");
-            FazaName.Add(2, "Фаза C");
         }
     }
 }

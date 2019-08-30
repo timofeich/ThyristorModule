@@ -81,20 +81,11 @@ namespace TiristorModule
 
             InitializeWorkingStatusData();
 
-            Data = new DataModel
-            {
-                WorkingStatus = null
-            };
+            Data = new DataModel { WorkingStatus = null };
 
-            LedIndicatorData = new LedIndicatorModel
-            {
+            LedIndicatorData = new LedIndicatorModel{ };
 
-            };
-
-            SettingsModelData = new SettingsModel
-            {
-
-            };
+            SettingsModelData = new SettingsModel { };
 
             Logger.InitLogger();
         }
@@ -164,13 +155,16 @@ namespace TiristorModule
 
         private static void TestThyristorWindowShow(ushort[] buff)
         {
-            var vm = new TestThyristorWindowViewModel(buff);
-            var connectSettingView = new TestThyristorWindowView
+            Application.Current.Dispatcher.Invoke(delegate
             {
-                DataContext = vm
-            };
-            vm.OnRequestClose += (s, e) => connectSettingView.Close();
-            connectSettingView.ShowDialog();
+                var vm = new TestThyristorWindowViewModel(buff);
+                var connectSettingView = new TestThyristorWindowView
+                {
+                    DataContext = vm
+                };
+                vm.OnRequestClose += (s, e) => connectSettingView.Close();
+                connectSettingView.ShowDialog();
+            });         
         }
 
         private void ConnectionSettingsClick()
@@ -283,14 +277,14 @@ namespace TiristorModule
         {
             try
             {
-                IsCurrentVoltageRequestCyclical = false;
                 LedIndicatorData.TestingStatus = IndicatorColor.GetTestingStatusLEDColor(buff[23]);
                 TestThyristorWindowShow(buff);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 Logger.Log.Error("Невозможно отобразить тестовые данные." + "Пришёл неверный статус.");
                 MessageBox.Show("Невозможно отобразить тестовые данные." + "\n" + "Пришёл неверный статус.", "Ошибка!");
+                MessageBox.Show(ex.Message);
             }
         }
 
@@ -460,10 +454,13 @@ namespace TiristorModule
         {
             ushort[] BuffResponce = null;
             byte SlaveAddress = byte.Parse(Settings.Default.AddressSlave, System.Globalization.NumberStyles.HexNumber);
+            byte[] testResponse = { 0xFF, 0x67, 21, 0x91, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0xa0 };
+            byte[] currResponse = { 0xFF, 0x67, 21, 0x91, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 16, 1, 0xa3 };
             byte[] writebuffer;
 
             if (serialPort1.IsOpen)
             {
+
                 writebuffer = GetFrameDependentOnTypeOfRequest(requestType, commandNumber);
                 Logger.Log.Debug("Запрос " + BitConverter.ToString(writebuffer));
                 serialPort1.Write(writebuffer, 0, writebuffer.Length);
@@ -478,7 +475,7 @@ namespace TiristorModule
                     Logger.Log.Debug("Ответ " + BitConverter.ToString(bufferReceiver));
 
                     if (bufferReceiver[3] == 0x91 && bufferReceiver[0] == GetAddress(SettingsModelData.AddressMaster) &&
-                                                     bufferReceiver[1] == GetAddress(SettingsModelData.AddressSlave))//уведомить пользователя о неверном адресе
+                                                     bufferReceiver[1] == GetAddress(SettingsModelData.AddressSlave))
                         BuffResponce = ParseTestTirResponse(bufferReceiver);
 
                     else if (bufferReceiver[3] == 0x90 && bufferReceiver[0] == GetAddress(SettingsModelData.AddressMaster) &&
