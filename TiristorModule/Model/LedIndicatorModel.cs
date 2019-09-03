@@ -13,6 +13,7 @@ namespace TiristorModule.Model
         private bool? a2_kz;
         private bool? b2_kz;
         private bool? c2_kz;
+        private bool? referenceVoltage;
 
         private bool? testingStatus;
         private bool? startStatus;
@@ -81,6 +82,16 @@ namespace TiristorModule.Model
             {
                 c2_kz = value;
                 this.OnPropertyChanged("C2_kz");
+            }
+        }
+
+        public bool? ReferenceVoltage
+        {
+            get { return referenceVoltage; }
+            set
+            {
+                referenceVoltage = value;
+                this.OnPropertyChanged("ReferenceVoltage");
             }
         }
 

@@ -265,8 +265,9 @@ namespace TiristorModule
             ushort[] buffer = CommunicationWithTestThyrristor(AddressCommand, RequestType);
 
             if (AddressCommand == AddressTestTiristorModuleCommand)
-            {                
-                OutputDataFromArrayToTestModel(buffer);
+            {
+                //OutputDataFromArrayToTestModel(buffer);
+                OutputDataFromArrayToDataModel(buffer);
             }
             else
             {
@@ -302,9 +303,8 @@ namespace TiristorModule
                 Data.AmperageA2 = buff[10];
                 Data.AmperageB2 = buff[11];
                 Data.AmperageC2 = buff[12];
-                Data.TemperatureOfTiristor = buff[13];
-                Data.WorkingStatus = GetWorkingStatus(buff[14]);
-                if (buff[14] == 128 || buff[14] == 1)
+                Data.WorkingStatus = GetWorkingStatus(buff[13]);
+                if (buff[13] == 128 || buff[13] == 1)
                 {
                     LedIndicatorData.StartStatus = IndicatorColor.GetTestingStatusLEDColor(1);
                     LedIndicatorData.StopStatus = IndicatorColor.GetTestingStatusLEDColor(0);
@@ -315,8 +315,7 @@ namespace TiristorModule
                     LedIndicatorData.StopStatus = IndicatorColor.GetTestingStatusLEDColor(1);
                 }
 
-                GetStatusFromCurrentVoltage(buff[15]);
-
+                GetStatusFromCurrentVoltage(buff[14]);
                 Logger.Log.Info(buff.Skip(4).Take(buff.Length - 2).ToArray());
             }
             catch 
@@ -406,7 +405,7 @@ namespace TiristorModule
         {
             byte[] dataForCRC = data.Take(data.Count() - 1).ToArray();
 
-            if (data[24] == CalculateCRC8(dataForCRC)) return BytesManipulating.ConvertByteArrayIntoUshortArray(data);
+            if (data.Last() == CalculateCRC8(dataForCRC)) return BytesManipulating.ConvertByteArrayIntoUshortArray(data);
             else
             {
                 Logger.Log.Error("Нарушена целостность пакета.");
@@ -419,7 +418,7 @@ namespace TiristorModule
         {          
             byte[] dataForCRC = data.Take(data.Count() - 1).ToArray(); 
 
-            if (data[25] == CalculateCRC8(dataForCRC))
+            if (data.Last() == CalculateCRC8(dataForCRC))
             {
                 ushort[] frame = new ushort[16];
                 int j = 4;
@@ -500,7 +499,7 @@ namespace TiristorModule
             else return CreateTestTiristorModuleRequest(addressSlave);
         }
 
-        private void GetStatusFromCurrentVoltage(ushort statusCrash)//try loop and list
+        private void GetStatusFromCurrentVoltage(ushort statusCrash)//try loop and list переделать
         {
             switch (statusCrash)
             {
