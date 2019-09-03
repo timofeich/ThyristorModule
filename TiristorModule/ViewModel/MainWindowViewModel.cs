@@ -34,9 +34,9 @@ namespace TiristorModule
 
         private static Dictionary<int, string> WorkingStatus = new Dictionary<int, string>(4);
 
-        private static int standartRequest = 0;
-        private static int startRequest = 1;
-        private static int testRequest = 2;
+        private const int standartRequest = 0;
+        private const int startRequest = 1;
+        private const int testRequest = 2;
 
         private static bool IsCurrentVoltageRequestCyclical = true;
 
@@ -204,7 +204,7 @@ namespace TiristorModule
 
         #region Methods
 
-        public static void ChooseRequestMode(byte AddressCommand, int RequestType)
+        private void ChooseRequestMode(byte AddressCommand, int RequestType)
         {
             if (Data.IsRequestSingle) StartSingleRequest(AddressCommand, RequestType);
             else
@@ -214,7 +214,7 @@ namespace TiristorModule
             }
         }
 
-        public static void StartSingleRequest(byte AddressCommand, int RequestType)
+        private void StartSingleRequest(byte AddressCommand, int RequestType)
         {
             try
             {
@@ -235,7 +235,7 @@ namespace TiristorModule
             }
         }
 
-        public static void StartCycleRequest(byte AddressCommand, int RequestType)
+        private void StartCycleRequest(byte AddressCommand, int RequestType)
         {
             try
             {
@@ -260,7 +260,7 @@ namespace TiristorModule
             }
         }
 
-        public static void OutputResponceData(byte AddressCommand, int RequestType)
+        private void OutputResponceData(byte AddressCommand, int RequestType)
         {
             ushort[] buffer = CommunicationWithTestThyrristor(AddressCommand, RequestType);
 
@@ -274,7 +274,7 @@ namespace TiristorModule
             }
         }
 
-        private static void OutputDataFromArrayToTestModel(ushort[] buff)//wich status will open thyristor module
+        private void OutputDataFromArrayToTestModel(ushort[] buff)//wich status will open thyristor module
         {
             try
             {
@@ -289,7 +289,7 @@ namespace TiristorModule
             }
         }
 
-        private static void OutputDataFromArrayToDataModel(ushort[] buff)//wich status will open thyristor module
+        private void OutputDataFromArrayToDataModel(ushort[] buff)//wich status will open thyristor module
         {
             try
             {
@@ -328,7 +328,7 @@ namespace TiristorModule
         }
 
         //standart request - zapros_cur_voltage, stop_Tiristor_module, reset_avaria_tir, avarinii_stop
-        private static byte[] CreateStandartRequest(byte slaveAddress, byte commandNumber)
+        private byte[] CreateStandartRequest(byte slaveAddress, byte commandNumber)
         {
             byte[] frame = new byte[3];
             byte[] frameout = new byte[4];
@@ -341,7 +341,7 @@ namespace TiristorModule
             return frameout;
         }
 
-        private static byte[] CreateStartTiristorModuleRequest(byte slaveAddress)
+        private byte[] CreateStartTiristorModuleRequest(byte slaveAddress)
         {
             byte[] frame = new byte[31];
             byte[] frameout = new byte[32];
@@ -380,7 +380,7 @@ namespace TiristorModule
             return frameout;
         }
 
-        private static byte[] CreateTestTiristorModuleRequest(byte slaveAddress)
+        private byte[] CreateTestTiristorModuleRequest(byte slaveAddress)
         {
             byte[] frame = new byte[10];
             byte[] frameout = new byte[11];
@@ -402,7 +402,7 @@ namespace TiristorModule
             return frameout;
         }
 
-        private static ushort[] ParseTestTirResponse(byte[] data)
+        private ushort[] ParseTestTirResponse(byte[] data)
         {
             byte[] dataForCRC = data.Take(data.Count() - 1).ToArray();
 
@@ -415,7 +415,7 @@ namespace TiristorModule
             }
         }
 
-        private static ushort[] ParseCurrentVoltageResponse(byte[] data)
+        private ushort[] ParseCurrentVoltageResponse(byte[] data)
         {          
             byte[] dataForCRC = data.Take(data.Count() - 1).ToArray(); 
 
@@ -451,12 +451,10 @@ namespace TiristorModule
             }
         }
 
-        private static ushort[] CommunicationWithTestThyrristor(byte commandNumber, int requestType)
+        private ushort[] CommunicationWithTestThyrristor(byte commandNumber, int requestType)
         {
             ushort[] BuffResponce = null;
             byte SlaveAddress = GetAddress(Settings.Default.AddressSlave);
-            byte[] testResponse = { 0xFF, 0x67, 21, 0x91, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0xa0 };
-            byte[] currResponse = { 0xFF, 0x67, 21, 0x91, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 16, 1, 0xa3 };
             byte[] writebuffer;
 
             if (serialPort1.IsOpen)
@@ -493,7 +491,7 @@ namespace TiristorModule
             return BuffResponce;
         }
 
-        private static byte[] GetFrameDependentOnTypeOfRequest(int requestType, byte commandNumber)
+        private byte[] GetFrameDependentOnTypeOfRequest(int requestType, byte commandNumber)
         {
             byte addressSlave = GetAddress(SettingsModelData.AddressSlave);
 
@@ -502,55 +500,55 @@ namespace TiristorModule
             else return CreateTestTiristorModuleRequest(addressSlave);
         }
 
-        private static void GetStatusFromCurrentVoltage(ushort statusCrash)//try loop and list
+        private void GetStatusFromCurrentVoltage(ushort statusCrash)//try loop and list
         {
             switch (statusCrash)
             {
                 case 0:
-                    CurrentVoltageStatus(true, true, true, true, true, true);
+                    CurrentVoltageStatus(a1_kz: true, b1_kz: true, c1_kz: true, a2_kz: true, b2_kz: true, c2_kz: true);
                     break;
 
                 case 1:
-                    CurrentVoltageStatus(false, true, true, true, true, true);
+                    CurrentVoltageStatus(a1_kz: false, b1_kz: true, c1_kz: true, a2_kz: true, b2_kz: true, c2_kz: true);
                     break;
 
                 case 2:
-                    CurrentVoltageStatus(true, false, true, true, true, true);
+                    CurrentVoltageStatus(a1_kz: true, b1_kz: false, c1_kz: true, a2_kz: true, b2_kz: true, c2_kz: true);
                     break;
 
                 case 4:
-                    CurrentVoltageStatus(true, true, false, true, true, true);
+                    CurrentVoltageStatus(a1_kz: true, b1_kz: true, c1_kz: false, a2_kz: true, b2_kz: true, c2_kz: true);
                     break;
 
                 case 8:
-                    CurrentVoltageStatus(true, true, true, false, true, true);
+                    CurrentVoltageStatus(a1_kz: true, b1_kz: true, c1_kz: true, a2_kz: false, b2_kz: true, c2_kz: true);
                     break;
 
                 case 16:
-                    CurrentVoltageStatus(true, true, true, true, false, true);
+                    CurrentVoltageStatus(a1_kz: true, b1_kz: true, c1_kz: true, a2_kz: true, b2_kz: false, c2_kz: true);
                     break;
 
                 case 32:
-                    CurrentVoltageStatus(true, true, true, true, true, false);
+                    CurrentVoltageStatus(a1_kz: true, b1_kz: true, c1_kz: true, a2_kz: true, b2_kz: true, c2_kz: false);
                     break;
 
                 case 64:
-                    CurrentVoltageStatus(false, false, false, false, false, false);
+                    CurrentVoltageStatus(a1_kz: false, b1_kz: false, c1_kz: false, a2_kz: false, b2_kz: false, c2_kz: false);
                     break;
             }
         }
 
-        private static void CurrentVoltageStatus(params bool?[] flags)
+        private void CurrentVoltageStatus(bool? a1_kz, bool? b1_kz, bool? c1_kz, bool? a2_kz, bool? b2_kz, bool? c2_kz)
         {
-            LedIndicatorData.A1_kz = flags[0];
-            LedIndicatorData.B1_kz = flags[1];
-            LedIndicatorData.C1_kz = flags[2];
-            LedIndicatorData.A2_kz = flags[3];
-            LedIndicatorData.B2_kz = flags[4];
-            LedIndicatorData.C2_kz = flags[5];
+            LedIndicatorData.A1_kz = a1_kz;
+            LedIndicatorData.B1_kz = b1_kz;
+            LedIndicatorData.C1_kz = c1_kz;
+            LedIndicatorData.A2_kz = a2_kz;
+            LedIndicatorData.B2_kz = b2_kz;
+            LedIndicatorData.C2_kz = c2_kz;
         }
 
-        private static string GetWorkingStatus(ushort statusByte)
+        private string GetWorkingStatus(ushort statusByte)
         {
             if (statusByte % 16 == 0 && statusByte != 0)
             {
@@ -560,7 +558,7 @@ namespace TiristorModule
             else return WorkingStatus[4];
         }
 
-        private static byte CalculateCRC8(byte[] array)
+        private byte CalculateCRC8(byte[] array)
         {
             byte crc = 0xFF;
 
