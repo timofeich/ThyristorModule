@@ -7,82 +7,60 @@ using TiristorModule.Model;
 
 namespace TiristorModule.Request
 {
-    public class TestRequest
+    public class TestRequest : Request1
     {
-        private byte CommandNumber;
-        private byte TotalBytes;
+        private byte PersentOfTestPower;
+        private byte NominalVoltage;
 
-        private static SettingsModel SettingsModelData { get; set; }
-        private static DataModel Data { get; set; }
+        private ushort CurrentKz1;
+        private ushort CurrentKz2;
+
+        private byte TestsQuantity;
 
         private byte CRC8
         {
-            get { return CalculateCRC8(); }
+            get { return CalculateCRC8(GetRequestWithoutCRC8()); }
         }
 
-        public TestRequest(byte CommandNumber, byte TotalBytes)
+        public TestRequest(byte AddressSlave, byte Command, byte TotalBytes, byte PersentOfTestPower, byte NominalVoltage,
+                            byte TestsQuantity, ushort CurrentKz1, ushort CurrentKz2)
         {
-            this.CommandNumber = CommandNumber;
+            this.AddressSlave = AddressSlave;
+            this.Command = Command;
             this.TotalBytes = TotalBytes;
 
-            SettingsModelData = new SettingsModel { };
-            Data = new DataModel { };
+            this.PersentOfTestPower = PersentOfTestPower;
+            this.NominalVoltage = NominalVoltage;
+            this.TestsQuantity = TestsQuantity;
+
+            this.CurrentKz1 = CurrentKz1;
+            this.CurrentKz2 = CurrentKz2;
         }
 
         public byte[] GetRequestPackage()
         {
             List<byte> RequestWithoutCRC8 = GetRequestWithoutCRC8();
             RequestWithoutCRC8.Add(CRC8);
-            return RequestWithoutCRC8.ToArray<byte>();
+            return RequestWithoutCRC8.ToArray();
         }
 
         private List<byte> GetRequestWithoutCRC8()
         {
-            List<byte> Request = new List<byte>()
-            {
-                byte.Parse(SettingsModelData.AddressSlave, System.Globalization.NumberStyles.HexNumber),
-                CommandNumber,
-                TotalBytes
-            };
+            List<byte> Request = new List<byte>() { AddressSlave, Command, TotalBytes };
 
-            Request.Add(SettingsModelData.PersentTestPower);
-            Request.Add(Convert.ToByte(SettingsModelData.NominalTok1sk));
-            Request.Add(Convert.ToByte(SettingsModelData.NumberOfTest));
+            Request.Add(PersentOfTestPower);
+            Request.Add(NominalVoltage);
 
-            Request.Add(Convert.ToByte(SettingsModelData.CurrentKz1 >> 8));
-            Request.Add(Convert.ToByte(SettingsModelData.CurrentKz1 ^ 0x100));
+            Request.Add(TestsQuantity);
 
-            Request.Add(Convert.ToByte(SettingsModelData.CurrentKz2 >> 8));
-            Request.Add(Convert.ToByte(SettingsModelData.CurrentKz2 ^ 0x100));
+            Request.Add(Convert.ToByte(CurrentKz1 >> 8));
+            Request.Add(Convert.ToByte(CurrentKz1 ^ 0x100));
+
+            Request.Add(Convert.ToByte(CurrentKz2 >> 8));
+            Request.Add(Convert.ToByte(CurrentKz2 ^ 0x100));
 
             return Request;
+
         }
-
-        private byte CalculateCRC8()
-        {
-            byte crc = 0xFF;
-            byte[] array = GetRequestWithoutCRC8().ToArray<byte>();
-
-            foreach (byte b in array)
-            {
-                crc ^= b;
-
-                for (int i = 0; i < 8; i++)
-                {
-                    crc = (crc & 0x80) != 0 ? (byte)((crc << 1) ^ 0x31) : (byte)(crc << 1);
-                }
-            }
-
-            return crc;
-        }
-
-        public byte[] ConvertStringCollectionToByte(System.Collections.Specialized.StringCollection stringCollection)
-        {
-            string[] stringArray = new string[stringCollection.Count];
-            stringCollection.CopyTo(stringArray, 0);
-
-            return stringArray.Select(byte.Parse).ToArray();
-        }
-
     }
 }

@@ -24,31 +24,32 @@ namespace TiristorModule
             Convert.ToInt32(Settings.Default.DataBit),
             SerialPortSettings.SetStopBits(Settings.Default.StopBit));
 
-        StandartRequest CurrentVoltage = new StandartRequest(0x90, 0x00);
-        StandartRequest StopThyristorModule = new StandartRequest(0x88, 0x00);
-        StandartRequest ResetThyristorCrash = new StandartRequest(0x92, 0x00);
-        StandartRequest AlarmStop = new StandartRequest(0x99, 0x00);
-        StartRequest StartThyristorModule = new StartRequest(0x87, 28);
-        TestRequest TestThyristorModule = new TestRequest(0x88, 7);
+        private static List<string> WorkingStatus = new List<string>()
+        {
+            "Crach_ostanov",
+            "Tormoz",
+            "Baipass",
+            "Razgon",
+            "Дежурный режим"
+        };
 
-        CurrentVoltageResponse CurrentVoltageResponse = new CurrentVoltageResponse();
-        TestThyristorModuleResponse TestThyristorModuleResponse = new TestThyristorModuleResponse();
-        TestThyristorWindowViewModel TestThyristorWindowViewModel = new TestThyristorWindowViewModel();
+        private static byte[] Time = new byte[9] { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
+        private static byte[] Capacities = new byte[9] { 10, 20, 30, 40, 50, 60, 70, 80, 90 };
+
+        StandartRequest CurrentVoltage = new StandartRequest(0x67, 0x90, 0x00);
+        StandartRequest StopThyristorModule = new StandartRequest(0x67, 0x88, 0x00);
+        StandartRequest ResetThyristorCrash = new StandartRequest(0x67, 0x92, 0x00);
+        StandartRequest AlarmStop = new StandartRequest(0x67, 0x99, 0x00);
+
+        StartRequest StartThyristorModule = new StartRequest(0x67, 0x87, 28, Time, Capacities, Settings.Default.CurrentKz1, 
+            Settings.Default.VremiaKzMs1, 0, Settings.Default.CurrentKz2, Settings.Default.VremiaKzMs2, 0, 85, 1);
+
+        TestRequest TestThyristorModule = new TestRequest(0x67, 0x88, 7, Settings.Default.PersentTestPower, 
+            54/10, Settings.Default.NumberOfTest, Settings.Default.CurrentKz1, Settings.Default.CurrentKz2);
 
         public static DataModel Data = new DataModel();
         public static LedIndicatorModel LedIndicatorData = new LedIndicatorModel();
         public static SettingsModel SettingsModelData = new SettingsModel();
-
-
-        private static Dictionary<int, string> WorkingStatus = new Dictionary<int, string>()
-        {
-            [0] = "Crach_ostanov",
-            [1] = "Tormoz",
-            [2] = "Baipass",
-            [3] = "Razgon",
-            [4] = "Дежурный режим"
-        };
-
 
         #region Commands
         public ICommand CurrentVoltageCommand { get; set; }
@@ -168,8 +169,8 @@ namespace TiristorModule
             {
                 if (Data.IsRequestSingle)
                 {
-                    //SendRequest(request);
-                    ReceiveResponse();
+                   SendRequest(request);
+                   //ReceiveResponse();
                 }
                 else
                 {
@@ -177,8 +178,8 @@ namespace TiristorModule
                     {
                         while (!Data.IsRequestSingle)
                         {
-                            //SendRequest(request);
-                            ReceiveResponse();
+                            SendRequest(request);
+                            //ReceiveResponse();
                         }
                     }));
                 }
@@ -197,37 +198,8 @@ namespace TiristorModule
             Thread.Sleep(SettingsModelData.RequestInterval);
         }
 
-        private void ReceiveResponse()
-        {
-            //if (serialPort1.BytesToRead > 20)
-            //{
-            //byte[] response = new byte[serialPort1.BytesToRead];
-
-            byte[] response =   { 0xFF, 0x67, 21, 0x91, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 16, 1, 0xa3};
+            //byte[] response =   { 0xFF, 0x67, 21, 0x91, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 16, 1, 0xa3};
             //byte[] response = { 0xFF, 0x67, 21, 0x91, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0xa0 };
-
-            //byte[] response = { };
-            //serialPort1.Read(response, 0, serialPort1.BytesToRead);
-            //serialPort1.DiscardInBuffer();
-
-            //Logger.Log.Debug("Ответ " + BitConverter.ToString(response));
-
-            if (response.Length == TestThyristorModuleResponse.TestThyristorModuleResponseLength)
-            {
-                //TestThyristorModuleResponse = new TestThyristorModuleResponse(response);
-                //ushort[] buff = TestThyristorModuleResponse.ParseTestThyristorModuleResponse();
-                //ushort[] response1 = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
-                //TestThyristorWindowViewModel.OutputDataFromArrayToTestModel(response1);
-            }
-            else if (response.Length == CurrentVoltageResponse.CurrentVoltageResponseLength)
-            {
-                OutputDataFromArrayToDataModel(CurrentVoltageResponse.ParseCurrentVoltageResponse(response));
-            }
-            else
-            {
-                MessageBox.Show("Модуль тиристора дал неполный ответ", "Ошибка!");
-            }
-        }
 
         private static void OutputDataFromArrayToDataModel(ushort[] buff)//wich status will open thyristor module
         {
@@ -256,7 +228,7 @@ namespace TiristorModule
                     LedIndicatorData.StopStatus = IndicatorColor.GetTestingStatusLEDColor(1);
                 }
 
-                GetStatusFromCurrentVoltage(buff[15]);
+                //GetStatusFromCurrentVoltage(buff[15]);
             }
             catch (Exception ex)
             {
@@ -273,85 +245,6 @@ namespace TiristorModule
                 return WorkingStatus[i];
             }
             else return WorkingStatus[4];
-        }
-
-
-        private static void GetStatusFromCurrentVoltage(ushort statusCrash)//try loop and list
-        {
-            switch (statusCrash)
-            {
-                case 0:
-                    LedIndicatorData.A1_kz = true;
-                    LedIndicatorData.B1_kz = true;
-                    LedIndicatorData.C1_kz = true;
-                    LedIndicatorData.A2_kz = true;
-                    LedIndicatorData.B2_kz = true;
-                    LedIndicatorData.C2_kz = true;
-                    break;
-
-                case 1:
-                    LedIndicatorData.A1_kz = false;
-                    LedIndicatorData.B1_kz = true;
-                    LedIndicatorData.C1_kz = true;
-                    LedIndicatorData.A2_kz = true;
-                    LedIndicatorData.B2_kz = true;
-                    LedIndicatorData.C2_kz = true;
-                    break;
-
-                case 2:
-                    LedIndicatorData.A1_kz = true;
-                    LedIndicatorData.B1_kz = false;
-                    LedIndicatorData.C1_kz = true;
-                    LedIndicatorData.A2_kz = true;
-                    LedIndicatorData.B2_kz = true;
-                    LedIndicatorData.C2_kz = true;
-                    break;
-
-                case 4:
-                    LedIndicatorData.A1_kz = true;
-                    LedIndicatorData.B1_kz = true;
-                    LedIndicatorData.C1_kz = false;
-                    LedIndicatorData.A2_kz = true;
-                    LedIndicatorData.B2_kz = true;
-                    LedIndicatorData.C2_kz = true;
-                    break;
-
-                case 8:
-                    LedIndicatorData.A1_kz = true;
-                    LedIndicatorData.B1_kz = true;
-                    LedIndicatorData.C1_kz = true;
-                    LedIndicatorData.A2_kz = false;
-                    LedIndicatorData.B2_kz = true;
-                    LedIndicatorData.C2_kz = true;
-                    break;
-
-                case 16:
-                    LedIndicatorData.A1_kz = true;
-                    LedIndicatorData.B1_kz = true;
-                    LedIndicatorData.C1_kz = true;
-                    LedIndicatorData.A2_kz = true;
-                    LedIndicatorData.B2_kz = false;
-                    LedIndicatorData.C2_kz = true;
-                    break;
-
-                case 32:
-                    LedIndicatorData.A1_kz = true;
-                    LedIndicatorData.B1_kz = true;
-                    LedIndicatorData.C1_kz = true;
-                    LedIndicatorData.A2_kz = true;
-                    LedIndicatorData.B2_kz = true;
-                    LedIndicatorData.C2_kz = false;
-                    break;
-
-                case 64:
-                    LedIndicatorData.A1_kz = false;
-                    LedIndicatorData.B1_kz = false;
-                    LedIndicatorData.C1_kz = false;
-                    LedIndicatorData.A2_kz = false;
-                    LedIndicatorData.B2_kz = false;
-                    LedIndicatorData.C2_kz = false;
-                    break;
-            }
         }
     }
     #endregion

@@ -7,92 +7,82 @@ using TiristorModule.Model;
 
 namespace TiristorModule.Request
 {
-    public class StartRequest
+    public class StartRequest : Request1
     {
-        private byte CommandNumber;
-        private byte TotalBytes;
-        private byte KzOnOff1 = 0;
-        private byte KzOnOff2 = 0;
-        private byte AlarmTemperatureThyristor = 85;
+        private byte[] Times = new byte[9];
+        private byte[] Capacities = new byte[9];
 
-        private static SettingsModel SettingsModelData { get; set; }
-        private static DataModel Data { get; set; }
+        private ushort CurrentKz1;
+        private ushort CurrentKz2;
+
+        private byte KzTimeMs1;
+        private byte KzTimeMs2;
+
+        private byte KzOnOff1;
+        private byte KzOnOff2;
+
+        private byte AlarmThyristorTemperature;
+
+        private byte PlavniiPuskStart;
 
         private byte CRC8
         {
-            get { return CalculateCRC8(); }
+            get { return CalculateCRC8(GetRequestWithoutCRC8()); }
         }
 
-        public StartRequest(byte CommandNumber, byte TotalBytes)
+        public StartRequest(byte AddressSlave, byte Command, byte TotalBytes, byte[] Times, byte[] Capacities,
+                            ushort CurrentKz1, byte KzTimeMs1, byte KzOnOff1, ushort CurrentKz2, byte KzTimeMs2, byte KzOnOff2,
+                            byte AlarmThyristorTemperature, byte PlavniiPuskStart)
         {
-            this.CommandNumber = CommandNumber;
+            this.AddressSlave = AddressSlave;
+            this.Command = Command;
             this.TotalBytes = TotalBytes;
 
-            SettingsModelData = new SettingsModel { };
-            Data = new DataModel { };
+            this.Times = Times;
+            this.Capacities = Capacities;
+
+            this.CurrentKz1 = CurrentKz1;
+            this.KzTimeMs1 = KzTimeMs1;
+            this.KzOnOff1 = KzOnOff1;
+
+            this.CurrentKz2 = CurrentKz2;
+            this.KzTimeMs2 = KzTimeMs2;
+            this.KzOnOff2 = KzOnOff2;
+
+            this.AlarmThyristorTemperature = AlarmThyristorTemperature;
+            this.PlavniiPuskStart = PlavniiPuskStart;
         }
 
         public byte[] GetRequestPackage()
         {
             List<byte> RequestWithoutCRC8 = GetRequestWithoutCRC8();
             RequestWithoutCRC8.Add(CRC8);
-            return RequestWithoutCRC8.ToArray<byte>();
+            return RequestWithoutCRC8.ToArray();
         }
 
         private List<byte> GetRequestWithoutCRC8()
         {
-            List<byte> Request = new List<byte>()
-            {
-                byte.Parse(SettingsModelData.AddressSlave, System.Globalization.NumberStyles.HexNumber),
-                CommandNumber,
-                TotalBytes
-            };
+            List<byte> Request = new List<byte>() { AddressSlave, Command, TotalBytes };
 
-            Request.AddRange(ConvertStringCollectionToByte(SettingsModelData.Times));
-            Request.AddRange(ConvertStringCollectionToByte(SettingsModelData.Capacities));
+            Request.AddRange(Times);
+            Request.AddRange(Capacities);
 
-            Request.Add(Convert.ToByte(SettingsModelData.CurrentKz1 >> 8));
-            Request.Add(Convert.ToByte(SettingsModelData.CurrentKz1 ^ 0x100));
+            Request.Add(Convert.ToByte(CurrentKz1 >> 8));
+            Request.Add(Convert.ToByte(CurrentKz1 ^ 0x100));
 
-            Request.Add(SettingsModelData.VremiaKzMs1);
+            Request.Add(KzTimeMs1);
             Request.Add(KzOnOff1);
 
-            Request.Add(Convert.ToByte(SettingsModelData.CurrentKz2 >> 8));
-            Request.Add(Convert.ToByte(SettingsModelData.CurrentKz2 ^ 0x100));
+            Request.Add(Convert.ToByte(CurrentKz2 >> 8));
+            Request.Add(Convert.ToByte(CurrentKz2 ^ 0x100));
 
-            Request.Add(SettingsModelData.VremiaKzMs1);
+            Request.Add(KzTimeMs2);
             Request.Add(KzOnOff2);
 
-            Request.Add(AlarmTemperatureThyristor);
-            Request.Add(Convert.ToByte(Data.IsPlavniiPusk));
+            Request.Add(AlarmThyristorTemperature);
+            Request.Add(PlavniiPuskStart);
 
             return Request;
-        }
-
-        private byte CalculateCRC8()
-        {
-            byte crc = 0xFF;
-            byte[] array = GetRequestWithoutCRC8().ToArray<byte>();
-
-            foreach (byte b in array)
-            {
-                crc ^= b;
-
-                for (int i = 0; i < 8; i++)
-                {
-                    crc = (crc & 0x80) != 0 ? (byte)((crc << 1) ^ 0x31) : (byte)(crc << 1);
-                }
-            }
-
-            return crc;
-        }
-
-        public byte[] ConvertStringCollectionToByte(System.Collections.Specialized.StringCollection stringCollection)
-        {
-            string[] stringArray = new string[stringCollection.Count];
-            stringCollection.CopyTo(stringArray, 0);
-
-            return stringArray.Select(byte.Parse).ToArray();
         }
     }
 }
