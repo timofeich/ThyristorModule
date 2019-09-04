@@ -26,30 +26,31 @@ namespace TiristorModule
 
         private static List<string> WorkingStatus = new List<string>()
         {
-            "Crach_ostanov",
-            "Tormoz",
-            "Baipass",
-            "Razgon",
-            "Дежурный режим"
+            "Crach_ostanov", "Tormoz", "Baipass", "Razgon", "Дежурный режим"
         };
 
         private static byte[] Time = new byte[9] { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
         private static byte[] Capacities = new byte[9] { 10, 20, 30, 40, 50, 60, 70, 80, 90 };
+
+        byte[] CurrentVoltageResponse = { 0xFF, 0x67, 22, 0x90, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 16, 1, 0x19 };
+        byte[] TestThyristorResponse = { 0xFF, 0x67, 21, 0x91, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0xa0 };
 
         StandartRequest CurrentVoltage = new StandartRequest(0x67, 0x90, 0x00);
         StandartRequest StopThyristorModule = new StandartRequest(0x67, 0x88, 0x00);
         StandartRequest ResetThyristorCrash = new StandartRequest(0x67, 0x92, 0x00);
         StandartRequest AlarmStop = new StandartRequest(0x67, 0x99, 0x00);
 
-        StartRequest StartThyristorModule = new StartRequest(0x67, 0x87, 28, Time, Capacities, Settings.Default.CurrentKz1, 
-            Settings.Default.VremiaKzMs1, 0, Settings.Default.CurrentKz2, Settings.Default.VremiaKzMs2, 0, 85, 1);
+        StartRequest StartThyristorModule = new StartRequest(0x67, 0x87, 28, Time, Capacities, 300, 
+            10, 0, 300, 10, 0, 85, 1);
 
-        TestRequest TestThyristorModule = new TestRequest(0x67, 0x88, 7, Settings.Default.PersentTestPower, 
-            54/10, Settings.Default.NumberOfTest, Settings.Default.CurrentKz1, Settings.Default.CurrentKz2);
+        TestRequest TestThyristorModule = new TestRequest(0x67, 0x88, 7, 15, 
+            54/10, 10, 300, 300);
 
-        public static DataModel Data = new DataModel();
-        public static LedIndicatorModel LedIndicatorData = new LedIndicatorModel();
-        public static SettingsModel SettingsModelData = new SettingsModel();
+        Response1 Response = new Response1(0xFF, 0x67);
+
+        public static DataModel Data { get; set; }
+        public static LedIndicatorModel LedIndicatorData { get; set; }
+        public static SettingsModel SettingsModelData { get; set; }
 
         #region Commands
         public ICommand CurrentVoltageCommand { get; set; }
@@ -73,10 +74,14 @@ namespace TiristorModule
             StartTerristorModuleCommand = new Command(arg => StartTerristorModuleClick());
             StopTerristorModuleCommand = new Command(arg => StopTerristorModuleClick());
             ResetAvatiaTirristorCommand = new Command(arg => ResetAvatiaTirristorClick());
-
+        
             ConnectionSettingsCommand = new Command(arg => ConnectionSettingsClick());
             StartTiristorSettingsCommand = new Command(arg => StartTiristorSettingsClick());
             TestTiristorSettingsCommand = new Command(arg => TestTiristorSettingsClick());
+
+            Data = new DataModel { WorkingStatus = null };
+            LedIndicatorData = new LedIndicatorModel { };
+            SettingsModelData = new SettingsModel { };
         }
 
         ~MainWindowViewModel()
@@ -170,7 +175,7 @@ namespace TiristorModule
                 if (Data.IsRequestSingle)
                 {
                    SendRequest(request);
-                   //ReceiveResponse();
+                   OutputDataFromArrayToDataModel(ReceiveResponse());
                 }
                 else
                 {
@@ -179,7 +184,7 @@ namespace TiristorModule
                         while (!Data.IsRequestSingle)
                         {
                             SendRequest(request);
-                            //ReceiveResponse();
+                            ReceiveResponse();
                         }
                     }));
                 }
@@ -191,17 +196,18 @@ namespace TiristorModule
             }
         }
 
+        private ushort[] ReceiveResponse()
+        {
+            return Response.GetResponse(TestThyristorResponse);
+        }
+
         private void SendRequest(byte[] request)
         {
-            Logger.Log.Debug("Запрос " + BitConverter.ToString(request));
             serialPort1.Write(request, 0, request.Length);
             Thread.Sleep(SettingsModelData.RequestInterval);
         }
 
-            //byte[] response =   { 0xFF, 0x67, 21, 0x91, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 16, 1, 0xa3};
-            //byte[] response = { 0xFF, 0x67, 21, 0x91, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0xa0 };
-
-        private static void OutputDataFromArrayToDataModel(ushort[] buff)//wich status will open thyristor module
+        public static void OutputDataFromArrayToDataModel(ushort[] buff)//wich status will open thyristor module
         {
             try
             {
@@ -228,13 +234,60 @@ namespace TiristorModule
                     LedIndicatorData.StopStatus = IndicatorColor.GetTestingStatusLEDColor(1);
                 }
 
-                //GetStatusFromCurrentVoltage(buff[15]);
+                GetStatusFromCurrentVoltage(buff[15]);
             }
             catch (Exception ex)
             {
-                Logger.Log.Error("Нет данных для вывода, отправка запросов остановлена.");
                 MessageBox.Show(ex.Message);
             }
+        }
+
+        private static void GetStatusFromCurrentVoltage(ushort statusCrash)//try loop and list
+        {
+            switch (statusCrash)
+            {
+                case 0:
+                    CurrentVoltageStatus(a1_kz: true, b1_kz: true, c1_kz: true, a2_kz: true, b2_kz: true, c2_kz: true);
+                    break;
+
+                case 1:
+                    CurrentVoltageStatus(a1_kz: false, b1_kz: true, c1_kz: true, a2_kz: true, b2_kz: true, c2_kz: true);
+                    break;
+
+                case 2:
+                    CurrentVoltageStatus(a1_kz: true, b1_kz: false, c1_kz: true, a2_kz: true, b2_kz: true, c2_kz: true);
+                    break;
+
+                case 4:
+                    CurrentVoltageStatus(a1_kz: true, b1_kz: true, c1_kz: false, a2_kz: true, b2_kz: true, c2_kz: true);
+                    break;
+
+                case 8:
+                    CurrentVoltageStatus(a1_kz: true, b1_kz: true, c1_kz: true, a2_kz: false, b2_kz: true, c2_kz: true);
+                    break;
+
+                case 16:
+                    CurrentVoltageStatus(a1_kz: true, b1_kz: true, c1_kz: true, a2_kz: true, b2_kz: false, c2_kz: true);
+                    break;
+
+                case 32:
+                    CurrentVoltageStatus(a1_kz: true, b1_kz: true, c1_kz: true, a2_kz: true, b2_kz: true, c2_kz: false);
+                    break;
+
+                case 64:
+                    CurrentVoltageStatus(a1_kz: false, b1_kz: false, c1_kz: false, a2_kz: false, b2_kz: false, c2_kz: false);
+                    break;
+            }
+        }
+
+        private static void CurrentVoltageStatus(bool? a1_kz, bool? b1_kz, bool? c1_kz, bool? a2_kz, bool? b2_kz, bool? c2_kz)
+        {
+            LedIndicatorData.A1_kz = a1_kz;
+            LedIndicatorData.B1_kz = b1_kz;
+            LedIndicatorData.C1_kz = c1_kz;
+            LedIndicatorData.A2_kz = a2_kz;
+            LedIndicatorData.B2_kz = b2_kz;
+            LedIndicatorData.C2_kz = c2_kz;
         }
 
         private static string GetWorkingStatus(ushort statusByte)

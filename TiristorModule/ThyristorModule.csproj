@@ -87,6 +87,7 @@
     <Compile Include="Request\StartRequest.cs" />
     <Compile Include="Request\TestRequest.cs" />
     <Compile Include="Response\CurrentVoltageResponse.cs" />
+    <Compile Include="Response\Response1.cs" />
     <Compile Include="Response\TestThyristorModuleResponse.cs" />
     <Compile Include="Validation\AddressRule.cs" />
     <Compile Include="Validation\CapacityRule.cs" />
