@@ -12,11 +12,8 @@ namespace TiristorModule.Response
 {
     public class CurrentVoltageResponse
     {
-        byte[] Response;
-
-        public ushort[] GetCurrentVoltageResponse(byte[] Response)
+        public void GetCurrentVoltageResponse(byte[] Response)
         {
-            this.Response = Response;
             ushort[] frame = new ushort[16];
             int j = 4;
 
@@ -37,7 +34,9 @@ namespace TiristorModule.Response
                     j++;
                 }
             }
-            return frame;
+            MainWindowViewModel.OutputDataFromArrayToDataModel(frame);
         }
+
+
     }
 }

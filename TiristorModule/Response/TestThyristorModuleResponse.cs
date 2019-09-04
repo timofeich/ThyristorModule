@@ -14,17 +14,15 @@ namespace TiristorModule.Response
 {
     public class TestThyristorModuleResponse
     {
-        byte[] Response;
 
         public TestThyristorModuleResponse()
         {
             
         }
 
-        public ushort[] GetTestThyristorModuleResponse(byte[] Response)
+        public void GetTestThyristorModuleResponse(byte[] Response)
         {
-            this.Response = Response;
-            return BytesManipulating.ConvertByteArrayIntoUshortArray(Response);
+            MainWindowViewModel.TestThyristorWindowShow(BytesManipulating.ConvertByteArrayIntoUshortArray(Response));
         }
 
     }

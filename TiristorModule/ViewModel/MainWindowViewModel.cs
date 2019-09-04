@@ -43,8 +43,7 @@ namespace TiristorModule
         StartRequest StartThyristorModule = new StartRequest(0x67, 0x87, 28, Time, Capacities, 300, 
             10, 0, 300, 10, 0, 85, 1);
 
-        TestRequest TestThyristorModule = new TestRequest(0x67, 0x88, 7, 15, 
-            54/10, 10, 300, 300);
+        TestRequest TestThyristorModule = new TestRequest(0x67, 0x88, 7, 15, 54/10, 10, 300, 300);
 
         Response1 Response = new Response1(0xFF, 0x67);
 
@@ -86,7 +85,7 @@ namespace TiristorModule
 
         ~MainWindowViewModel()
         {
-            SerialPortSettings.CloseSerialPortConnection(serialPort1);
+            //SerialPortSettings.CloseSerialPortConnection(serialPort1);
         }
 
         #region ClickHandler
@@ -174,8 +173,8 @@ namespace TiristorModule
             {
                 if (Data.IsRequestSingle)
                 {
-                   SendRequest(request);
-                   OutputDataFromArrayToDataModel(ReceiveResponse());
+                    SendRequest(request);
+                    Response.GetResponse(TestThyristorResponse);
                 }
                 else
                 {
@@ -184,7 +183,7 @@ namespace TiristorModule
                         while (!Data.IsRequestSingle)
                         {
                             SendRequest(request);
-                            ReceiveResponse();
+                            Response.GetResponse(CurrentVoltageResponse);
                         }
                     }));
                 }
@@ -194,11 +193,6 @@ namespace TiristorModule
                 MessageBox.Show("Модуль тиристора ответа не дал.", "Ошибка!");
                 return;
             }
-        }
-
-        private ushort[] ReceiveResponse()
-        {
-            return Response.GetResponse(TestThyristorResponse);
         }
 
         private void SendRequest(byte[] request)
@@ -222,16 +216,17 @@ namespace TiristorModule
                 Data.AmperageC2 = buff[12];
                 Data.TemperatureOfTiristor = buff[13];
                 Data.WorkingStatus = GetWorkingStatus(buff[14]);
+
                 if (buff[14] == 128 || buff[14] == 1)
                 {
 
-                    LedIndicatorData.StartStatus = IndicatorColor.GetTestingStatusLEDColor(1);//здесь искать
-                    LedIndicatorData.StopStatus = IndicatorColor.GetTestingStatusLEDColor(0);
+                    LedIndicatorData.StartStatus = IndicatorColor.GetTestingStatusLEDColor(0);//здесь искать
+                    LedIndicatorData.StopStatus = IndicatorColor.GetTestingStatusLEDColor(null);
                 }
                 else
                 {
-                    LedIndicatorData.StartStatus = IndicatorColor.GetTestingStatusLEDColor(0);
-                    LedIndicatorData.StopStatus = IndicatorColor.GetTestingStatusLEDColor(1);
+                    LedIndicatorData.StartStatus = IndicatorColor.GetTestingStatusLEDColor(null);
+                    LedIndicatorData.StopStatus = IndicatorColor.GetTestingStatusLEDColor(0);
                 }
 
                 GetStatusFromCurrentVoltage(buff[15]);

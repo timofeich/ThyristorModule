@@ -29,35 +29,35 @@ namespace TiristorModule.Response
             this.SlaveAddress = SlaveAddress;
         }
 
-        public ushort[] GetResponse(byte[] Response)
+        public void GetResponse(byte[] Response)
         {
             this.Response = Response;
 
             if (IsCRC8Correct() && MasterAddress == 0xFF && SlaveAddress == 0x67)
             {
-                return IdentifyRequestType(); 
+                IdentifyRequestType(); 
             }
             else
             {
                 MessageBox.Show("Нарушена целостность пакета.");
-                return null;
+                return;
             }
         }
 
-        private ushort[] IdentifyRequestType()
+        private void IdentifyRequestType()
         {
             if(Response[CommandTypeByte] == 0x90)
             {
-                return CurrentVoltageResponse.GetCurrentVoltageResponse(Response);
+                CurrentVoltageResponse.GetCurrentVoltageResponse(Response);
             }
             else if(Response[CommandTypeByte] == 0x91)
             {
                 TestThyristorModuleResponse.GetTestThyristorModuleResponse(Response);
-                return null;
             }
             else
             {
-                return null;
+                MessageBox.Show("Пришел неверный адрес команды");
+                return;
             }
         }
 
