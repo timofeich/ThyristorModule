@@ -263,7 +263,6 @@ namespace TiristorModule
 
                 if (buff[14] == 128 || buff[14] == 1)
                 {
-
                     LedIndicatorData.StartStatus = IndicatorColor.GetTestingStatusLEDColor(0);
                     LedIndicatorData.StopStatus = IndicatorColor.GetTestingStatusLEDColor(null);
                 }
@@ -283,7 +282,6 @@ namespace TiristorModule
 
         private static void GetStatusFromCurrentVoltage(ushort statusCrash)//try loop and list
         {
-
             switch (statusCrash)
             {
                 case 0:
@@ -328,6 +326,18 @@ namespace TiristorModule
             LedIndicatorData.A2_kz = a2_kz;
             LedIndicatorData.B2_kz = b2_kz;
             LedIndicatorData.C2_kz = c2_kz;
+        }
+
+        private static void CurrentStatus(ushort statusCrash)
+        {
+            List<bool?> LedIndicators = new List<bool?>();
+
+            LedIndicators.Add(LedIndicatorData.A1_kz);
+            LedIndicators.Add(LedIndicatorData.B1_kz);
+            LedIndicators.Add(LedIndicatorData.C1_kz);
+            LedIndicators.Add(LedIndicatorData.A2_kz);
+            LedIndicators.Add(LedIndicatorData.B2_kz);
+            LedIndicators.Add(LedIndicatorData.C2_kz);           
         }
 
         private static string GetWorkingStatus(ushort statusByte)
