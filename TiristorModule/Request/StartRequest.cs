@@ -7,7 +7,7 @@ using TiristorModule.Model;
 
 namespace TiristorModule.Request
 {
-    public class StartRequest : Request1
+    public class StartRequest : BaseRequest
     {
         private byte[] Times = new byte[9];
         private byte[] Capacities = new byte[9];

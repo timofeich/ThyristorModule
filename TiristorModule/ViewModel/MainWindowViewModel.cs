@@ -35,18 +35,62 @@ namespace TiristorModule
         byte[] CurrentVoltageResponse = { 0xFF, 0x67, 22, 0x90, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 16, 1, 0x19 };
         byte[] TestThyristorResponse = { 0xFF, 0x67, 21, 0x91, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0xa0 };
 
-        StandartRequest CurrentVoltage = new StandartRequest(0x67, 0x90, 0x00);
-        StandartRequest StopThyristorModule = new StandartRequest(0x67, 0x88, 0x00);
-        StandartRequest ResetThyristorCrash = new StandartRequest(0x67, 0x92, 0x00);
-        StandartRequest AlarmStop = new StandartRequest(0x67, 0x99, 0x00);
+        StandartRequest CurrentVoltage = new StandartRequest(
+                BytesManipulating.GetAddress(Settings.Default.AddressSlave), 
+                0x90, 
+                0x00
+            );
 
-        StartRequest StartThyristorModule = new StartRequest(0x67, 0x87, 28, Time, Capacities, 300, 
-            10, 0, 300, 10, 0, 85, 1);
+        StandartRequest StopThyristorModule = new StandartRequest(
+                BytesManipulating.GetAddress(Settings.Default.AddressSlave),
+                0x88, 
+                0x00
+            );
 
-        TestRequest TestThyristorModule = new TestRequest(0x67, 0x88, 7, 15, 54/10, 10, 300, 300);
+        StandartRequest ResetThyristorCrash = new StandartRequest(
+                BytesManipulating.GetAddress(Settings.Default.AddressSlave),                                                 
+                0x92, 
+                0x00
+            );
 
-        Response1 Response = new Response1(0xFF, 0x67);
+        StandartRequest AlarmStop = new StandartRequest(
+                BytesManipulating.GetAddress(Settings.Default.AddressSlave), 
+                0x99, 
+                0x00
+            );
 
+        StartRequest StartThyristorModule = new StartRequest(
+                BytesManipulating.GetAddress(Settings.Default.AddressSlave), 
+                0x87, 
+                28,
+                BytesManipulating.ConvertStringCollectionToByte(Settings.Default.Time), 
+                BytesManipulating.ConvertStringCollectionToByte(Settings.Default.Capacity), 
+                Settings.Default.CurrentKz1, 
+                Settings.Default.VremiaKzMs1,
+                0, 
+                Settings.Default.CurrentKz2,
+                Settings.Default.VremiaKzMs2,
+                0, 
+                85,
+                1//Convert.ToByte(Data.IsPlavniiPusk)
+            );
+
+        TestRequest TestThyristorModule = new TestRequest(
+                BytesManipulating.GetAddress(Settings.Default.AddressSlave), 
+                0x88, 
+                7, 
+                Settings.Default.PersentTestPower, 
+                (byte)Settings.Default.NominalTok1sk, 
+                Settings.Default.NumberOfTest, 
+                Settings.Default.CurrentKz1, 
+                Settings.Default.CurrentKz2
+            );
+
+        BaseResponse Response = new BaseResponse(
+                BytesManipulating.GetAddress(Settings.Default.AddressMaster), 
+                BytesManipulating.GetAddress(Settings.Default.AddressSlave)
+            );
+            
         public static DataModel Data { get; set; }
         public static LedIndicatorModel LedIndicatorData { get; set; }
         public static SettingsModel SettingsModelData { get; set; }
@@ -220,7 +264,7 @@ namespace TiristorModule
                 if (buff[14] == 128 || buff[14] == 1)
                 {
 
-                    LedIndicatorData.StartStatus = IndicatorColor.GetTestingStatusLEDColor(0);//здесь искать
+                    LedIndicatorData.StartStatus = IndicatorColor.GetTestingStatusLEDColor(0);
                     LedIndicatorData.StopStatus = IndicatorColor.GetTestingStatusLEDColor(null);
                 }
                 else
@@ -239,6 +283,7 @@ namespace TiristorModule
 
         private static void GetStatusFromCurrentVoltage(ushort statusCrash)//try loop and list
         {
+
             switch (statusCrash)
             {
                 case 0:

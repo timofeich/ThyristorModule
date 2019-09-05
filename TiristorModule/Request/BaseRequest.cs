@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TiristorModule.Request
 {
-    public class Request1
+    public class BaseRequest
     {
         protected byte AddressSlave { get; set; }
         protected byte Command { get; set; }

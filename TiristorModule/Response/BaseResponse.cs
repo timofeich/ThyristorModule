@@ -7,13 +7,12 @@ using System.Windows;
 
 namespace TiristorModule.Response
 {
-    public class Response1
+    public class BaseResponse
     {
         byte[] Response;
 
         byte MasterAddress;
         byte SlaveAddress;
-        byte CommandTypeByte = 3;
 
         CurrentVoltageResponse CurrentVoltageResponse = new CurrentVoltageResponse();
         TestThyristorModuleResponse TestThyristorModuleResponse = new TestThyristorModuleResponse();
@@ -23,7 +22,7 @@ namespace TiristorModule.Response
             get { return CalculateCRC8(); }
         }
 
-        public Response1(byte MasterAddress, byte SlaveAddress)
+        public BaseResponse(byte MasterAddress, byte SlaveAddress)
         {
             this.MasterAddress = MasterAddress;
             this.SlaveAddress = SlaveAddress;
@@ -46,7 +45,9 @@ namespace TiristorModule.Response
 
         private void IdentifyRequestType()
         {
-            if(Response[CommandTypeByte] == 0x90)
+            byte CommandTypeByte = 3;
+
+            if (Response[CommandTypeByte] == 0x90)
             {
                 CurrentVoltageResponse.GetCurrentVoltageResponse(Response);
             }
@@ -83,7 +84,6 @@ namespace TiristorModule.Response
                     crc = (crc & 0x80) != 0 ? (byte)((crc << 1) ^ 0x31) : (byte)(crc << 1);
                 }
             }
-
             return crc;
         }
 

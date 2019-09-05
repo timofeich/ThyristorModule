@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO.Ports;
+using System.Windows;
 
 namespace TiristorModule.ViewModel
 {
@@ -56,7 +57,7 @@ namespace TiristorModule.ViewModel
 
             catch (Exception ex)
             {
-                throw ex;
+                MessageBox.Show(ex.Message);
             }
         }
 

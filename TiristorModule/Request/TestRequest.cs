@@ -7,7 +7,7 @@ using TiristorModule.Model;
 
 namespace TiristorModule.Request
 {
-    public class TestRequest : Request1
+    public class TestRequest : BaseRequest
     {
         private byte PersentOfTestPower;
         private byte NominalVoltage;

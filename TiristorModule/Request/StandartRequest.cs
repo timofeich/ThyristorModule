@@ -7,7 +7,7 @@ using TiristorModule.Model;
 
 namespace TiristorModule.Request
 {
-    public class StandartRequest : Request1
+    public class StandartRequest : BaseRequest
     {
         private byte CRC8
         {

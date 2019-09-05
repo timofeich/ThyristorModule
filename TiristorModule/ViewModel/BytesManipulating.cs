@@ -43,6 +43,19 @@ namespace TiristorModule
             ushort[] frame = new ushort[data.Length];
             return frame = data.Select(i => (ushort)i).ToArray();
         }
+
+        public static byte[] ConvertStringCollectionToByte(System.Collections.Specialized.StringCollection stringCollection)
+        {
+            string[] stringArray = new string[stringCollection.Count];
+            stringCollection.CopyTo(stringArray, 0);
+
+            return stringArray.Select(byte.Parse).ToArray();
+        }
+
+        public static byte GetAddress(string address)
+        {
+            return byte.Parse(address, System.Globalization.NumberStyles.HexNumber);
+        }
     }
 
     

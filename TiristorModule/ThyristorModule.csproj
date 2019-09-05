@@ -82,12 +82,12 @@
     <Compile Include="Model\LedIndicatorModel.cs" />
     <Compile Include="Model\SettingsModel.cs" />
     <Compile Include="Model\TestThyristorModel.cs" />
-    <Compile Include="Request\Request1.cs" />
+    <Compile Include="Request\BaseRequest.cs" />
     <Compile Include="Request\StandartRequest.cs" />
     <Compile Include="Request\StartRequest.cs" />
     <Compile Include="Request\TestRequest.cs" />
     <Compile Include="Response\CurrentVoltageResponse.cs" />
-    <Compile Include="Response\Response1.cs" />
+    <Compile Include="Response\BaseResponse.cs" />
     <Compile Include="Response\TestThyristorModuleResponse.cs" />
     <Compile Include="Validation\AddressRule.cs" />
     <Compile Include="Validation\CapacityRule.cs" />
