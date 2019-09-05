@@ -76,7 +76,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Indicators\ColorToSCBrushConverter.cs" />
-    <Compile Include="Indicators\IndicatorColor.cs" />
     <Compile Include="Logging\Logger.cs" />
     <Compile Include="Model\DataModel.cs" />
     <Compile Include="Model\LedIndicatorModel.cs" />

@@ -12,22 +12,16 @@ namespace TiristorModule.ViewModel
     public class TestThyristorWindowViewModel
     {
         public event EventHandler OnRequestClose;
-        private static Dictionary<int, string> FazaName = new Dictionary<int, string>(3);
-        public LedIndicatorModel LedIndicatorData = new LedIndicatorModel();
+        private static List<string> FazaName = new List<string>(3)
+        {
+            "Фаза A", "Фаза B", "Фаза C"
+        };
       
         public ObservableCollection<TestThyristorModel> TestThyristorModels { get; set; }
-
-        public TestThyristorWindowViewModel()
-        {
-
-        }
 
         public TestThyristorWindowViewModel(ushort[] buff)
         {
             TestThyristorModels = new ObservableCollection<TestThyristorModel>();
-
-            InitializeFazzNameData();
-
             for (int i = 4; i < 7; i++)
                 TestThyristorModels.Add(new TestThyristorModel()
                 {
@@ -41,37 +35,7 @@ namespace TiristorModule.ViewModel
                     OpredelenieFazz = buff[23]
                 });
 
-             DeleteFazzNameData();
-        }
-
-        private static void InitializeFazzNameData()
-        {
-            FazaName.Add(0, "Фаза A");
-            FazaName.Add(1, "Фаза B");
-            FazaName.Add(2, "Фаза C");
-        }
-
-        private static void DeleteFazzNameData()
-        {
-            FazaName.Remove(0);
-            FazaName.Remove(1);
-            FazaName.Remove(2);
-        }
-
-        public ushort[] OutputDataFromArrayToTestModel(ushort[] buff)//wich status will open thyristor module
-        {
-            try
-            {
-                LedIndicatorData.TestingStatus = IndicatorColor.GetTestingStatusLEDColor(buff[23]);
-                return buff;
-            }
-            catch (Exception ex)
-            {
-                //Logger.Log.Error("Невозможно отобразить тестовые данные." + "Пришёл неверный статус.");
-                //MessageBox.Show("Невозможно отобразить тестовые данные." + "\n" + "Пришёл неверный статус.", "Ошибка!");
-                MessageBox.Show(ex.Message);
-                return null;
-            }
+            MainWindowViewModel.LedIndicatorData.TestingStatus = Convert.ToBoolean(buff[23]);
         }
     }
 }

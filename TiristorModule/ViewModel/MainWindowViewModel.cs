@@ -26,11 +26,8 @@ namespace TiristorModule
 
         private static List<string> WorkingStatus = new List<string>()
         {
-            "Crach_ostanov", "Tormoz", "Baipass", "Razgon", "Дежурный режим"
+            "Авария", "Тормоз", "Байпасс", "Разгон", "Дежурный режим"
         };
-
-        private static byte[] Time = new byte[9] { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
-        private static byte[] Capacities = new byte[9] { 10, 20, 30, 40, 50, 60, 70, 80, 90 };
 
         byte[] CurrentVoltageResponse = { 0xFF, 0x67, 22, 0x90, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 16, 1, 0x19 };
         byte[] TestThyristorResponse = { 0xFF, 0x67, 21, 0x91, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0xa0 };
@@ -136,7 +133,8 @@ namespace TiristorModule
 
         private void StartTerristorModuleClick()
         {
-            CommunicateWithThyristorModule(StartThyristorModule.GetRequestPackage());
+            //CommunicateWithThyristorModule(StartThyristorModule.GetRequestPackage());
+            GetStatusFromCurrentVoltage(127);
         }
 
         private void StopTerristorModuleClick()
@@ -260,18 +258,8 @@ namespace TiristorModule
                 Data.AmperageC2 = buff[12];
                 Data.TemperatureOfTiristor = buff[13];
                 Data.WorkingStatus = GetWorkingStatus(buff[14]);
-
-                if (buff[14] == 128 || buff[14] == 1)
-                {
-                    LedIndicatorData.StartStatus = IndicatorColor.GetTestingStatusLEDColor(0);
-                    LedIndicatorData.StopStatus = IndicatorColor.GetTestingStatusLEDColor(null);
-                }
-                else
-                {
-                    LedIndicatorData.StartStatus = IndicatorColor.GetTestingStatusLEDColor(null);
-                    LedIndicatorData.StopStatus = IndicatorColor.GetTestingStatusLEDColor(0);
-                }
-
+                StartStopStatus(buff[14]);
+                
                 GetStatusFromCurrentVoltage(buff[15]);
             }
             catch (Exception ex)
@@ -280,71 +268,46 @@ namespace TiristorModule
             }
         }
 
-        private static void GetStatusFromCurrentVoltage(ushort statusCrash)//try loop and list
+        private static void CurrentVoltageStatus(bool?[] Status)
         {
-            switch (statusCrash)
+            LedIndicatorData.A1_kz = !Status[0];
+            LedIndicatorData.B1_kz = !Status[1];
+            LedIndicatorData.C1_kz = !Status[2];
+            LedIndicatorData.A2_kz = !Status[3];
+            LedIndicatorData.B2_kz = !Status[4];
+            LedIndicatorData.C2_kz = !Status[5];
+            LedIndicatorData.ReferenceVoltage = !Status[6];
+        }
+
+        private static void GetStatusFromCurrentVoltage(ushort statusCrash)
+        {
+            bool?[] LedLightRegim = new bool?[7];
+
+            for (int i = 0; i < LedLightRegim.Length; i++) 
+                LedLightRegim[i] = Convert.ToBoolean((statusCrash >> i) & 0x01);
+            
+            CurrentVoltageStatus(LedLightRegim);
+        }
+
+        private static void StartStopStatus(ushort Status)
+        {
+            if (Status == 128 || Status == 1)
             {
-                case 0:
-                    CurrentVoltageStatus(a1_kz: true, b1_kz: true, c1_kz: true, a2_kz: true, b2_kz: true, c2_kz: true);
-                    break;
-
-                case 1:
-                    CurrentVoltageStatus(a1_kz: false, b1_kz: true, c1_kz: true, a2_kz: true, b2_kz: true, c2_kz: true);
-                    break;
-
-                case 2:
-                    CurrentVoltageStatus(a1_kz: true, b1_kz: false, c1_kz: true, a2_kz: true, b2_kz: true, c2_kz: true);
-                    break;
-
-                case 4:
-                    CurrentVoltageStatus(a1_kz: true, b1_kz: true, c1_kz: false, a2_kz: true, b2_kz: true, c2_kz: true);
-                    break;
-
-                case 8:
-                    CurrentVoltageStatus(a1_kz: true, b1_kz: true, c1_kz: true, a2_kz: false, b2_kz: true, c2_kz: true);
-                    break;
-
-                case 16:
-                    CurrentVoltageStatus(a1_kz: true, b1_kz: true, c1_kz: true, a2_kz: true, b2_kz: false, c2_kz: true);
-                    break;
-
-                case 32:
-                    CurrentVoltageStatus(a1_kz: true, b1_kz: true, c1_kz: true, a2_kz: true, b2_kz: true, c2_kz: false);
-                    break;
-
-                case 64:
-                    CurrentVoltageStatus(a1_kz: false, b1_kz: false, c1_kz: false, a2_kz: false, b2_kz: false, c2_kz: false);
-                    break;
+                LedIndicatorData.StartStatus = true;
+                LedIndicatorData.StopStatus = null;
+            }
+            else
+            {
+                LedIndicatorData.StartStatus = null;
+                LedIndicatorData.StopStatus = true;  
             }
         }
 
-        private static void CurrentVoltageStatus(bool? a1_kz, bool? b1_kz, bool? c1_kz, bool? a2_kz, bool? b2_kz, bool? c2_kz)
+        private static string GetWorkingStatus(ushort CurrentVoltageWorkStatus)
         {
-            LedIndicatorData.A1_kz = a1_kz;
-            LedIndicatorData.B1_kz = b1_kz;
-            LedIndicatorData.C1_kz = c1_kz;
-            LedIndicatorData.A2_kz = a2_kz;
-            LedIndicatorData.B2_kz = b2_kz;
-            LedIndicatorData.C2_kz = c2_kz;
-        }
-
-        private static void CurrentStatus(ushort statusCrash)
-        {
-            List<bool?> LedIndicators = new List<bool?>();
-
-            LedIndicators.Add(LedIndicatorData.A1_kz);
-            LedIndicators.Add(LedIndicatorData.B1_kz);
-            LedIndicators.Add(LedIndicatorData.C1_kz);
-            LedIndicators.Add(LedIndicatorData.A2_kz);
-            LedIndicators.Add(LedIndicatorData.B2_kz);
-            LedIndicators.Add(LedIndicatorData.C2_kz);           
-        }
-
-        private static string GetWorkingStatus(ushort statusByte)
-        {
-            if (statusByte % 16 == 0 && statusByte != 0)
+            if (CurrentVoltageWorkStatus % 16 == 0 && CurrentVoltageWorkStatus != 0)
             {
-                int i = Convert.ToInt32(Math.Sqrt(Convert.ToDouble(statusByte)) - 4);
+                int i = Convert.ToInt32(Math.Sqrt(Convert.ToDouble(CurrentVoltageWorkStatus)) - 4);
                 return WorkingStatus[i];
             }
             else return WorkingStatus[4];

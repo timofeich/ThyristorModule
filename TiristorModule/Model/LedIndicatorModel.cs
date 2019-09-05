@@ -13,6 +13,7 @@ namespace TiristorModule.Model
         private bool? a2_kz;
         private bool? b2_kz;
         private bool? c2_kz;
+        private bool? referenceVoltage;
 
         private bool? testingStatus;
         private bool? startStatus;
@@ -30,7 +31,7 @@ namespace TiristorModule.Model
             set
             {
                 a1_kz = value;
-                this.OnPropertyChanged("A1_kz");
+                OnPropertyChanged("A1_kz");
             }
         }
         
@@ -40,7 +41,7 @@ namespace TiristorModule.Model
             set
             {
                 b1_kz = value;
-                this.OnPropertyChanged("B1_kz");
+                OnPropertyChanged("B1_kz");
             }
         }
         
@@ -50,7 +51,7 @@ namespace TiristorModule.Model
             set
             {
                 c1_kz = value;
-                this.OnPropertyChanged("C1_kz");
+                OnPropertyChanged("C1_kz");
             }
         }
         
@@ -60,7 +61,7 @@ namespace TiristorModule.Model
             set
             {
                 a2_kz = value;
-                this.OnPropertyChanged("A2_kz");
+                OnPropertyChanged("A2_kz");
             }
         }
         
@@ -70,7 +71,7 @@ namespace TiristorModule.Model
             set
             {
                 b2_kz = value;
-                this.OnPropertyChanged("B2_kz");
+                OnPropertyChanged("B2_kz");
             }
         }
 
@@ -80,7 +81,17 @@ namespace TiristorModule.Model
             set
             {
                 c2_kz = value;
-                this.OnPropertyChanged("C2_kz");
+                OnPropertyChanged("C2_kz");
+            }
+        }
+
+        public bool? ReferenceVoltage
+        {
+            get { return referenceVoltage; }
+            set
+            {
+                referenceVoltage = value;
+                OnPropertyChanged("ReferenceVoltage");
             }
         }
 
@@ -90,7 +101,7 @@ namespace TiristorModule.Model
             set
             {
                 testingStatus = value;
-                this.OnPropertyChanged("TestingStatus");
+                OnPropertyChanged("TestingStatus");
             }
         }
 
@@ -126,7 +137,7 @@ namespace TiristorModule.Model
             set
             {
                 coloreOff = value;
-                this.OnPropertyChanged("ColoreOff");
+                OnPropertyChanged("ColoreOff");
             }
         }
 
@@ -136,7 +147,7 @@ namespace TiristorModule.Model
             set
             {
                 flash = value;
-                this.OnPropertyChanged("Flash");
+                OnPropertyChanged("Flash");
             }
         }
 
@@ -145,7 +156,7 @@ namespace TiristorModule.Model
         protected void OnPropertyChanged(string propertyName)
         {
             if (PropertyChanged != null)
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
