@@ -4,13 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TiristorModule.Model;
+using TiristorModule.Properties;
 
 namespace TiristorModule.Request
 {
     public class StartRequest : BaseRequest
     {
-        private byte[] Times = new byte[9];
-        private byte[] Capacities = new byte[9];
+        private byte[] Times { get; }
+        private byte[] Capacities { get; }
+
+        private byte SlaveAddress { get; }
+        private byte Command { get; }
+        private byte TotalBytes { get; }
 
         private ushort CurrentKz1;
         private ushort CurrentKz2;
@@ -30,19 +35,19 @@ namespace TiristorModule.Request
             get { return CalculateCRC8(GetRequestWithoutCRC8()); }
         }
 
-        public StartRequest(byte AddressSlave, byte Command, byte TotalBytes, byte[] Times, byte[] Capacities,
-                            ushort CurrentKz1, byte KzTimeMs1, byte KzOnOff1, ushort CurrentKz2, byte KzTimeMs2, byte KzOnOff2,
+        public StartRequest(byte Command, byte TotalBytes,
+                            byte KzOnOff1, ushort CurrentKz2, byte KzTimeMs2, byte KzOnOff2,
                             byte AlarmThyristorTemperature, byte PlavniiPuskStart)
         {
-            this.AddressSlave = AddressSlave;
+            SlaveAddress = BytesManipulating.GetAddress(Settings.Default.SlaveAddress); 
             this.Command = Command;
             this.TotalBytes = TotalBytes;
 
-            this.Times = Times;
-            this.Capacities = Capacities;
+            Times = BytesManipulating.ConvertStringCollectionToByte(Settings.Default.Time);
+            Capacities = BytesManipulating.ConvertStringCollectionToByte(Settings.Default.Capacity);
 
-            this.CurrentKz1 = CurrentKz1;
-            this.KzTimeMs1 = KzTimeMs1;
+            CurrentKz1 = Settings.Default.CurrentKz1;
+            KzTimeMs1 = Settings.Default.VremiaKzMs1;
             this.KzOnOff1 = KzOnOff1;
 
             this.CurrentKz2 = CurrentKz2;
@@ -62,7 +67,7 @@ namespace TiristorModule.Request
 
         private List<byte> GetRequestWithoutCRC8()
         {
-            List<byte> Request = new List<byte>() { AddressSlave, Command, TotalBytes };
+            List<byte> Request = new List<byte>() { SlaveAddress, Command, TotalBytes };
 
             Request.AddRange(Times);
             Request.AddRange(Capacities);

@@ -11,6 +11,7 @@ namespace TiristorModule.View
         public ConnectSettingsView()
         {
             InitializeComponent();
+            DataContext = new MainWindowViewModel();
         }
     }
 }

@@ -32,60 +32,23 @@ namespace TiristorModule
         byte[] CurrentVoltageResponse = { 0xFF, 0x67, 22, 0x90, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 16, 1, 0x19 };
         byte[] TestThyristorResponse = { 0xFF, 0x67, 21, 0x91, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0xa0 };
 
-        StandartRequest CurrentVoltage = new StandartRequest(
-                BytesManipulating.GetAddress(Settings.Default.AddressSlave), 
-                0x90, 
-                0x00
-            );
+        private StandartRequest CurrentVoltage;
+        private StandartRequest StopThyristorModule;
+        private StandartRequest ResetThyristorCrash;
+        private StandartRequest AlarmStop;
+        private StartRequest StartThyristorModule;
+        private TestRequest TestThyristorModule;
 
-        StandartRequest StopThyristorModule = new StandartRequest(
-                BytesManipulating.GetAddress(Settings.Default.AddressSlave),
-                0x88, 
-                0x00
-            );
+        public const byte StartThyistorModuleRequestID = 0x87;
+        public const byte StopThyristorModuleRequestID = 0x88;
+        public const byte CurrentVoltageRequestID = 0x90;
+        public const byte TestThyristorModuleRequestID = 0x91;
+        public const byte ResetThyristorCrashRequestID= 0x92;
+        public const byte AlarmStopRequestID = 0x99;
 
-        StandartRequest ResetThyristorCrash = new StandartRequest(
-                BytesManipulating.GetAddress(Settings.Default.AddressSlave),                                                 
-                0x92, 
-                0x00
-            );
-
-        StandartRequest AlarmStop = new StandartRequest(
-                BytesManipulating.GetAddress(Settings.Default.AddressSlave), 
-                0x99, 
-                0x00
-            );
-
-        StartRequest StartThyristorModule = new StartRequest(
-                BytesManipulating.GetAddress(Settings.Default.AddressSlave), 
-                0x87, 
-                28,
-                BytesManipulating.ConvertStringCollectionToByte(Settings.Default.Time), 
-                BytesManipulating.ConvertStringCollectionToByte(Settings.Default.Capacity), 
-                Settings.Default.CurrentKz1, 
-                Settings.Default.VremiaKzMs1,
-                0, 
-                Settings.Default.CurrentKz2,
-                Settings.Default.VremiaKzMs2,
-                0, 
-                85,
-                1//Convert.ToByte(Data.IsPlavniiPusk)
-            );
-
-        TestRequest TestThyristorModule = new TestRequest(
-                BytesManipulating.GetAddress(Settings.Default.AddressSlave), 
-                0x88, 
-                7, 
-                Settings.Default.PersentTestPower, 
-                (byte)Settings.Default.NominalTok1sk, 
-                Settings.Default.NumberOfTest, 
-                Settings.Default.CurrentKz1, 
-                Settings.Default.CurrentKz2
-            );
-
-        BaseResponse Response = new BaseResponse(
-                BytesManipulating.GetAddress(Settings.Default.AddressMaster), 
-                BytesManipulating.GetAddress(Settings.Default.AddressSlave)
+        private BaseResponse Response = new BaseResponse(
+                BytesManipulating.GetAddress(Settings.Default.MasterAddress), 
+                BytesManipulating.GetAddress(Settings.Default.SlaveAddress)
             );
             
         public static DataModel Data { get; set; }
@@ -108,20 +71,9 @@ namespace TiristorModule
 
         public MainWindowViewModel()
         {
-            CurrentVoltageCommand = new Command(arg => CurrentVoltageClick());
-            AlarmStopCommand = new Command(arg => AlarmStopClick());
-            TestTerristorModuleCommand = new Command(arg => TestTerristorModuleClick());
-            StartTerristorModuleCommand = new Command(arg => StartTerristorModuleClick());
-            StopTerristorModuleCommand = new Command(arg => StopTerristorModuleClick());
-            ResetAvatiaTirristorCommand = new Command(arg => ResetAvatiaTirristorClick());
-        
-            ConnectionSettingsCommand = new Command(arg => ConnectionSettingsClick());
-            StartTiristorSettingsCommand = new Command(arg => StartTiristorSettingsClick());
-            TestTiristorSettingsCommand = new Command(arg => TestTiristorSettingsClick());
-
-            Data = new DataModel { WorkingStatus = null };
-            LedIndicatorData = new LedIndicatorModel { };
-            SettingsModelData = new SettingsModel { };
+            BindingCommandsToClickMethods();
+            InitializeDataModels();
+            InitializeRequests();
         }
 
         ~MainWindowViewModel()
@@ -208,6 +160,43 @@ namespace TiristorModule
         #endregion
 
         #region Methods
+        private void BindingCommandsToClickMethods()
+        {
+            CurrentVoltageCommand = new Command(arg => CurrentVoltageClick());
+            AlarmStopCommand = new Command(arg => AlarmStopClick());
+            TestTerristorModuleCommand = new Command(arg => TestTerristorModuleClick());
+            StartTerristorModuleCommand = new Command(arg => StartTerristorModuleClick());
+            StopTerristorModuleCommand = new Command(arg => StopTerristorModuleClick());
+            ResetAvatiaTirristorCommand = new Command(arg => ResetAvatiaTirristorClick());
+
+            ConnectionSettingsCommand = new Command(arg => ConnectionSettingsClick());
+            StartTiristorSettingsCommand = new Command(arg => StartTiristorSettingsClick());
+            TestTiristorSettingsCommand = new Command(arg => TestTiristorSettingsClick());
+        }
+
+        private void InitializeDataModels()
+        {
+            Data = new DataModel { WorkingStatus = null };
+            LedIndicatorData = new LedIndicatorModel { };
+            SettingsModelData = new SettingsModel { };
+        }
+
+        private void InitializeRequests()
+        {
+            StopThyristorModule = new StandartRequest(SettingsModelData.SlaveAddress, 0x88, 0x00);
+            CurrentVoltage = new StandartRequest(SettingsModelData.SlaveAddress, 0x90, 0x00);
+            ResetThyristorCrash = new StandartRequest(SettingsModelData.SlaveAddress, 0x92, 0x00);
+            AlarmStop = new StandartRequest(SettingsModelData.SlaveAddress, 0x99, 0x00);
+
+            StartThyristorModule = new StartRequest(SettingsModelData.SlaveAddress, 0x87, 28, SettingsModelData.Times,
+                SettingsModelData.Capacities, SettingsModelData.CurrentKz1, SettingsModelData.VremiaKzMs1, 0,
+                SettingsModelData.CurrentKz2, SettingsModelData.VremiaKzMs2, 0, 85, Convert.ToByte(Data.IsPlavniiPusk));
+
+            TestThyristorModule = new TestRequest(SettingsModelData.SlaveAddress, 0x88, 7, SettingsModelData.PersentTestPower,
+                SettingsModelData.NominalTok1sk, SettingsModelData.NumberOfTest, SettingsModelData.CurrentKz1, 
+                SettingsModelData.CurrentKz2);
+        }
+
         private void CommunicateWithThyristorModule(byte[] request)
         {
             SerialPortSettings.OpenSerialPortConnection(serialPort1);
@@ -259,7 +248,7 @@ namespace TiristorModule
                 Data.TemperatureOfTiristor = buff[13];
                 Data.WorkingStatus = GetWorkingStatus(buff[14]);
                 StartStopStatus(buff[14]);
-                
+               
                 GetStatusFromCurrentVoltage(buff[15]);
             }
             catch (Exception ex)

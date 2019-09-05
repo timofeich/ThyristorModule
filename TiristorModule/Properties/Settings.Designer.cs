@@ -110,24 +110,24 @@ namespace TiristorModule.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("FF")]
-        public string AddressMaster {
+        public string MasterAddress {
             get {
-                return ((string)(this["AddressMaster"]));
+                return ((string)(this["MasterAddress"]));
             }
             set {
-                this["AddressMaster"] = value;
+                this["MasterAddress"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("67")]
-        public string AddressSlave {
+        public string SlaveAddress {
             get {
-                return ((string)(this["AddressSlave"]));
+                return ((string)(this["SlaveAddress"]));
             }
             set {
-                this["AddressSlave"] = value;
+                this["SlaveAddress"] = value;
             }
         }
         

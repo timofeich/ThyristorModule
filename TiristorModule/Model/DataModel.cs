@@ -6,7 +6,7 @@ namespace TiristorModule.Model
 {
     public class DataModel : INotifyPropertyChanged
     {
-        #region Implement INotyfyPropertyChanged members
+        #region Implement INotifyPropertyChanged members
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged(string propertyName)

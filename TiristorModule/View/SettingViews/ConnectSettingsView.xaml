@@ -97,7 +97,7 @@
                 <TextBox FontSize="14" CharacterCasing="Upper" MaxLength="2" HorizontalAlignment="Left" Height="22" TextWrapping="Wrap" VerticalAlignment="Top"
                          Width="43" Grid.Column="1" Margin="5,0,0,0" Validation.ErrorTemplate="{StaticResource validationFailed}" >
                     <TextBox.Text>
-                        <Binding Source="{x:Static p:Settings.Default}" Path="AddressMaster" Mode="TwoWay"  
+                        <Binding Source="{x:Static p:Settings.Default}" Path="MasterAddress" Mode="TwoWay"  
                                  NotifyOnValidationError="True" UpdateSourceTrigger="PropertyChanged" Delay="500" StringFormat="{}{0:X2}" >
                             <Binding.ValidationRules>
                                 <local:AddressRule/>
@@ -108,7 +108,7 @@
                 </TextBox>
                 <TextBox FontSize="14" CharacterCasing="Upper" MaxLength="2" HorizontalAlignment="Left" Validation.ErrorTemplate="{StaticResource validationFailed}"  Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="43" Grid.Column="1" Grid.Row="1" Margin="5,0,0,0">
                     <TextBox.Text>
-                        <Binding Source="{x:Static p:Settings.Default}" Path="AddressSlave" Mode="TwoWay"  
+                        <Binding Source="{x:Static p:Settings.Default}" Path="SlaveAddress" Mode="TwoWay"  
                                  NotifyOnValidationError="True" UpdateSourceTrigger="LostFocus" StringFormat="{}{0:X2}">
                             <Binding.ValidationRules>
                                 <local:AddressRule/>
