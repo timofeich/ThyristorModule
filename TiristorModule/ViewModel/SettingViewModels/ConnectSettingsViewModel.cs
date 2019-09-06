@@ -26,6 +26,8 @@ namespace TiristorModule.ViewModel
             SerialPortSettings.SetStopBits(Settings.Default.StopBit));
 
             Settings.Default.Save();
+            MainWindowViewModel.InitializeRequests();
+            MainWindowViewModel.InitializeResponses();
             OnRequestClose(this, new EventArgs());
         }
 

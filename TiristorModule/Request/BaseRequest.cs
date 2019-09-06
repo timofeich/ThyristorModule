@@ -8,44 +8,9 @@ namespace TiristorModule.Request
 {
     public class BaseRequest
     {
-        private byte RequestAddress { get; set; }
-
-        private StandartRequest CurrentVoltage;
-        private StandartRequest StopThyristorModule;
-        private StandartRequest ResetThyristorCrash;
-        private StandartRequest AlarmStop;
-        private StartRequest StartThyristorModule;
-        private TestRequest TestThyristorModule;
-
-        public BaseRequest(byte RequestAddress)
-        {
-            this.RequestAddress = RequestAddress;
-        }
-
-        private void IdentifyRequestbyAddress()
-        {
-            switch (RequestAddress)
-            {
-                case MainWindowViewModel.CurrentVoltageRequestID:
-                    CurrentVoltage.StandartRequest();
-                    break;
-                case MainWindowViewModel.StopThyristorModuleRequestID:
-                    StopThyristorModule.StandartRequest();
-                    break;
-                case MainWindowViewModel.ResetThyristorCrashRequestID:
-                    ResetThyristorCrash.StandartRequest();
-                    break;
-                case MainWindowViewModel.AlarmStopRequestID:
-                    AlarmStop.StandartRequest();
-                    break;
-                case MainWindowViewModel.StartThyistorModuleRequestID:
-                    StartThyristorModule.StartThyristorModule();
-                    break;
-                case MainWindowViewModel.TestThyristorModuleRequestID:
-                    TestThyristorModule.TestThyristorModule();
-                    break;
-            }
-        }
+        protected byte AddressSlave { get; set; }
+        protected byte Command { get; set; }
+        protected byte TotalBytes { get; set; }
 
         protected byte CalculateCRC8(List<byte> requestWithoutCRC8)
         {

@@ -58,7 +58,9 @@ namespace TiristorModule.ViewModel
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
+                MainWindowViewModel.StopCycleRequest();
             }
+
         }
 
         public static void CloseSerialPortConnection(SerialPort serialPort)

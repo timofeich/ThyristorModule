@@ -11,11 +11,11 @@ namespace TiristorModule.Response
     {
         byte[] Response;
 
-        byte MasterAddress;
-        byte SlaveAddress;
+        public byte MasterAddress { get; set; }
+        public byte SlaveAddress { get; set; }
 
-        CurrentVoltageResponse CurrentVoltageResponse = new CurrentVoltageResponse();
-        TestThyristorModuleResponse TestThyristorModuleResponse = new TestThyristorModuleResponse();
+        CurrentVoltageResponse CurrentVoltageResponse;
+        TestThyristorModuleResponse TestThyristorModuleResponse;
 
         private byte CRC8
         {
@@ -26,13 +26,19 @@ namespace TiristorModule.Response
         {
             this.MasterAddress = MasterAddress;
             this.SlaveAddress = SlaveAddress;
+            CurrentVoltageResponse = new CurrentVoltageResponse(MasterAddress, SlaveAddress);
+            TestThyristorModuleResponse = new TestThyristorModuleResponse(MasterAddress, SlaveAddress);
+        }
+
+        public BaseResponse()
+        {
         }
 
         public void GetResponse(byte[] Response)
         {
             this.Response = Response;
 
-            if (IsCRC8Correct() && MasterAddress == 0xFF && SlaveAddress == 0x67)
+            if (IsCRC8Correct())
             {
                 IdentifyRequestType(); 
             }

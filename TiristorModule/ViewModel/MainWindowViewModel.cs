@@ -32,24 +32,19 @@ namespace TiristorModule
         byte[] CurrentVoltageResponse = { 0xFF, 0x67, 22, 0x90, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 16, 1, 0x19 };
         byte[] TestThyristorResponse = { 0xFF, 0x67, 21, 0x91, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0xa0 };
 
-        private StandartRequest CurrentVoltage;
-        private StandartRequest StopThyristorModule;
-        private StandartRequest ResetThyristorCrash;
-        private StandartRequest AlarmStop;
-        private StartRequest StartThyristorModule;
-        private TestRequest TestThyristorModule;
+        private static StandartRequest CurrentVoltage;
 
-        public const byte StartThyistorModuleRequestID = 0x87;
-        public const byte StopThyristorModuleRequestID = 0x88;
-        public const byte CurrentVoltageRequestID = 0x90;
-        public const byte TestThyristorModuleRequestID = 0x91;
-        public const byte ResetThyristorCrashRequestID= 0x92;
-        public const byte AlarmStopRequestID = 0x99;
+        private static StandartRequest StopThyristorModule;
 
-        private BaseResponse Response = new BaseResponse(
-                BytesManipulating.GetAddress(Settings.Default.MasterAddress), 
-                BytesManipulating.GetAddress(Settings.Default.SlaveAddress)
-            );
+        private static StandartRequest ResetThyristorCrash;
+
+        private static StandartRequest AlarmStop;
+
+        private static StartRequest StartThyristorModule;
+
+        private static TestRequest TestThyristorModule;
+
+        private static BaseResponse Response;
             
         public static DataModel Data { get; set; }
         public static LedIndicatorModel LedIndicatorData { get; set; }
@@ -74,11 +69,12 @@ namespace TiristorModule
             BindingCommandsToClickMethods();
             InitializeDataModels();
             InitializeRequests();
+            InitializeResponses();
         }
 
         ~MainWindowViewModel()
         {
-            //SerialPortSettings.CloseSerialPortConnection(serialPort1);
+            SerialPortSettings.CloseSerialPortConnection(serialPort1);
         }
 
         #region ClickHandler
@@ -181,7 +177,7 @@ namespace TiristorModule
             SettingsModelData = new SettingsModel { };
         }
 
-        private void InitializeRequests()
+        public static void InitializeRequests()
         {
             StopThyristorModule = new StandartRequest(SettingsModelData.SlaveAddress, 0x88, 0x00);
             CurrentVoltage = new StandartRequest(SettingsModelData.SlaveAddress, 0x90, 0x00);
@@ -197,7 +193,15 @@ namespace TiristorModule
                 SettingsModelData.CurrentKz2);
         }
 
-        private void CommunicateWithThyristorModule(byte[] request)
+        public static void InitializeResponses()
+        {
+            Response = new BaseResponse(
+                SettingsModelData.MasterAddress,
+                SettingsModelData.SlaveAddress
+            );
+        }
+
+        public void CommunicateWithThyristorModule(byte[] request)
         {
             SerialPortSettings.OpenSerialPortConnection(serialPort1);
             if (serialPort1.IsOpen)
@@ -205,7 +209,7 @@ namespace TiristorModule
                 if (Data.IsRequestSingle)
                 {
                     SendRequest(request);
-                    Response.GetResponse(TestThyristorResponse);
+                    ReceiveResponse();
                 }
                 else
                 {
@@ -214,22 +218,50 @@ namespace TiristorModule
                         while (!Data.IsRequestSingle)
                         {
                             SendRequest(request);
-                            Response.GetResponse(CurrentVoltageResponse);
+                            ReceiveResponse();                        
                         }
                     }));
                 }
             }
             else
             {
-                MessageBox.Show("Модуль тиристора ответа не дал.", "Ошибка!");
-                return;
+                MessageBox.Show("Модуль тиристора ответа не дал.", "Ошибка!"); 
             }
         }
 
         private void SendRequest(byte[] request)
         {
-            serialPort1.Write(request, 0, request.Length);
-            Thread.Sleep(SettingsModelData.RequestInterval);
+            try
+            {
+                serialPort1.Write(request, 0, request.Length);
+                Thread.Sleep(SettingsModelData.RequestInterval);
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка!");
+            }
+        }
+
+        private void ReceiveResponse()
+        {
+            try
+            {
+                if (serialPort1.BytesToRead >= 20)
+                {
+                    byte[] bufferReceiver = new byte[serialPort1.BytesToRead];
+                    serialPort1.Read(bufferReceiver, 0, serialPort1.BytesToRead);
+                    serialPort1.DiscardInBuffer();
+                    Response.GetResponse(bufferReceiver);
+                }
+                else
+                {
+                    MessageBox.Show("Модуль тиристора ответа не дал.");
+                }
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка!");
+            }
         }
 
         public static void OutputDataFromArrayToDataModel(ushort[] buff)//wich status will open thyristor module

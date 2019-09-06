@@ -10,18 +10,14 @@ namespace TiristorModule.Request
 {
     public class StandartRequest : BaseRequest
     {
-        private byte SlaveAddress { get; set; }
-        private byte Command { get; set; }
-        private byte TotalBytes { get; set; }
-
         private byte CRC8
         {
             get { return CalculateCRC8(GetRequestWithoutCRC8()); }
         }
 
-        public StandartRequest(byte Command, byte TotalBytes)
+        public StandartRequest(byte AddressSlave, byte Command, byte TotalBytes)
         {
-            SlaveAddress = BytesManipulating.GetAddress(Settings.Default.SlaveAddress);
+            this.AddressSlave = AddressSlave;
             this.Command = Command;
             this.TotalBytes = TotalBytes;
         }
@@ -35,7 +31,7 @@ namespace TiristorModule.Request
 
         public List<byte> GetRequestWithoutCRC8()
         {
-            List<byte> Request = new List<byte>() { SlaveAddress, Command, TotalBytes };
+            List<byte> Request = new List<byte>() { AddressSlave, Command, TotalBytes };
             return Request;
         }
     }

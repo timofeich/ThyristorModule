@@ -19,6 +19,8 @@ namespace TiristorModule.ViewModel
         private void OkTestTiristorButtonClick()
         {
             Settings.Default.Save();
+            MainWindowViewModel.InitializeRequests();
+            MainWindowViewModel.InitializeResponses();
             OnRequestClose(this, new EventArgs());
         }
 

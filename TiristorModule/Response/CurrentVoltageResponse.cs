@@ -12,29 +12,58 @@ namespace TiristorModule.Response
 {
     public class CurrentVoltageResponse
     {
-        public void GetCurrentVoltageResponse(byte[] Response)
+        private byte MasterAddress { get; }
+        private byte SlaveAddress { get; }
+
+        public CurrentVoltageResponse()
         {
+        }
+
+        public CurrentVoltageResponse(byte MasterAddress, byte SlaveAddress)
+        {
+            this.MasterAddress = MasterAddress;
+            this.SlaveAddress = SlaveAddress;
+        }
+
+        public void GetCurrentVoltageResponse(byte[] Response)
+        {            
             ushort[] frame = new ushort[16];
             int j = 4;
 
-            for (int i = 0; i < frame.Length; i++)
+            if (Response[0] == MasterAddress)
             {
-                if (i < 4)
+                if (Response[1] == SlaveAddress)
                 {
-                    frame[i] = Response[i];
-                }
-                else if (i < 13)
-                {
-                    frame[i] = BytesManipulating.FromBytes(Response[j + 1], Response[j]);
-                    j += 2;
+                    for (int i = 0; i < frame.Length; i++)
+                    {
+                        if (i < 4)
+                        {
+                            frame[i] = Response[i];
+                        }
+                        else if (i < 13)
+                        {
+                            frame[i] = BytesManipulating.FromBytes(Response[j + 1], Response[j]);
+                            j += 2;
+                        }
+                        else
+                        {
+                            frame[i] = Response[j];
+                            j++;
+                        }
+                    }
+                    MainWindowViewModel.OutputDataFromArrayToDataModel(frame);
                 }
                 else
                 {
-                    frame[i] = Response[j];
-                    j++;
+                    MessageBox.Show("Ошибка. Пришел неверный адрес слейва.");
+                    return;
                 }
             }
-            MainWindowViewModel.OutputDataFromArrayToDataModel(frame);
+            else
+            {
+                MessageBox.Show("Ошибка. Пришел неверный адрес мастера.");
+                return;
+            }
         }
 
 
