@@ -6,11 +6,8 @@ using TiristorModule.ViewModel;
 using System.Windows.Input;
 using System.Windows;
 using TiristorModule.View;
-using System.Linq;
 using TiristorModule.Properties;
-using TiristorModule.Indicators;
 using TiristorModule.Model;
-using TiristorModule.Logging;
 using TiristorModule.Request;
 using TiristorModule.Response;
 
@@ -31,6 +28,8 @@ namespace TiristorModule
 
         byte[] CurrentVoltageResponse = { 0xFF, 0x67, 22, 0x90, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 16, 1, 0x19 };
         byte[] TestThyristorResponse = { 0xFF, 0x67, 21, 0x91, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0xa0 };
+
+        bool IsRequestIsTest;
 
         private static StandartRequest CurrentVoltage;
 
@@ -69,7 +68,7 @@ namespace TiristorModule
             BindingCommandsToClickMethods();
             InitializeDataModels();
             InitializeRequests();
-            InitializeResponses();
+            InitializeResponses();           
         }
 
         ~MainWindowViewModel()
@@ -102,6 +101,7 @@ namespace TiristorModule
 
         private void TestTerristorModuleClick()
         {
+            IsRequestIsTest = true;
             CommunicateWithThyristorModule(TestThyristorModule.GetRequestPackage());
         }
 
@@ -208,8 +208,15 @@ namespace TiristorModule
             {
                 if (Data.IsRequestSingle)
                 {
-                    SendRequest(request);
-                    ReceiveResponse();
+                    if (!IsRequestIsTest)
+                    {
+                        SendRequest(request);
+                        ReceiveResponse();
+                    }
+                    else
+                    {
+                        TestModeOfCommunicateWithThyristorModule(request);
+                    }
                 }
                 else
                 {
@@ -217,16 +224,28 @@ namespace TiristorModule
                     {
                         while (!Data.IsRequestSingle)
                         {
-                            SendRequest(request);
-                            ReceiveResponse();                        
+                            if (!IsRequestIsTest)
+                            {
+                                SendRequest(request);
+                                ReceiveResponse();
+                            }
+                            else
+                            {
+                                TestModeOfCommunicateWithThyristorModule(request);
+                            }
                         }
                     }));
                 }
             }
-            else
-            {
-                MessageBox.Show("Модуль тиристора ответа не дал.", "Ошибка!"); 
-            }
+        }
+
+        private void TestModeOfCommunicateWithThyristorModule(byte[] request)
+        {
+            SendRequest(request);
+            ReceiveResponse();
+            Thread.Sleep(100);
+            ReceiveResponse();
+            IsRequestIsTest = false;
         }
 
         private void SendRequest(byte[] request)
@@ -238,11 +257,11 @@ namespace TiristorModule
             }
             catch(Exception ex)
             {
-                MessageBox.Show(ex.Message, "Ошибка!");
+                MessageBox.Show(ex.Message, "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
-        private void ReceiveResponse()
+        public static void ReceiveResponse()
         {
             try
             {
@@ -255,15 +274,15 @@ namespace TiristorModule
                 }
                 else
                 {
-                    MessageBox.Show("Модуль тиристора ответа не дал.");
+                    MessageBox.Show("Модуль тиристора ответа не дал.", "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Ошибка!");
+                MessageBox.Show(ex.Message, "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-
+    
         public static void OutputDataFromArrayToDataModel(ushort[] buff)//wich status will open thyristor module
         {
             try
@@ -285,7 +304,7 @@ namespace TiristorModule
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message, "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

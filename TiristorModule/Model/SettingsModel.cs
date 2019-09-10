@@ -1,5 +1,4 @@
-﻿using System.Collections.Specialized;
-using TiristorModule.Properties;
+﻿using TiristorModule.Properties;
 
 namespace TiristorModule.Model
 {

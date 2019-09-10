@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace TiristorModule.Response
@@ -38,15 +35,10 @@ namespace TiristorModule.Response
         {
             this.Response = Response;
 
-            if (IsCRC8Correct())
-            {
-                IdentifyRequestType(); 
-            }
+            if (IsCRC8Correct()) IdentifyRequestType(); 
             else
-            {
-                MessageBox.Show("Нарушена целостность пакета.");
-                return;
-            }
+                MessageBox.Show("Нарушена целостность пакета.", "Предупреждение", MessageBoxButton.OK, 
+                    MessageBoxImage.Warning);
         }
 
         private void IdentifyRequestType()
@@ -54,18 +46,15 @@ namespace TiristorModule.Response
             byte CommandTypeByte = 3;
 
             if (Response[CommandTypeByte] == 0x90)
-            {
                 CurrentVoltageResponse.GetCurrentVoltageResponse(Response);
-            }
             else if(Response[CommandTypeByte] == 0x91)
             {
+                CurrentVoltageResponse.GetCurrentVoltageResponse(Response);
+                MainWindowViewModel.ReceiveResponse();
                 TestThyristorModuleResponse.GetTestThyristorModuleResponse(Response);
             }
-            else
-            {
-                MessageBox.Show("Пришел неверный адрес команды");
-                return;
-            }
+            else MessageBox.Show("Пришел неверный адрес команды.", "Предупреждение", MessageBoxButton.OK, 
+                MessageBoxImage.Warning);
         }
 
         private List<byte> GetRequestWithoutCRC8()

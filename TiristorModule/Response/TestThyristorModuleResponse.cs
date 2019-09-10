@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using TiristorModule.Indicators;
-using TiristorModule.Logging;
-using TiristorModule.Model;
-using TiristorModule.View;
-using TiristorModule.ViewModel;
+﻿using System.Windows;
 
 namespace TiristorModule.Response
 {
@@ -32,22 +22,13 @@ namespace TiristorModule.Response
             if (Response[0] == MasterAddress)
             {
                 if (Response[1] == SlaveAddress)
-                {
                     MainWindowViewModel.TestThyristorWindowShow(BytesManipulating.ConvertByteArrayIntoUshortArray(Response));
-                }
-                else
-                {
-                    MessageBox.Show("Ошибка. Пришел неверный адрес слейва.");
-                    return;
-                }
-            }
-            else
-            {
-                MessageBox.Show("Ошибка. Пришел неверный адрес мастера.");
-                return;
-            }
 
+                else MessageBox.Show("Пришел неверный адрес слейва.", "Предупреждение", MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
+            }
+            else MessageBox.Show("Пришел неверный адрес мастера.", "Предупреждение", MessageBoxButton.OK, 
+                MessageBoxImage.Warning);
         }
-
     }
 }

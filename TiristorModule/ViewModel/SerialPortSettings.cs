@@ -51,14 +51,19 @@ namespace TiristorModule.ViewModel
         {
             try
             {
-                if (serialPort.IsOpen) serialPort.Close();
-                serialPort.Open();
-            }
+                if (!serialPort.IsOpen)
+                {
+                    serialPort.Close();
+                    serialPort.Open();
+                }
+                else MessageBox.Show("Порт - " + serialPort.PortName  + " закрыт.\n" +
+                    "Чтобы отправлять запросы, укажите открытый порт.", "Предупреждение", 
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
 
+            }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
-                MainWindowViewModel.StopCycleRequest();
+                MessageBox.Show(ex.Message, "Ошибка!", MessageBoxButton.OKCancel, MessageBoxImage.Error);               
             }
 
         }
@@ -69,10 +74,9 @@ namespace TiristorModule.ViewModel
             {
                 if (serialPort.IsOpen) serialPort.Close();
             }
-
             catch (Exception ex)
             {
-                throw ex;
+                MessageBox.Show(ex.Message, "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }
