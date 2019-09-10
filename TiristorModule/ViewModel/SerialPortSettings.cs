@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO.Ports;
 using System.Windows;
+using TiristorModule.Logging;
 
 namespace TiristorModule.ViewModel
 {
@@ -56,16 +57,20 @@ namespace TiristorModule.ViewModel
                     serialPort.Close();
                     serialPort.Open();
                 }
-                else MessageBox.Show("Порт - " + serialPort.PortName  + " закрыт.\n" +
-                    "Чтобы отправлять запросы, укажите открытый порт.", "Предупреждение", 
-                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                else
+                {
+                    MessageBox.Show("Порт - " + serialPort.PortName + " закрыт.\n" +
+                      "Чтобы отправлять запросы, укажите открытый порт.", "Предупреждение",
+                      MessageBoxButton.OK, MessageBoxImage.Warning);
+                    Logger.Log.Warn("Порт - " + serialPort.PortName + " закрыт.");
 
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Ошибка!", MessageBoxButton.OKCancel, MessageBoxImage.Error);               
+                MessageBox.Show(ex.Message, "Ошибка!", MessageBoxButton.OKCancel, MessageBoxImage.Error);
+                Logger.Log.Error(ex.Message);
             }
-
         }
 
         public static void CloseSerialPortConnection(SerialPort serialPort)
@@ -77,6 +82,7 @@ namespace TiristorModule.ViewModel
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Error);
+                Logger.Log.Error(ex.Message);
             }
         }
     }

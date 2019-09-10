@@ -10,6 +10,8 @@ using TiristorModule.Properties;
 using TiristorModule.Model;
 using TiristorModule.Request;
 using TiristorModule.Response;
+using TiristorModule.Logging;
+using System.Linq;
 
 namespace TiristorModule
 {
@@ -68,7 +70,8 @@ namespace TiristorModule
             BindingCommandsToClickMethods();
             InitializeDataModels();
             InitializeRequests();
-            InitializeResponses();           
+            InitializeResponses();
+            Logger.InitLogger();
         }
 
         ~MainWindowViewModel()
@@ -253,11 +256,13 @@ namespace TiristorModule
             try
             {
                 serialPort1.Write(request, 0, request.Length);
-                Thread.Sleep(SettingsModelData.RequestInterval);
+                Logger.Log.Debug("Запрос - " + BitConverter.ToString(request));
+                Thread.Sleep(SettingsModelData.RequestInterval);                
             }
             catch(Exception ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Error);
+                Logger.Log.Error(ex.Message);
             }
         }
 
@@ -270,16 +275,19 @@ namespace TiristorModule
                     byte[] bufferReceiver = new byte[serialPort1.BytesToRead];
                     serialPort1.Read(bufferReceiver, 0, serialPort1.BytesToRead);
                     serialPort1.DiscardInBuffer();
+                    Logger.Log.Debug("Ответ - " + BitConverter.ToString(bufferReceiver));
                     Response.GetResponse(bufferReceiver);
                 }
                 else
                 {
-                    MessageBox.Show("Модуль тиристора ответа не дал.", "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("Модуль тиристора ответа не дал.", "Предупреждение", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    Logger.Log.Warn("Модуль тиристора ответа не дал.");
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Error);
+                Logger.Log.Error(ex.Message);
             }
         }
     
@@ -301,10 +309,12 @@ namespace TiristorModule
                 StartStopStatus(buff[14]);
                
                 GetStatusFromCurrentVoltage(buff[15]);
+                Logger.Log.Info(buff.Skip(4).Take(buff.Length - 2).ToArray());
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Error);
+                Logger.Log.Error(ex.Message);
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using TiristorModule.Logging;
 
 namespace TiristorModule.Response
 {
@@ -46,12 +47,18 @@ namespace TiristorModule.Response
                     MainWindowViewModel.OutputDataFromArrayToDataModel(frame);
                 }
                 else
-                    MessageBox.Show("Пришел неверный адрес слейва.", "Предупреждение", MessageBoxButton.OK, 
+                {
+                    MessageBox.Show("Пришел неверный адрес слейва.", "Предупреждение", MessageBoxButton.OK,
                         MessageBoxImage.Warning);
+                    Logger.Log.Warn("Пришел неверный адрес слейва.");
+                }
             }
             else
+            {
                 MessageBox.Show("Пришел неверный адрес мастера.", "Предупреждение", MessageBoxButton.OK,
                     MessageBoxImage.Warning);
+                Logger.Log.Warn("Пришел неверный адрес мастера.");
+            }
         }
     }
 }
