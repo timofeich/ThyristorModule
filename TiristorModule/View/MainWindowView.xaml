@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:uc="clr-namespace:LedControl;assembly=LedControl"
         mc:Ignorable="d"
-        Title="Главное окно" Height="450" Width="582.5"
+        Title="Главное окно" Height="455" Width="600" MinHeight="455" MinWidth="550"
+        MaxHeight="455" MaxWidth="750"
         WindowStartupLocation="CenterScreen" Background="LightGray">
 
     <Grid Margin="0,0,2,0">
@@ -18,7 +19,7 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="2*"/>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="0.8*"/>
                     </Grid.ColumnDefinitions>
 
                     <!-- U, I1, I2 Modes -->
@@ -38,29 +39,26 @@
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="1.5*"/>
+                                            <ColumnDefinition Width="1.8*"/>
                                         </Grid.ColumnDefinitions>
 
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="*"/>
-                                            <RowDefinition Height="*"/>
-                                            <RowDefinition Height="*"/>
-                                        </Grid.RowDefinitions>
-
-                                        <TextBlock Grid.Row="0" Grid.Column="0" Margin="0 5">
+                                        <StackPanel Grid.Column="0">
+                                            <TextBlock Margin="0 5">
                                         <Run Text="U"/><Run BaselineAlignment="Subscript" FontSize="12" Text="A"/>
-                                        </TextBlock>
-                                        <TextBlock Grid.Row="0" Grid.Column="1" Margin="0 5 0 5" x:Name="VoltageATextBlock" Text="{Binding Data.VoltageA, Mode=OneWay, TargetNullValue = 0}"/>
-
-                                        <TextBlock Grid.Row="1" Grid.Column="0" Margin="0 5">
+                                            </TextBlock>
+                                            <TextBlock Margin="0 5">
                                         <Run Text="U"/><Run BaselineAlignment="Subscript" FontSize="12" Text="B"/>
-                                        </TextBlock>
-                                        <TextBlock Grid.Row="1" Grid.Column="1" Margin="0 5 0 5" x:Name="VoltageBTextBlock" Text="{Binding Data.VoltageB, Mode=OneWay, TargetNullValue = 0}"/>
-
-                                        <TextBlock  Grid.Row="2" Grid.Column="0" Margin="0 5">
+                                            </TextBlock>
+                                            <TextBlock Margin="0 5">
                                             <Run Text="U"/><Run BaselineAlignment="Subscript" FontSize="12" Text="C"/>
-                                        </TextBlock>
-                                        <TextBlock Grid.Row="2" Grid.Column="1" Margin="0 5 0 5" Text="{Binding Data.VoltageC, Mode=OneWay, TargetNullValue = 0}"/>
+                                            </TextBlock>
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Column="1">
+                                            <TextBlock Margin="0 6" x:Name="VoltageATextBlock" Text="{Binding Data.VoltageA, Mode=OneWay, TargetNullValue = 0}"/>
+                                            <TextBlock Margin="0 5" Text="{Binding Data.VoltageB, Mode=OneWay, TargetNullValue = 0}"/>
+                                            <TextBlock Margin="0 6" Text="{Binding Data.VoltageC, Mode=OneWay, TargetNullValue = 0}"/>
+                                        </StackPanel>
                                     </Grid>
                                 </StackPanel>
                             </GroupBox>
@@ -71,66 +69,59 @@
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="1.5*"/>
+                                            <ColumnDefinition Width="1.8*"/>
                                         </Grid.ColumnDefinitions>
 
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="*"/>
-                                            <RowDefinition Height="*"/>
-                                            <RowDefinition Height="*"/>
-                                        </Grid.RowDefinitions>
+                                        <StackPanel Grid.Column="0">
+                                            <TextBlock Margin="0 5">
+                                                <Run Text="I"/><Run BaselineAlignment="Subscript" FontSize="12" Text="A1"/>
+                                            </TextBlock>
+                                            <TextBlock Margin="0 5">
+                                                <Run Text="I"/><Run BaselineAlignment="Subscript" FontSize="12" Text="B1"/>
+                                            </TextBlock>
+                                            <TextBlock Margin="0 5">
+                                                <Run Text="I"/><Run BaselineAlignment="Subscript" FontSize="12" Text="C1"/>
+                                            </TextBlock>
+                                        </StackPanel>
 
-                                        <TextBlock Grid.Column="0" Grid.Row="0" Margin="0 5">
-                                            <Run Text="I"/><Run BaselineAlignment="Subscript" FontSize="12" Text="A1"/>
-                                        </TextBlock>
-                                        <TextBlock Grid.Column="1" Grid.Row="0" Margin="0 5 0 5" x:Name="AmperageA1" Text="{Binding Data.AmperageA1, Mode=OneWay, TargetNullValue = 0 }"/>
-
-                                        <TextBlock Grid.Column="0" Grid.Row="1" Margin="0 5">
-                                            <Run Text="I"/><Run BaselineAlignment="Subscript" FontSize="12" Text="B1"/>
-                                        </TextBlock>
-                                        <TextBlock Grid.Column="1" Grid.Row="1" Margin="0 5 0 5" Text="{Binding Data.AmperageB1, Mode=OneWay, TargetNullValue = 0}"/>
-
-                                        <TextBlock Grid.Column="0" Grid.Row="2" Margin="0 5">
-                                            <Run Text="I"/><Run BaselineAlignment="Subscript" FontSize="12" Text="C1"/>
-                                        </TextBlock>
-                                        <TextBlock Grid.Column="1" Grid.Row="2" Margin="0 5 0 5" Text="{Binding Data.AmperageC1, Mode=OneWay, TargetNullValue = 0}"/>
+                                        <StackPanel Grid.Column="1">
+                                            <TextBlock Margin="0 6" Text="{Binding Data.AmperageA1, Mode=OneWay, TargetNullValue = 0}"/>
+                                            <TextBlock Margin="0 5" Text="{Binding Data.AmperageB1, Mode=OneWay, TargetNullValue = 0}"/>
+                                            <TextBlock Margin="0 6" Text="{Binding Data.AmperageC1, Mode=OneWay, TargetNullValue = 0}"/>
+                                        </StackPanel>
                                     </Grid>
                                 </StackPanel>
                             </GroupBox>
 
                             <!-- I2 -->
                             <GroupBox Grid.Column="2"  Header="I2, вх" FontSize="16" FontWeight="DemiBold" Background="White" Padding="5">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="1.8*"/>
+                                    </Grid.ColumnDefinitions>
 
-                                <StackPanel>
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="1.5*"/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="*"/>
-                                            <RowDefinition Height="*"/>
-                                            <RowDefinition Height="*"/>
-                                        </Grid.RowDefinitions>
-
-                                        <TextBlock  Grid.Row="0" Grid.Column="0" Margin="0 5">
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Margin="0 5">
                                             <Run Text="I"/><Run BaselineAlignment="Subscript" FontSize="12" Text="A2"/>
                                         </TextBlock>
-                                        <TextBlock Grid.Row="0" Grid.Column="1" Margin="0 5 0 5" Text="{Binding Data.AmperageA2, Mode=OneWay, TargetNullValue=0}"/>
-
-                                        <TextBlock Grid.Row="1" Grid.Column="0" Margin="0 5">
+                                        <TextBlock Margin="0 5">
                                             <Run Text="I"/><Run BaselineAlignment="Subscript" FontSize="12" Text="B2"/>
                                         </TextBlock>
-                                        <TextBlock Grid.Row="1" Grid.Column="1" Margin="0 5 0 5" Text="{Binding Data.AmperageB2, Mode=OneWay, TargetNullValue=0}"/>
-
-                                        <TextBlock Grid.Row="2" Grid.Column="0" Margin="0 5">
+                                        <TextBlock Margin="0 5">
                                             <Run Text="I"/><Run BaselineAlignment="Subscript" FontSize="12" Text="C2"/>
                                         </TextBlock>
-                                        <TextBlock Grid.Row="2" Grid.Column="1" Margin="0 5 0 5" Text="{Binding Data.AmperageC2, Mode=OneWay, TargetNullValue=0 }"/>
-                                    </Grid>
-                                </StackPanel>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Margin="0 6" Text="{Binding Data.AmperageA2, Mode=OneWay, TargetNullValue=0}"/>
+                                        <TextBlock Margin="0 5" Text="{Binding Data.AmperageB2, Mode=OneWay, TargetNullValue=0}"/>
+                                        <TextBlock Margin="0 6" Text="{Binding Data.AmperageC2, Mode=OneWay, TargetNullValue=0}"/>
+                                    </StackPanel>
+
+                                </Grid>
                             </GroupBox>
+                            
                         </Grid>
 
                         <!-- Modes -->
@@ -149,7 +140,7 @@
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="0.8*"/>
-                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition TextBlock.TextAlignment="Left" Width="*"/>
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*"/>
@@ -159,35 +150,37 @@
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
 
-                                <TextBlock Grid.Row="0" Grid.Column="0" Margin="5,5,0,10" Text="Старт:"  />
+                                <TextBlock Grid.Row="0" TextAlignment="Right" Grid.Column="0" Margin="0 5 5 10" Text="Старт:"  />
                                 <uc:Led Grid.Row="0"  Grid.Column="1" Margin="0,0,0,5" IsActive="{Binding LedIndicatorData.StartStatus, Mode=OneWay}" ColorNull="Gray"/>
 
-                                <TextBlock Grid.Row="1" Grid.Column="0"  Margin="10,12,0,10" Text="Стоп:" />
+                                <TextBlock Grid.Row="1" TextAlignment="Right" Grid.Column="0"  Margin="0 12 5 10" Text="Стоп:" />
                                 <uc:Led Grid.Row="1" Grid.Column="1" Margin="0,8,0,5" IsActive="{Binding LedIndicatorData.StopStatus, Mode=OneWay}" ColorNull="Gray"/>
 
-                                <TextBlock Grid.Row="2" Grid.Column="0" Text="Статус:" Margin="0,10,0,10" />
+                                <TextBlock Grid.Row="2" TextAlignment="Right" Grid.Column="0" Text="Статус:" Margin="0,10,5,10" />
                                 <TextBlock Grid.Row="2" Grid.Column="1"  Margin="0,10,0,10" Text="{Binding Data.WorkingStatus, Mode=OneWay}" />
 
-                                <TextBlock Grid.Row="3" Grid.Column="0"  Margin="0,5,0,10" FontWeight="DemiBold">
+                                <TextBlock Grid.Row="3" TextAlignment="Right" Grid.Column="0"  Margin="0,5,5,10" FontWeight="DemiBold">
                                     <Run Text="t"/><Run BaselineAlignment="Subscript" FontSize="10" Text="тир-в"/>
                                     <Run Text="Сº"/>
                                 </TextBlock>
                                 <TextBlock Grid.Row="3" Grid.Column="1"  Margin="5,3,0,10" FontSize="16" FontWeight="DemiBold" Text="{Binding Data.TemperatureOfTiristor, Mode=OneWay, TargetNullValue=0}" />
 
 
-                                <TextBlock Text="Тест ст" Grid.Column="0" Grid.Row="4"  Margin="0,5,0,5"/>
-                                <uc:Led Grid.Row="4" Grid.Column="1"  Margin="0,0,0,0" IsActive="{Binding LedIndicatorData.TestingStatus, Mode=OneWay}" ColorNull="Gray"/>
+                                <TextBlock  TextAlignment="Right" Grid.Column="0" Grid.Row="4"  Margin="0,5,5,5">
+                                    Тест<LineBreak/> статус
+                                </TextBlock>
+                                <uc:Led Grid.Row="4" Grid.Column="1"  Margin="0 8" IsActive="{Binding LedIndicatorData.TestingStatus, Mode=OneWay}" ColorNull="Gray"/>
                             </Grid>
                         </StackPanel>
                     </GroupBox>
 
                     <!-- StatusCrash-->
-                    <GroupBox Grid.Column="2" Header="Статус аварии" Background="White" FontSize="14" Padding="5" Margin="5 0 0 0">
+                    <GroupBox Grid.Column="2" TextBlock.TextAlignment="Right" Header="Статус аварии" Background="White" FontSize="14" Padding="5" Margin="5 0 0 0">
                         <Grid>
 
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="1.5*"/>
+                                <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
 
                             <Grid.RowDefinitions>
@@ -260,6 +253,8 @@
                     <Button Grid.Column="2" Margin="10 10 10 10" x:Name="ResetAvariaTiristorModuleButton" Content="Сброс аварии"
                             Command="{Binding ResetAvatiaTirristorCommand}"/>
                 </Grid>
+                
+                <!-- Bottom Menu -->
                 <Menu Background="White" BorderBrush="Gray" BorderThickness="1" Padding="1" Margin="0 2">
                     <MenuItem Header="Настройки" Background="LightGray" BorderBrush="Gray">
 
@@ -273,8 +268,6 @@
                         </MenuItem>
                     </MenuItem>
                 </Menu>
-
-                <!-- Bottom Menu -->
             </StackPanel>
         </Border>
 
