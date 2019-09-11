@@ -28,23 +28,17 @@ namespace TiristorModule
             "Авария", "Тормоз", "Байпасс", "Разгон", "Дежурный режим"
         };
 
-        byte[] CurrentVoltageResponse = { 0xFF, 0x67, 22, 0x90, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 16, 1, 0x19 };
-        byte[] TestThyristorResponse = { 0xFF, 0x67, 21, 0x91, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0xa0 };
+        //byte[] CurrentVoltageResponse = { 0xFF, 0x67, 22, 0x90, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 16, 1, 0x19 };
+        //byte[] TestThyristorResponse = { 0xFF, 0x67, 21, 0x91, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0xa0 };
 
         bool IsRequestIsTest;
 
         private static StandartRequest CurrentVoltage;
-
         private static StandartRequest StopThyristorModule;
-
         private static StandartRequest ResetThyristorCrash;
-
         private static StandartRequest AlarmStop;
-
         private static StartRequest StartThyristorModule;
-
         private static TestRequest TestThyristorModule;
-
         private static BaseResponse Response;
             
         public static DataModel Data { get; set; }
