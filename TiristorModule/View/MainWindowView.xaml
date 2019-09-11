@@ -255,8 +255,8 @@
                 </Grid>
                 
                 <!-- Bottom Menu -->
-                <Menu Background="White" BorderBrush="Gray" BorderThickness="1" Padding="1" Margin="0 2">
-                    <MenuItem Header="Настройки" Background="LightGray" BorderBrush="Gray">
+                <Menu Background="White" Height="30" BorderBrush="Gray" BorderThickness="1" Padding="1" Margin="0 2">
+                    <MenuItem Height="25" Header="Настройки" Background="LightGray" BorderBrush="Gray">
 
                         <MenuItem  Header="Параметры связи" x:Name="ConnectSettingsButton" 
                           Command="{Binding ConnectionSettingsCommand}"/>
