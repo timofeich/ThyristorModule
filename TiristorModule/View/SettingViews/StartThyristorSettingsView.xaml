@@ -33,6 +33,7 @@
         </Style>
 
     </Window.Resources>
+    
     <Border Padding="10">
         <Grid>
             <StackPanel>
@@ -396,6 +397,7 @@
                     </GroupBox>
                 </Grid>
 
+                <!-- Ok & Cancel buttons-->
                 <Grid Background="White" Margin="0 5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -405,6 +407,7 @@
                     <Button Grid.Column="0" Height="40" Margin="10 10" Content="ОК" FontSize="14" Command="{Binding SaveStartTiristorSettingsCommand}" />
                     <Button Grid.Column="1"  Margin="10 10" Content="Отмена" FontSize="14" Command="{Binding CancelStartTiristorSettingsCommand}"/>
                 </Grid>
+                
             </StackPanel>
         </Grid>
     </Border>

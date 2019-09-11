@@ -137,6 +137,7 @@
                     </GroupBox>
                 </Grid>
 
+                <!-- Ok & Cancel buttons-->
                 <Grid Background="White" Margin="0 5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -146,6 +147,7 @@
                     <Button FontSize="14" Height="40" Margin="10 10" Grid.Column="0" Content="ОК"   Command="{Binding SaveConnectSettingsCommand}" />
                     <Button FontSize="14" Margin="10 10" Grid.Column="1" Content="Отмена" Command="{Binding CancelConnectSettingsCommand}"/>
                 </Grid>
+                
             </StackPanel>
         </Border>
     </Grid>
