@@ -25,95 +25,125 @@
                     <StackPanel Grid.Column="0">
 
                         <!-- U, I1, I2 -->
-                        <Grid>
+                        <Grid Margin="5 0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
 
-                            <GroupBox Grid.Column="0" Header="I1, вх" FontSize="14" Background="White">
+                            <!-- U -->
+                            <GroupBox Grid.Column="0" Header="U, вх" FontSize="16" Background="White" Padding="5" Margin="0 0 5 0">
+                                <StackPanel>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="1.5*"/>
+                                        </Grid.ColumnDefinitions>
 
-                                <Grid Margin="0,10,-2,-1" TextBlock.FontSize="16">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
 
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Row="0" Grid.Column="0" Margin="0 5">
+                                        <Run Text="U"/>
+                                        <Run BaselineAlignment="Subscript" FontSize="12" Text="A"/>
+                                        </TextBlock>
+                                        <TextBlock Grid.Row="0" Grid.Column="1" Margin="2 5 0 5" x:Name="VoltageATextBlock" Text="{Binding Data.VoltageA, Mode=OneWay, TargetNullValue = 0}"/>
 
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition/>
-                                        <RowDefinition/>
-                                        <RowDefinition/>
-                                    </Grid.RowDefinitions>
+                                        <TextBlock Grid.Row="1" Grid.Column="0" Margin="0 5">
+                                        <Run Text="U"/>
+                                        <Run BaselineAlignment="Subscript" FontSize="12" Text="B"/>
+                                        </TextBlock>
+                                        <TextBlock Grid.Row="1" Grid.Column="1" Margin="2 5 0 5" x:Name="VoltageBTextBlock" Text="{Binding Data.VoltageB, Mode=OneWay, TargetNullValue = 0}"/>
 
-                                    <TextBlock  Grid.Row="0" Grid.Column="0"><Run Text="I"/><Run BaselineAlignment="Subscript" FontSize="8pt" Text="A1"/><Run Text="="/></TextBlock>
-                                    <TextBlock x:Name="AmperageA1" Text="{Binding Data.AmperageA1, Mode=OneWay, TargetNullValue = 0 }" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" Margin="1,0,0,0"/>
-
-                                    <TextBlock Grid.Row="1" Grid.Column="0"><Run Text="I"/><Run BaselineAlignment="Subscript" FontSize="8pt" Text="B1"/><Run Text="="/></TextBlock>
-                                    <TextBlock Text="{Binding Data.AmperageB1, Mode=OneWay, TargetNullValue = 0}" Grid.Row="1" Grid.Column="1"  HorizontalAlignment="Left" Margin="1,0,0,0"/>
-
-                                    <TextBlock  Grid.Row="2" Grid.Column="0"><Run Text="I"/><Run BaselineAlignment="Subscript" FontSize="8pt" Text="C1"/><Run Text="="/></TextBlock>
-                                    <TextBlock Text="{Binding Data.AmperageC1, Mode=OneWay, TargetNullValue= 0}" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left" Margin="1,0,0,0"/>
-                                </Grid>
+                                        <TextBlock  Grid.Row="2" Grid.Column="0" Margin="0 5">
+                                            <Run Text="U"/>
+                                            <Run BaselineAlignment="Subscript" FontSize="12" Text="C"/>
+                                        </TextBlock>
+                                        <TextBlock Grid.Row="2" Grid.Column="1" Margin="2 5 0 5" Text="{Binding Data.VoltageC, Mode=OneWay, TargetNullValue = 0}"/>
+                                    </Grid>
+                                </StackPanel>
                             </GroupBox>
 
-                            <GroupBox Grid.Column="1" Header="U, вх" FontSize="14"  Background="White">
-                                <Grid TextBlock.FontSize="16" Margin="0,10,-2,-1">
+                            <!-- I1 -->
+                            <GroupBox Grid.Column="1" Header="I1, вх" FontSize="16" Background="White" Padding="5" Margin="0 0 5 0">
+                                <StackPanel>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="1.5*"/>
+                                        </Grid.ColumnDefinitions>
+                                        
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+                                        
+                                        <TextBlock Grid.Column="0" Grid.Row="0" Margin="0 5">
+                                            <Run Text="I"/>
+                                            <Run BaselineAlignment="Subscript" FontSize="12" Text="A1"/>
+                                        </TextBlock>
+                                        <TextBlock Grid.Column="1" Grid.Row="0" Margin="2 5 0 5" x:Name="AmperageA1" Text="{Binding Data.AmperageA1, Mode=OneWay, TargetNullValue = 0 }"/>
 
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Grid.Row="1" Margin="0 5">
+                                            <Run Text="I"/>
+                                            <Run BaselineAlignment="Subscript" FontSize="12" Text="B1"/>
+                                        </TextBlock>
+                                        <TextBlock Grid.Column="1" Grid.Row="1" Margin="2 5 0 5" Text="{Binding Data.AmperageB1, Mode=OneWay, TargetNullValue = 0}"/>
 
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition/>
-                                        <RowDefinition/>
-                                        <RowDefinition/>
-                                    </Grid.RowDefinitions>
-
-                                    <TextBlock Grid.Row="0" Grid.Column="0" ><Run Text="U"/><Run BaselineAlignment="Subscript" FontSize="8pt" Text="A"/><Run Text="="/></TextBlock>
-                                    <TextBlock x:Name="VoltageATextBlock" Text="{Binding Data.VoltageA, Mode=OneWay, TargetNullValue = 0}" Grid.Row="0" Grid.Column="1" 
-                        HorizontalAlignment="Left" Width="auto"/>
-
-                                    <TextBlock Grid.Row="1" ><Run Text="U"/><Run BaselineAlignment="Subscript" FontSize="8pt" Text="B"/><Run Text="="/></TextBlock>
-                                    <TextBlock x:Name="VoltageBTextBlock" Text="{Binding Data.VoltageB, Mode=OneWay, TargetNullValue = 0}" Grid.Row="1" Grid.Column="1" 
-                       HorizontalAlignment="Left"/>
-
-                                    <TextBlock  Grid.Row="2" Grid.Column="0"><Run Text="U"/><Run BaselineAlignment="Subscript" FontSize="8pt" Text="C"/><Run Text="="/></TextBlock>
-                                    <TextBlock Text="{Binding Data.VoltageC, Mode=OneWay, TargetNullValue = 0}" Grid.Row="2" Grid.Column="1" 
-                       HorizontalAlignment="Left"/>
-                                </Grid>
+                                        <TextBlock Grid.Column="0" Grid.Row="2" Margin="0 5">
+                                            <Run Text="I"/>
+                                            <Run BaselineAlignment="Subscript" FontSize="12" Text="C1"/>
+                                        </TextBlock>
+                                        <TextBlock Grid.Column="1" Grid.Row="2" Margin="2 5 0 5" Text="{Binding Data.AmperageC1, Mode=OneWay, TargetNullValue = 0}"/>
+                                    </Grid>
+                                </StackPanel>
                             </GroupBox>
 
-                            <GroupBox Grid.Column="2" Header="I2, вх" FontSize="14" Background="White">
-                                <Grid TextBlock.FontSize="16" HorizontalAlignment="Left" Height="110" Margin="0,10,-2,-1" VerticalAlignment="Top" Width="87">
+                            <!-- I2 -->
+                            <GroupBox Grid.Column="2" Header="I2, вх" FontSize="16" Background="White" Padding="5">
 
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="1.5*"/>
+                                        </Grid.ColumnDefinitions>
 
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition/>
-                                        <RowDefinition/>
-                                        <RowDefinition/>
-                                    </Grid.RowDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
 
-                                    <TextBlock  Grid.Row="0" Grid.Column="0"><Run Text="I"/><Run BaselineAlignment="Subscript" FontSize="8pt" Text="A2"/><Run Text="="/></TextBlock>
-                                    <TextBlock Text="{Binding Data.AmperageA2, Mode=OneWay, TargetNullValue=0}" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" Margin="1,0,0,0"/>
+                                        <TextBlock  Grid.Row="0" Grid.Column="0" Margin="0 5">
+                                            <Run Text="I"/>
+                                            <Run BaselineAlignment="Subscript" FontSize="12" Text="A2"/>
+                                        </TextBlock>
+                                        <TextBlock Grid.Row="0" Grid.Column="1" Margin="2 5 0 5" Text="{Binding Data.AmperageA2, Mode=OneWay, TargetNullValue=0}"/>
 
-                                    <TextBlock Grid.Row="1" Grid.Column="0" ><Run Text="I"/><Run BaselineAlignment="Subscript" FontSize="8pt" Text="B2"/><Run Text="="/></TextBlock>
-                                    <TextBlock Text="{Binding Data.AmperageB2, Mode=OneWay, TargetNullValue=0}" Grid.Row="1" Grid.Column="1"  HorizontalAlignment="Left" Margin="1,0,0,0"/>
+                                        <TextBlock Grid.Row="1" Grid.Column="0" Margin="0 5">
+                                            <Run Text="I"/>
+                                            <Run BaselineAlignment="Subscript" FontSize="12" Text="B2"/>
+                                        </TextBlock>
+                                        <TextBlock Grid.Row="1" Grid.Column="1" Margin="2 5 0 5" Text="{Binding Data.AmperageB2, Mode=OneWay, TargetNullValue=0}"/>
 
-                                    <TextBlock Grid.Row="2" Grid.Column="0"><Run Text="I"/><Run BaselineAlignment="Subscript" FontSize="8pt" Text="C2"/><Run Text="="/></TextBlock>
-                                    <TextBlock Text="{Binding Data.AmperageC2, Mode=OneWay, TargetNullValue=0 }" Grid.Row="2" Grid.Column="1"  HorizontalAlignment="Left" Margin="1,0,0,0"/>
-                                </Grid>
+                                        <TextBlock Grid.Row="2" Grid.Column="0" Margin="0 5">
+                                            <Run Text="I"/>
+                                            <Run BaselineAlignment="Subscript" FontSize="12" Text="C2"/>
+                                        </TextBlock>
+                                        <TextBlock Grid.Row="2" Grid.Column="1" Margin="2 5 0 5" Text="{Binding Data.AmperageC2, Mode=OneWay, TargetNullValue=0 }"/>
+                                    </Grid>
+                                </StackPanel>
                             </GroupBox>
                         </Grid>
 
                         <!-- Modes -->
-                        <GroupBox Header="Режимы" FontSize="14" Background="White">
+                        <GroupBox Header="Режимы" FontSize="14" Background="White" Margin="0 0 5 0">
                             <Grid Height="70" VerticalAlignment="Top" Margin="0,0,-2,0">
                                 <CheckBox Content="Плавный пуск старт" IsChecked="{Binding Data.IsPlavniiPusk, Mode=TwoWay}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="257" Height="26" Margin="10,38,0,0"/>
                                 <CheckBox Content="Режим одиночных запросов"  IsChecked="{Binding Data.IsRequestSingle, Mode=TwoWay}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="257" Height="26" Margin="10,10,0,0"/>
