@@ -77,8 +77,8 @@ namespace TiristorModule
 
         private void StartTerristorModuleClick()
         {
-            //CommunicateWithThyristorModule(StartThyristorModule.GetRequestPackage());
-            GetStatusFromCurrentVoltage(127);
+            CommunicateWithThyristorModule(StartThyristorModule.GetRequestPackage());
+            //GetStatusFromCurrentVoltage(127);
         }
 
         private void StopTerristorModuleClick()

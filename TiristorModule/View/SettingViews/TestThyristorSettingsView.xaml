@@ -7,8 +7,8 @@
         xmlns:local="clr-namespace:TiristorModule.Validation"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
-        Title="Параметры - Тест тир. модуля" Height="290" Width="280"
-        MinHeight="290" MaxHeight="290" MinWidth="280" MaxWidth="400" Background="LightGray">
+        Title="Тест тир. модуля" Height="300" Width="300"
+        MinHeight="300" MaxHeight="300" MinWidth="300" MaxWidth="400" Background="LightGray">
 
     <!-- Validation style-->
     <Window.Resources>
@@ -36,16 +36,18 @@
     <Border Padding="10">
         <Grid>
             <StackPanel TextBlock.FontSize="14">
+                
+                <!-- TestDataTir -->
                 <Grid Background="White" Margin="10 0">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="2*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
                     <StackPanel Grid.Column="0" TextBlock.TextAlignment="Right" Margin="5 10">
                         <TextBlock Margin="0 5" Text="Мощность %"/>
                         <TextBlock Margin="0 5">
-                    Номинальный ток 1ск/10
+                    Номинальный ток
                         </TextBlock>
                         <TextBlock Margin="0 5">
                     Количество<LineBreak/> тестов
@@ -117,15 +119,17 @@
                     </StackPanel>
                 </Grid>
 
+                <!-- OK & Cancel -->
                 <Grid Background="White" Margin="10 10">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     
-                    <Button Height="30" Margin="5 5" Grid.Column="0" FontSize="14" Content="ОК" Command="{Binding SaveTestTiristorSettingsCommand}" />
-                    <Button Margin="5 5" Grid.Column="1" FontSize="14" Content="Отмена" Command="{Binding CancelTestTiristorSettingsCommand}" />
+                    <Button Height="30" Margin="10 10" Grid.Column="0" FontSize="14" Content="ОК" Command="{Binding SaveTestTiristorSettingsCommand}" />
+                    <Button Margin="10 10" Grid.Column="1" FontSize="14" Content="Отмена" Command="{Binding CancelTestTiristorSettingsCommand}" />
                 </Grid>
+                
             </StackPanel>
         </Grid>
     </Border>

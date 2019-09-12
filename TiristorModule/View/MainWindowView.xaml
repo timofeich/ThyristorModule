@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:uc="clr-namespace:LedControl;assembly=LedControl"
         mc:Ignorable="d"
-        Title="Главное окно" Height="455" Width="600" MinHeight="455" MinWidth="550"
-        MaxHeight="455" MaxWidth="750"
+        Title="Главное окно" Height="460" Width="600" MinHeight="460" MinWidth="550"
+        MaxHeight="460" MaxWidth="750"
         WindowStartupLocation="CenterScreen" Background="LightGray">
 
     <Grid Margin="0,0,2,0">
@@ -128,7 +128,7 @@
                         <GroupBox Header="Режимы" FontSize="14" Background="White" Padding="5" Margin="0 0 5 0">
                             <StackPanel>
                                 <CheckBox Margin = "0 5" Content="Плавный пуск старт" IsChecked="{Binding Data.IsPlavniiPusk, Mode=TwoWay}"/>
-                                <CheckBox Margin = "0 5"  Content="Режим одиночных запросов"  IsChecked="{Binding Data.IsRequestSingle, Mode=TwoWay}"/>
+                                <CheckBox Margin = "0 7"  Content="Режим одиночных запросов"  IsChecked="{Binding Data.IsRequestSingle, Mode=TwoWay}"/>
                             </StackPanel>
                         </GroupBox>
 
@@ -238,7 +238,7 @@
                 </Grid>
 
                 <!-- Second row of Buttons -->
-                <Grid Background="White" Margin="0 5">
+                <Grid Background="White" Margin="0 0 0 5">
 
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="0.7*"/>

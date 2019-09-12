@@ -5,11 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TiristorModule.View"
         mc:Ignorable="d"
-        Title="Тест тиристорного модуля" Height="244.571" Width="508.135"
+        Title="Тест тиристорного модуля" Height="200" Width="500"
         Background="LightGray"
         WindowStartupLocation="CenterScreen">
     <Grid>
-        <DataGrid FontSize="14" AutoGenerateColumns="False" ItemsSource="{Binding TestThyristorModels}" IsReadOnly="True" HorizontalAlignment="Left" Height="194" Margin="10,10,0,0" VerticalAlignment="Top" Width="480">
+        <DataGrid FontSize="14" AutoGenerateColumns="False" ItemsSource="{Binding TestThyristorModels}" IsReadOnly="True" HorizontalAlignment="Left" Height="149" Margin="10,10,0,0" VerticalAlignment="Top" Width="472">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Наим. фазы" Binding="{Binding FazaName}"/>
                 <DataGridTextColumn Header="ApBn" Binding="{Binding ApBn}"/>
