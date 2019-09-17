@@ -33,6 +33,7 @@ namespace TiristorModule
 
         bool IsRequestIsTest;
 
+        #region Request, Response fields and DataModel setter
         private static StandartRequest CurrentVoltage;
         private static StandartRequest StopThyristorModule;
         private static StandartRequest ResetThyristorCrash;
@@ -44,6 +45,7 @@ namespace TiristorModule
         public static DataModel Data { get; set; }
         public static LedIndicatorModel LedIndicatorData { get; set; }
         public static SettingsModel SettingsModelData { get; set; }
+        #endregion
 
         #region Commands
         public ICommand CurrentVoltageCommand { get; set; }
@@ -68,91 +70,7 @@ namespace TiristorModule
             Logger.InitLogger();
         }
 
-        ~MainWindowViewModel()
-        {
-            SerialPortSettings.CloseSerialPortConnection(serialPort1);
-        }
-
-        #region ClickHandler
-
-        private void StartTerristorModuleClick()
-        {
-            CommunicateWithThyristorModule(StartThyristorModule.GetRequestPackage());
-            //GetStatusFromCurrentVoltage(127);
-        }
-
-        private void StopTerristorModuleClick()
-        {
-            CommunicateWithThyristorModule(StopThyristorModule.GetRequestPackage());
-        }
-
-        private void CurrentVoltageClick()
-        {
-            CommunicateWithThyristorModule(CurrentVoltage.GetRequestPackage());
-        }
-
-        private void AlarmStopClick()
-        {
-            CommunicateWithThyristorModule(AlarmStop.GetRequestPackage());
-        }
-
-        private void TestTerristorModuleClick()
-        {
-            IsRequestIsTest = true;
-            CommunicateWithThyristorModule(TestThyristorModule.GetRequestPackage());
-        }
-
-        private void ResetAvatiaTirristorClick()
-        {
-            CommunicateWithThyristorModule(ResetThyristorCrash.GetRequestPackage());
-        }
-
-        public static void TestThyristorWindowShow(ushort[] buff)
-        {
-            var vm = new TestThyristorWindowViewModel(buff);
-            var connectSettingView = new TestThyristorWindowView
-            {
-                DataContext = vm
-            };
-            vm.OnRequestClose += (s, e) => connectSettingView.Close();
-            connectSettingView.ShowDialog();
-        }
-
-        private void ConnectionSettingsClick()
-        {
-            var vm = new ConnectSettingsViewModel();
-            var connectSettingView = new ConnectSettingsView
-            {
-                DataContext = vm
-            };
-            vm.OnRequestClose += (s, e) => connectSettingView.Close();
-            connectSettingView.ShowDialog();
-        }
-
-        private void StartTiristorSettingsClick()
-        {
-            var vm = new StartTiristorSettingsViewModel();
-            var startSettingView = new StartTiristorSettingsView
-            {
-                DataContext = vm
-            };
-            vm.OnRequestClose += (s, e) => startSettingView.Close();
-            startSettingView.ShowDialog();
-        }
-
-        private void TestTiristorSettingsClick()
-        {
-            var vm = new TestTiristorSettingsViewModel();
-            var testSettingView = new TestTiristorSettingsView
-            {
-                DataContext = vm
-            };
-            vm.OnRequestClose += (s, e) => testSettingView.Close();
-            testSettingView.ShowDialog();
-        }
-        #endregion
-
-        #region Methods
+        #region Initialize Requests, Response, DataModels, BindingCommands
         private void BindingCommandsToClickMethods()
         {
             CurrentVoltageCommand = new Command(arg => CurrentVoltageClick());
@@ -186,17 +104,48 @@ namespace TiristorModule
                 SettingsModelData.CurrentKz2, SettingsModelData.VremiaKzMs2, 0, 85, Convert.ToByte(Data.IsPlavniiPusk));
 
             TestThyristorModule = new TestRequest(SettingsModelData.SlaveAddress, 0x88, 7, SettingsModelData.PersentTestPower,
-                SettingsModelData.NominalTok1sk, SettingsModelData.NumberOfTest, SettingsModelData.CurrentKz1, 
+                SettingsModelData.NominalTok1sk, SettingsModelData.NumberOfTest, SettingsModelData.CurrentKz1,
                 SettingsModelData.CurrentKz2);
         }
 
         public static void InitializeResponses()
         {
-            Response = new BaseResponse(
-                SettingsModelData.MasterAddress,
-                SettingsModelData.SlaveAddress
-            );
+            Response = new BaseResponse(SettingsModelData.MasterAddress, SettingsModelData.SlaveAddress);
         }
+        #endregion
+
+        #region ClickMethods
+        private void StartTerristorModuleClick()
+        {
+            CommunicateWithThyristorModule(StartThyristorModule.GetRequestPackage());
+        }
+
+        private void StopTerristorModuleClick()
+        {
+            CommunicateWithThyristorModule(StopThyristorModule.GetRequestPackage());
+        }
+
+        private void CurrentVoltageClick()
+        {
+            CommunicateWithThyristorModule(CurrentVoltage.GetRequestPackage());
+        }
+
+        private void AlarmStopClick()
+        {
+            CommunicateWithThyristorModule(AlarmStop.GetRequestPackage());
+        }
+
+        private void TestTerristorModuleClick()
+        {
+            IsRequestIsTest = true;
+            CommunicateWithThyristorModule(TestThyristorModule.GetRequestPackage());
+        }
+
+        private void ResetAvatiaTirristorClick()
+        {
+            CommunicateWithThyristorModule(ResetThyristorCrash.GetRequestPackage());
+        }
+        #endregion
 
         public void CommunicateWithThyristorModule(byte[] request)
         {
@@ -312,25 +261,14 @@ namespace TiristorModule
             }
         }
 
-        private static void CurrentVoltageStatus(bool?[] Status)
+        private static string GetWorkingStatus(ushort CurrentVoltageWorkStatus)
         {
-            LedIndicatorData.A1_kz = !Status[0];
-            LedIndicatorData.B1_kz = !Status[1];
-            LedIndicatorData.C1_kz = !Status[2];
-            LedIndicatorData.A2_kz = !Status[3];
-            LedIndicatorData.B2_kz = !Status[4];
-            LedIndicatorData.C2_kz = !Status[5];
-            LedIndicatorData.ReferenceVoltage = !Status[6];
-        }
-
-        private static void GetStatusFromCurrentVoltage(ushort statusCrash)
-        {
-            bool?[] LedLightRegim = new bool?[7];
-
-            for (int i = 0; i < LedLightRegim.Length; i++) 
-                LedLightRegim[i] = Convert.ToBoolean((statusCrash >> i) & 0x01);
-            
-            CurrentVoltageStatus(LedLightRegim);
+            if (CurrentVoltageWorkStatus % 16 == 0 && CurrentVoltageWorkStatus != 0)
+            {
+                int i = Convert.ToInt32(Math.Sqrt(Convert.ToDouble(CurrentVoltageWorkStatus)) - 4);
+                return WorkingStatus[i];
+            }
+            else return WorkingStatus[4];
         }
 
         private static void StartStopStatus(ushort Status)
@@ -343,20 +281,81 @@ namespace TiristorModule
             else
             {
                 LedIndicatorData.StartStatus = null;
-                LedIndicatorData.StopStatus = true;  
+                LedIndicatorData.StopStatus = true;
             }
         }
 
-        private static string GetWorkingStatus(ushort CurrentVoltageWorkStatus)
+        private static void GetStatusFromCurrentVoltage(ushort statusCrash)
         {
-            if (CurrentVoltageWorkStatus % 16 == 0 && CurrentVoltageWorkStatus != 0)
+            bool?[] LedLightRegim = new bool?[7];
+
+            for (int i = 0; i < LedLightRegim.Length; i++)
+                LedLightRegim[i] = Convert.ToBoolean((statusCrash >> i) & 0x01);
+
+            CurrentVoltageStatus(LedLightRegim);
+        }
+
+        private static void CurrentVoltageStatus(bool?[] Status)
+        {
+            LedIndicatorData.A1_kz = !Status[0];
+            LedIndicatorData.B1_kz = !Status[1];
+            LedIndicatorData.C1_kz = !Status[2];
+            LedIndicatorData.A2_kz = !Status[3];
+            LedIndicatorData.B2_kz = !Status[4];
+            LedIndicatorData.C2_kz = !Status[5];
+            LedIndicatorData.ReferenceVoltage = !Status[6];
+        }
+
+        public static void TestThyristorWindowShow(ushort[] buff)
+        {
+            var vm = new TestThyristorWindowViewModel(buff);
+            var connectSettingView = new TestThyristorWindowView
             {
-                int i = Convert.ToInt32(Math.Sqrt(Convert.ToDouble(CurrentVoltageWorkStatus)) - 4);
-                return WorkingStatus[i];
-            }
-            else return WorkingStatus[4];
+                DataContext = vm
+            };
+            vm.OnRequestClose += (s, e) => connectSettingView.Close();
+            connectSettingView.ShowDialog();
+        }
+
+        #region Opening settings windows by click
+        private void ConnectionSettingsClick()
+        {
+            var vm = new ConnectSettingsViewModel();
+            var connectSettingView = new ConnectSettingsView
+            {
+                DataContext = vm
+            };
+            vm.OnRequestClose += (s, e) => connectSettingView.Close();
+            connectSettingView.ShowDialog();
+        }
+
+        private void StartTiristorSettingsClick()
+        {
+            var vm = new StartTiristorSettingsViewModel();
+            var startSettingView = new StartTiristorSettingsView
+            {
+                DataContext = vm
+            };
+            vm.OnRequestClose += (s, e) => startSettingView.Close();
+            startSettingView.ShowDialog();
+        }
+
+        private void TestTiristorSettingsClick()
+        {
+            var vm = new TestTiristorSettingsViewModel();
+            var testSettingView = new TestTiristorSettingsView
+            {
+                DataContext = vm
+            };
+            vm.OnRequestClose += (s, e) => testSettingView.Close();
+            testSettingView.ShowDialog();
+        }
+        #endregion
+
+        ~MainWindowViewModel()
+        {
+            SerialPortSettings.CloseSerialPortConnection(serialPort1);
         }
     }
-    #endregion
 }
 
