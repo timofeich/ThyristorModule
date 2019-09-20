@@ -360,5 +360,29 @@ namespace TiristorModule.Properties {
                 this["RequestInterval"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsRequestSingle {
+            get {
+                return ((bool)(this["IsRequestSingle"]));
+            }
+            set {
+                this["IsRequestSingle"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsPlavniiPusk {
+            get {
+                return ((bool)(this["IsPlavniiPusk"]));
+            }
+            set {
+                this["IsPlavniiPusk"] = value;
+            }
+        }
     }
 }

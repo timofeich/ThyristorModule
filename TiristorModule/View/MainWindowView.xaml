@@ -4,13 +4,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:uc="clr-namespace:LedControl;assembly=LedControl"
+         xmlns:p="clr-namespace:TiristorModule.Properties"
         mc:Ignorable="d"
         Title="Главное окно" Height="460" Width="600" MinHeight="460" MinWidth="550"
         MaxHeight="460" MaxWidth="750"
         WindowStartupLocation="CenterScreen" Background="LightGray">
 
     <Grid Margin="0,0,2,0">
-
         <Border Padding="10">
             <StackPanel>
 
@@ -127,8 +127,8 @@
                         <!-- Modes -->
                         <GroupBox Header="Режимы" FontSize="14" Background="White" Padding="5" Margin="0 0 5 0">
                             <StackPanel>
-                                <CheckBox Margin = "0 5" Content="Плавный пуск старт" IsChecked="{Binding Data.IsPlavniiPusk, Mode=TwoWay}"/>
-                                <CheckBox Margin = "0 7"  Content="Режим одиночных запросов"  IsChecked="{Binding Data.IsRequestSingle, Mode=TwoWay}"/>
+                                <CheckBox Margin = "0 5" Content="Плавный пуск старт" IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=IsPlavniiPusk}"/>
+                                <CheckBox Margin = "0 7"  Content="Режим одиночных запросов"  IsChecked = "{Binding Source={x:Static p:Settings.Default}, Path=IsRequestSingle}"/>
                             </StackPanel>
                         </GroupBox>
 

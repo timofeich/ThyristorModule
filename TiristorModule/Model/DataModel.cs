@@ -33,10 +33,6 @@ namespace TiristorModule.Model
 
         private ushort temperatureOfTiristor;
         private string workingStatus;
-
-        private bool isRequestSingle;
-        private bool isPlavniiPusk;
-
         #endregion
 
         #region Properties
@@ -182,33 +178,6 @@ namespace TiristorModule.Model
                 }
             }
         }
-
-        public bool IsRequestSingle
-        {
-            get { return isRequestSingle; }
-            set
-            {
-                if (isRequestSingle != value)
-                {
-                    isRequestSingle = value;
-                    OnPropertyChanged("IsCycle");
-                }
-            }
-        }
-
-        public bool IsPlavniiPusk
-        {
-            get { return isPlavniiPusk; }
-            set
-            {
-                if (isPlavniiPusk != value)
-                {
-                    isPlavniiPusk = value;
-                    OnPropertyChanged("isPlavniiPusk");
-                }
-            }
-        }
-
         #endregion
     }
 }

@@ -48,11 +48,7 @@ namespace TiristorModule.Response
             if (Response[CommandTypeByte] == 0x90)
                 CurrentVoltageResponse.GetCurrentVoltageResponse(Response);
             else if(Response[CommandTypeByte] == 0x91)
-            {
-                CurrentVoltageResponse.GetCurrentVoltageResponse(Response);
-                MainWindowViewModel.ReceiveResponse();
                 TestThyristorModuleResponse.GetTestThyristorModuleResponse(Response);
-            }
             else MessageBox.Show("Пришел неверный адрес команды.", "Предупреждение", MessageBoxButton.OK, 
                 MessageBoxImage.Warning);
         }

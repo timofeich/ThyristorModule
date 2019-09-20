@@ -63,5 +63,16 @@ namespace TiristorModule.Model
         {
             get { return Settings.Default.NumberOfTest; }
         }
+
+
+        public bool IsRequestSingle
+        {
+            get { return Settings.Default.IsRequestSingle; }
+        }
+
+        public bool IsPlavniiPusk
+        {
+            get { return Settings.Default.IsPlavniiPusk; }
+        }
     }
 }

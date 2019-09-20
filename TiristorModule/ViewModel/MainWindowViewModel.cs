@@ -31,8 +31,6 @@ namespace TiristorModule
         //byte[] CurrentVoltageResponse = { 0xFF, 0x67, 22, 0x90, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 16, 1, 0x19 };
         //byte[] TestThyristorResponse = { 0xFF, 0x67, 21, 0x91, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0xa0 };
 
-        bool IsRequestIsTest;
-
         #region Request, Response fields and DataModel setter
         private static StandartRequest CurrentVoltage;
         private static StandartRequest StopThyristorModule;
@@ -101,9 +99,9 @@ namespace TiristorModule
 
             StartThyristorModule = new StartRequest(SettingsModelData.SlaveAddress, 0x87, 28, SettingsModelData.Times,
                 SettingsModelData.Capacities, SettingsModelData.CurrentKz1, SettingsModelData.VremiaKzMs1, 0,
-                SettingsModelData.CurrentKz2, SettingsModelData.VremiaKzMs2, 0, 85, Convert.ToByte(Data.IsPlavniiPusk));
+                SettingsModelData.CurrentKz2, SettingsModelData.VremiaKzMs2, 0, 85, Convert.ToByte(SettingsModelData.IsPlavniiPusk));
 
-            TestThyristorModule = new TestRequest(SettingsModelData.SlaveAddress, 0x88, 7, SettingsModelData.PersentTestPower,
+            TestThyristorModule = new TestRequest(SettingsModelData.SlaveAddress, 0x91, 7, SettingsModelData.PersentTestPower,
                 SettingsModelData.NominalTok1sk, SettingsModelData.NumberOfTest, SettingsModelData.CurrentKz1,
                 SettingsModelData.CurrentKz2);
         }
@@ -137,7 +135,6 @@ namespace TiristorModule
 
         private void TestTerristorModuleClick()
         {
-            IsRequestIsTest = true;
             CommunicateWithThyristorModule(TestThyristorModule.GetRequestPackage());
         }
 
@@ -152,46 +149,33 @@ namespace TiristorModule
             SerialPortSettings.OpenSerialPortConnection(serialPort1);
             if (serialPort1.IsOpen)
             {
-                if (Data.IsRequestSingle)
+                if (SettingsModelData.IsRequestSingle)
                 {
-                    if (!IsRequestIsTest)
-                    {
-                        SendRequest(request);
-                        ReceiveResponse();
-                    }
-                    else
-                    {
-                        TestModeOfCommunicateWithThyristorModule(request);
-                    }
+                    SendRequest(request);
+                    ReceiveResponse();
                 }
                 else
                 {
                     ThreadPool.QueueUserWorkItem(new WaitCallback((obj) =>
                     {
-                        while (!Data.IsRequestSingle)
+                        bool IsClickedRequest = true;
+                        while (!SettingsModelData.IsRequestSingle)
                         {
-                            if (!IsRequestIsTest)
+                            if (IsClickedRequest)
                             {
                                 SendRequest(request);
                                 ReceiveResponse();
+                                IsClickedRequest = false;
                             }
                             else
                             {
-                                TestModeOfCommunicateWithThyristorModule(request);
+                                SendRequest(CurrentVoltage.GetRequestPackage());
+                                ReceiveResponse();
                             }
                         }
                     }));
                 }
             }
-        }
-
-        private void TestModeOfCommunicateWithThyristorModule(byte[] request)
-        {
-            SendRequest(request);
-            ReceiveResponse();
-            Thread.Sleep(100);
-            ReceiveResponse();
-            IsRequestIsTest = false;
         }
 
         private void SendRequest(byte[] request)
@@ -247,11 +231,11 @@ namespace TiristorModule
                 Data.AmperageA2 = buff[10];
                 Data.AmperageB2 = buff[11];
                 Data.AmperageC2 = buff[12];
-                Data.TemperatureOfTiristor = buff[13];
-                Data.WorkingStatus = GetWorkingStatus(buff[14]);
-                StartStopStatus(buff[14]);
+                //Data.TemperatureOfTiristor = buff[13];
+                Data.WorkingStatus = GetWorkingStatus(buff[13]);
+                StartStopStatus(buff[13]);
                
-                GetStatusFromCurrentVoltage(buff[15]);
+                GetStatusFromCurrentVoltage(buff[14]);
                 Logger.Log.Info(buff.Skip(4).Take(buff.Length - 2).ToArray());
             }
             catch (Exception ex)

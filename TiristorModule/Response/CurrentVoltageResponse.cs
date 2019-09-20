@@ -20,7 +20,7 @@ namespace TiristorModule.Response
 
         public void GetCurrentVoltageResponse(byte[] Response)
         {            
-            ushort[] frame = new ushort[16];
+            ushort[] frame = new ushort[15];//16
             int j = 4;
 
             if (Response[0] == MasterAddress)

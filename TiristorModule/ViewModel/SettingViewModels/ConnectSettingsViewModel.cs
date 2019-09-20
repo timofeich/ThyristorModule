@@ -13,11 +13,11 @@ namespace TiristorModule.ViewModel
 
         public ConnectSettingsViewModel()
         {
-            SaveConnectSettingsCommand = new Command(arg => OkStartTiristorButtonClick());
-            CancelConnectSettingsCommand = new Command(arg => CancelStartTiristorButtonClick());
+            SaveConnectSettingsCommand = new Command(arg => OkConnectTiristorButtonClick());
+            CancelConnectSettingsCommand = new Command(arg => CancelConnectTiristorButtonClick());
         }
 
-        private void OkStartTiristorButtonClick()
+        private void OkConnectTiristorButtonClick()
         {
             MainWindowViewModel.serialPort1 = new System.IO.Ports.SerialPort(Settings.Default.PortName,
             Convert.ToInt32(Settings.Default.BaudRate),
@@ -31,7 +31,7 @@ namespace TiristorModule.ViewModel
             OnRequestClose(this, new EventArgs());
         }
 
-        private void CancelStartTiristorButtonClick()
+        private void CancelConnectTiristorButtonClick()
         {
             Settings.Default.Reload();
             OnRequestClose(this, new EventArgs());
