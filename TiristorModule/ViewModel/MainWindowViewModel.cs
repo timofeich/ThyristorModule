@@ -158,14 +158,14 @@ namespace TiristorModule
                 {
                     ThreadPool.QueueUserWorkItem(new WaitCallback((obj) =>
                     {
-                        bool IsClickedRequest = true;
+                        bool IsRequestButtonClicked = true;
                         while (!SettingsModelData.IsRequestSingle)
                         {
-                            if (IsClickedRequest)
+                            if (IsRequestButtonClicked)
                             {
                                 SendRequest(request);
                                 ReceiveResponse();
-                                IsClickedRequest = false;
+                                IsRequestButtonClicked = false;
                             }
                             else
                             {
